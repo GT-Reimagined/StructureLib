@@ -11,18 +11,18 @@ import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import net.minecraft.block.Block;
-import net.minecraft.entity.player.Player;
-import net.minecraft.entity.player.ServerPlayer;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.IChatComponent;
-import net.minecraft.world.Level;
+import net.minecraft.nbt.CompoundTag;
 
 import com.gtnewhorizon.structurelib.StructureLibAPI;
 import com.gtnewhorizon.structurelib.util.ItemStackPredicate;
 import com.gtnewhorizon.structurelib.util.ItemStackPredicate.NBTMode;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 
 /**
  * Use StructureUtility to instantiate. These are the building blocks for your {@link IStructureDefinition}. It
@@ -55,7 +55,7 @@ public interface IStructureElement<T> {
      */
     @Deprecated
     default PlaceResult survivalPlaceBlock(T t, Level world, int x, int y, int z, ItemStack trigger, IItemSource s,
-            ServerPlayer actor, Consumer<IChatComponent> chatter) {
+                                           ServerPlayer actor, Consumer<Component> chatter) {
         if (PANIC_MODE) throw new RuntimeException("Panic Tripwire hit");
         if (StructureLibAPI.isDebugEnabled()) LOGGER.error(
                 "Default implementation of survivalPlaceBlock hit! Things aren't going to work well! IStructureElement class: {}",
@@ -94,7 +94,7 @@ public interface IStructureElement<T> {
      * Try place the block by taking resource from given {@link IItemSource}.
      * <p>
      * You might want to use
-     * {@link StructureUtility#survivalPlaceBlock(Block, int, Level, int, int, int, IItemSource, net.minecraft.entity.player.Player)}
+     * {@link StructureUtility#survivalPlaceBlock(Block, int, Level, int, int, int, IItemSource, Player)}
      * or its overloads to implement this.
      * <p>
      * The default implementation provided will
@@ -107,7 +107,7 @@ public interface IStructureElement<T> {
      * <li>Use the {@link BlocksToPlace} retrieved earlier and passed in {@link IItemSource} to determine an item to
      * place</li>
      * <li>Hand over control to
-     * {@link StructureUtility#survivalPlaceBlock(ItemStack, NBTMode, NBTTagCompound, boolean, Level, int, int, int, IItemSource, Player, Consumer)}</li>
+     * {@link StructureUtility#survivalPlaceBlock(ItemStack, NBTMode, CompoundTag, boolean, Level, int, int, int, IItemSource, Player, Consumer)}</li>
      * </ol>
      * </li>
      * <li>Call legacy
@@ -130,7 +130,7 @@ public interface IStructureElement<T> {
         BlocksToPlace e = getBlocksToPlace(t, world, x, y, z, trigger, env);
         IItemSource source = env.getSource();
         Player actor = env.getActor();
-        Consumer<IChatComponent> chatter = env.getChatter();
+        Consumer<Component> chatter = env.getChatter();
         if (e != null) {
             if (check(t, world, x, y, z)) return PlaceResult.SKIP;
             if (e.getStacks() == null) {
@@ -138,7 +138,7 @@ public interface IStructureElement<T> {
                 return StructureUtility.survivalPlaceBlock(
                         taken,
                         NBTMode.EXACT,
-                        taken.stackTagCompound,
+                        taken.getTag(),
                         true,
                         world,
                         x,
@@ -153,7 +153,7 @@ public interface IStructureElement<T> {
                 return StructureUtility.survivalPlaceBlock(
                         stack,
                         NBTMode.EXACT,
-                        stack.stackTagCompound,
+                        stack.getTag(),
                         true,
                         world,
                         x,
@@ -275,18 +275,15 @@ public interface IStructureElement<T> {
             return new BlocksToPlace(predicate, stacks);
         }
 
-        public static BlocksToPlace create(Block block, int meta) {
-            Item itemBlock = Item.getItemFromBlock(block);
-            if (itemBlock instanceof ISpecialItemBlock) {
-                meta = ((ISpecialItemBlock) itemBlock).getItemMetaFromBlockMeta(block, meta);
-            }
-            return create(itemBlock, meta);
+        public static BlocksToPlace create(Block block) {
+            Item itemBlock = block.asItem();
+            return create(itemBlock);
         }
 
-        public static BlocksToPlace create(Item item, int meta) {
+        public static BlocksToPlace create(Item item) {
             return new BlocksToPlace(
-                    ItemStackPredicate.from(item).setMeta(meta),
-                    Collections.singletonList(new ItemStack(item, 1, meta)));
+                    ItemStackPredicate.from(item),
+                    Collections.singletonList(new ItemStack(item, 1)));
         }
 
         public static BlocksToPlace create(ItemStack itemStack) {

@@ -160,7 +160,7 @@ public class ClientProxy extends CommonProxy {
     }
 
     @Override
-    public void addThrottledChat(Object throttleKey, Player player, IChatComponent text, short intervalRequired,
+    public void addThrottledChat(Object throttleKey, Player player, Component text, short intervalRequired,
             boolean forceUpdateLastSend) {
         if (player instanceof ServerPlayer)
             super.addThrottledChat(throttleKey, player, text, intervalRequired, forceUpdateLastSend);

@@ -183,7 +183,7 @@ public class InventoryUtility {
      */
     public static int takeFromInventory(ServerPlayer player, ItemStack filter, boolean simulate) {
         int sum = 0;
-        int count = filter.stackSize;
+        int count = filter.getCount();
         ItemStackPredicate predicate = ItemStackPredicate.from(filter, NBTMode.EXACT);
         ItemStackCounterImpl store = new ItemStackCounterImpl();
         for (InventoryProvider<?> provider : inventoryProviders) {
@@ -228,33 +228,33 @@ public class InventoryUtility {
         int found = 0;
         ItemStack copiedFilter = null;
         if (filter != null) {
-            copiedFilter = new ItemStack(filter.getItem(), filter.stackSize, Items.feather.getDamage(filter));
+            copiedFilter = new ItemStack(filter.getItem(), filter.getCount(), Items.feather.getDamage(filter));
             copiedFilter.setTagCompound(filter.stackTagCompound);
         }
         for (Iterator<ItemStack> iterator = inv.iterator(); iterator.hasNext();) {
             ItemStack stack = iterator.next();
             // invalid stack
-            if (stack == null || stack.getItem() == null || stack.stackSize <= 0) continue;
+            if (stack.isEmpty() || stack.getCount() <= 0) continue;
 
             if (predicate.test(stack)) {
-                found += stack.stackSize;
+                found += stack.getCount();
                 if (found > count) {
                     int surplus = found - count;
-                    store.add(stack, stack.stackSize - surplus);
+                    store.add(stack, stack.getCount() - surplus);
                     if (!simulate) {
                         // leave the surplus in its place
-                        stack.stackSize = surplus;
+                        stack.setCount(surplus);
                     }
                     return count;
                 }
-                store.add(stack, stack.stackSize);
+                store.add(stack, stack.getCount());
                 if (!simulate) iterator.remove();
                 if (found == count) return count;
             }
             if (!recursive) continue;
             for (ItemStackExtractor f : stackExtractors) {
                 if (filter != null && f.isAPIImplemented(APIType.EXTRACT_ONE_STACK)) {
-                    copiedFilter.stackSize = count - found;
+                    copiedFilter.setCount(count - found);
                     found += f.getItem(stack, copiedFilter, simulate, player);
                 } else {
                     found += f.takeFromStack(predicate, simulate, count - found, store, stack, filter, player);
@@ -357,7 +357,7 @@ public class InventoryUtility {
     public interface ItemStackCounter {
 
         /**
-         * Add some amount of stack. Note stackSize is used instead of stack.stackSize.
+         * Add some amount of stack. Note stackSize is used instead of stack.getCount().
          */
         void add(ItemStack stack, int stackSize);
     }
@@ -368,7 +368,7 @@ public class InventoryUtility {
 
         @Override
         public void add(ItemStack stack, int stackSize) {
-            if (stack == null || stack.getItem() == null || stackSize <= 0) throw new IllegalArgumentException();
+            if (stack.isEmpty() || stackSize <= 0) throw new IllegalArgumentException();
             store.merge(stack, stackSize, Integer::sum);
         }
 

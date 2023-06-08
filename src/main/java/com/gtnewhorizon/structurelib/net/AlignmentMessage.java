@@ -1,6 +1,6 @@
 package com.gtnewhorizon.structurelib.net;
 
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tileentity.BlockEntity;
 import net.minecraft.world.Level;
 import net.minecraftforge.common.DimensionManager;
@@ -28,7 +28,7 @@ public abstract class AlignmentMessage implements IMessage {
 
     @Override
     public void fromBytes(ByteBuf pBuffer) {
-        NBTTagCompound tTag = ByteBufUtils.readTag(pBuffer);
+        CompoundTag tTag = ByteBufUtils.readTag(pBuffer);
         mPosX = tTag.getInteger("posx");
         mPosY = tTag.getInteger("posy");
         mPosZ = tTag.getInteger("posz");
@@ -38,7 +38,7 @@ public abstract class AlignmentMessage implements IMessage {
 
     @Override
     public void toBytes(ByteBuf pBuffer) {
-        NBTTagCompound tFXTag = new NBTTagCompound();
+        CompoundTag tFXTag = new CompoundTag();
         tFXTag.setInteger("posx", mPosX);
         tFXTag.setInteger("posy", mPosY);
         tFXTag.setInteger("posz", mPosZ);

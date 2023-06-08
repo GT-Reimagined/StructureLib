@@ -16,7 +16,7 @@ abstract class StructureElement_Bridge<T> implements IStructureElement<T> {
     @Deprecated
     @Override
     public final PlaceResult survivalPlaceBlock(T t, Level world, int x, int y, int z, ItemStack trigger, IItemSource s,
-            ServerPlayer actor, Consumer<IChatComponent> chatter) {
+            ServerPlayer actor, Consumer<Component> chatter) {
         return survivalPlaceBlock(t, world, x, y, z, trigger, AutoPlaceEnvironment.fromLegacy(s, actor, chatter));
     }
 

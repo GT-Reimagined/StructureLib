@@ -1,6 +1,7 @@
 package com.gtnewhorizon.structurelib.structure;
 
-import net.minecraft.world.Level;
+
+import net.minecraft.world.level.Level;
 
 interface IStructureWalker<T> {
 

@@ -7,12 +7,12 @@ import java.util.function.Predicate;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.entity.player.ServerPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.IChatComponent;
-import net.minecraft.world.Level;
 
 import com.google.common.collect.Iterables;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 /**
  * Use StructureUtility to instantiate
@@ -70,9 +70,9 @@ public interface IStructureElementChain<T> extends IStructureElement<T> {
 
     @Override
     default PlaceResult survivalPlaceBlock(T t, Level world, int x, int y, int z, ItemStack trigger, IItemSource s,
-            ServerPlayer actor, Consumer<IChatComponent> chatter) {
+                                           ServerPlayer actor, Consumer<Component> chatter) {
         boolean haveSkip = false;
-        List<IChatComponent> bufferedNoise = new ArrayList<>();
+        List<Component> bufferedNoise = new ArrayList<>();
         for (IStructureElement<T> fallback : fallbacks()) {
             PlaceResult result = fallback.survivalPlaceBlock(t, world, x, y, z, trigger, s, actor, bufferedNoise::add);
             switch (result) {
@@ -95,7 +95,7 @@ public interface IStructureElementChain<T> extends IStructureElement<T> {
     default PlaceResult survivalPlaceBlock(T t, Level world, int x, int y, int z, ItemStack trigger,
             AutoPlaceEnvironment env) {
         boolean haveSkip = false;
-        List<IChatComponent> bufferedNoise = new ArrayList<>();
+        List<Component> bufferedNoise = new ArrayList<>();
         for (IStructureElement<T> fallback : fallbacks()) {
             PlaceResult result = fallback
                     .survivalPlaceBlock(t, world, x, y, z, trigger, env.withChatter(bufferedNoise::add));

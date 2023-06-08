@@ -50,7 +50,7 @@ public class CommandConfigureChannels extends CommandBase {
         ServerPlayer player = (ServerPlayer) sender;
 
         ItemStack heldItem = player.getHeldItem();
-        if (heldItem == null || !(heldItem.getItem() instanceof ItemConstructableTrigger)) {
+        if (heldItem.isEmpty() || !(heldItem.getItem() instanceof ItemConstructableTrigger)) {
             throw new WrongUsageException("must hold a hologram");
         }
 

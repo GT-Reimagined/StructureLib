@@ -1,6 +1,7 @@
 package com.gtnewhorizon.structurelib.structure.adders;
 
-import net.minecraft.tileentity.BlockEntity;
+
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 public interface ITileAdder<T> {
 

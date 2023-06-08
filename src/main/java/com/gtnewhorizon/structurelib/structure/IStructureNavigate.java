@@ -1,11 +1,13 @@
 package com.gtnewhorizon.structurelib.structure;
 
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+
 import java.util.function.Consumer;
 
-import net.minecraft.entity.player.ServerPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.IChatComponent;
-import net.minecraft.world.Level;
+
 
 /**
  * Use StructureUtility to instantiate
@@ -29,7 +31,7 @@ interface IStructureNavigate<T> extends IStructureElement<T> {
 
     @Override
     default PlaceResult survivalPlaceBlock(T t, Level world, int x, int y, int z, ItemStack trigger, IItemSource s,
-            ServerPlayer actor, Consumer<IChatComponent> chatter) {
+                                           ServerPlayer actor, Consumer<Component> chatter) {
         return PlaceResult.SKIP;
     }
 

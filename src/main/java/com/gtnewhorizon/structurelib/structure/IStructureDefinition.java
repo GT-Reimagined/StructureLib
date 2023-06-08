@@ -5,15 +5,15 @@ import static com.gtnewhorizon.structurelib.structure.IStructureWalker.skipBlock
 
 import java.util.function.Function;
 
-import net.minecraft.entity.player.Player;
-import net.minecraft.entity.player.ServerPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.Level;
 
 import com.gtnewhorizon.structurelib.StructureLib;
 import com.gtnewhorizon.structurelib.StructureLibAPI;
 import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructable;
 import com.gtnewhorizon.structurelib.alignment.enumerable.ExtendedFacing;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 /**
  * This is the structure definition of your multi. You will have one of these for each multi.
@@ -87,8 +87,8 @@ public interface IStructureDefinition<T> {
      * @return true if successful, false otherwise
      */
     default boolean check(T object, String piece, Level world, ExtendedFacing extendedFacing, int basePositionX,
-            int basePositionY, int basePositionZ, int basePositionA, int basePositionB, int basePositionC,
-            boolean forceCheckAllBlocks) {
+                          int basePositionY, int basePositionZ, int basePositionA, int basePositionB, int basePositionC,
+                          boolean forceCheckAllBlocks) {
         return iterate(
                 object,
                 null,
@@ -121,8 +121,8 @@ public interface IStructureDefinition<T> {
      * @return true if successful, false otherwise
      */
     default boolean hints(T object, ItemStack trigger, String piece, Level world, ExtendedFacing extendedFacing,
-            int basePositionX, int basePositionY, int basePositionZ, int basePositionA, int basePositionB,
-            int basePositionC) {
+                          int basePositionX, int basePositionY, int basePositionZ, int basePositionA, int basePositionB,
+                          int basePositionC) {
         return iterate(
                 object,
                 trigger,
@@ -241,8 +241,8 @@ public interface IStructureDefinition<T> {
      */
     @Deprecated
     default int survivalBuild(T object, ItemStack trigger, String piece, Level world, ExtendedFacing extendedFacing,
-            int basePositionX, int basePositionY, int basePositionZ, int basePositionA, int basePositionB,
-            int basePositionC, int elementBudget, IItemSource source, ServerPlayer actor, boolean check) {
+                              int basePositionX, int basePositionY, int basePositionZ, int basePositionA, int basePositionB,
+                              int basePositionC, int elementBudget, IItemSource source, ServerPlayer actor, boolean check) {
         Player realActor;
         if (actor == null) {
             realActor = ISurvivalConstructable.__get_player();
@@ -342,7 +342,7 @@ public interface IStructureDefinition<T> {
     static <T> boolean iterate(T object, ItemStack trigger, IStructureElement<T>[] elements, Level world,
             ExtendedFacing extendedFacing, int basePositionX, int basePositionY, int basePositionZ, int basePositionA,
             int basePositionB, int basePositionC, boolean hintsOnly, Boolean checkBlocksIfNotNullForceCheckAllIfTrue) {
-        if (!world.isRemote && hintsOnly) {
+        if (world.isClientSide && hintsOnly) {
             return false;
         }
 

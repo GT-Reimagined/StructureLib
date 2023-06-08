@@ -71,7 +71,7 @@ public class CommonProxy {
 
     private final Map<ServerPlayer, Map<Object, Long>> throttleMap = new WeakHashMap<>();
 
-    public void addThrottledChat(Object throttleKey, Player player, IChatComponent text, short intervalRequired,
+    public void addThrottledChat(Object throttleKey, Player player, Component text, short intervalRequired,
             boolean forceUpdateLastSend) {
         if (player instanceof ServerPlayer) {
             Map<Object, Long> submap = throttleMap.computeIfAbsent((ServerPlayer) player, p -> new HashMap<>());
@@ -79,7 +79,7 @@ public class CommonProxy {
         }
     }
 
-    protected static void addThrottledChat(Object throttleKey, Player player, IChatComponent text,
+    protected static void addThrottledChat(Object throttleKey, Player player, Component text,
             short intervalRequired, boolean forceUpdateLastSend, Map<Object, Long> submap) {
         long now = System.currentTimeMillis();
         Long old;

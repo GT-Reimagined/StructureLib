@@ -65,7 +65,7 @@ public class ChannelDataAccessor {
      * @return true if contains any subchannel
      */
     public static boolean hasSubChannel(ItemStack masterStack) {
-        if (masterStack == null) throw new IllegalArgumentException();
+        if (masterStack.isEmpty()) throw new IllegalArgumentException();
         return masterStack.hasTag() && masterStack.getTag().contains(SECONDARY_HINT_TAG, TAG_COMPOUND);
     }
 
@@ -77,7 +77,7 @@ public class ChannelDataAccessor {
      * @return true if contains specified subchannel
      */
     public static boolean hasSubChannel(ItemStack masterStack, String channel) {
-        if (StringUtils.isEmpty(channel) || masterStack == null) throw new IllegalArgumentException();
+        if (StringUtils.isEmpty(channel) || masterStack.isEmpty()) throw new IllegalArgumentException();
         if (StructureLibAPI.isDebugEnabled() && !channel.toLowerCase(Locale.ROOT).equals(channel))
             throw new IllegalArgumentException("Channel name can be lower case ONLY");
         return !channel.isEmpty() && masterStack.hasTag()
@@ -93,7 +93,7 @@ public class ChannelDataAccessor {
      * @return channel data
      */
     public static int getChannelData(ItemStack masterStack, String channel) {
-        if (StringUtils.isEmpty(channel) || masterStack == null) throw new IllegalArgumentException();
+        if (StringUtils.isEmpty(channel) || masterStack.isEmpty()) throw new IllegalArgumentException();
         if (StructureLibAPI.isDebugEnabled() && !channel.toLowerCase(Locale.ROOT).equals(channel))
             throw new IllegalArgumentException("Channel name can be lower case ONLY");
         if (!masterStack.hasTag() || !masterStack.getTag().contains(SECONDARY_HINT_TAG, TAG_COMPOUND)
@@ -127,7 +127,7 @@ public class ChannelDataAccessor {
      * @param channel     channel identifier. Note: all channel identifiers are supposed to be lower case and not empty.
      */
     public static void unsetChannelData(ItemStack masterStack, String channel) {
-        if (StringUtils.isEmpty(channel) || masterStack == null) throw new IllegalArgumentException();
+        if (StringUtils.isEmpty(channel) || masterStack.isEmpty()) throw new IllegalArgumentException();
         if (StructureLibAPI.isDebugEnabled() && !channel.toLowerCase(Locale.ROOT).equals(channel))
             throw new IllegalArgumentException("Channel name can be lower case ONLY");
         if (masterStack.getTag() == null) masterStack.setTag(new CompoundTag());
@@ -145,7 +145,7 @@ public class ChannelDataAccessor {
      * @param masterStack trigger stack to wipe
      */
     public static void wipeChannelData(ItemStack masterStack) {
-        if (masterStack == null) throw new IllegalArgumentException();
+        if (masterStack.isEmpty()) throw new IllegalArgumentException();
         if (masterStack.getTag() != null) masterStack.getTag().remove(SECONDARY_HINT_TAG);
     }
 

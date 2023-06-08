@@ -9,7 +9,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundTag;
 
 public final class ItemStackPredicate implements Predicate<ItemStack> {
 
@@ -33,7 +33,7 @@ public final class ItemStackPredicate implements Predicate<ItemStack> {
     private final Item item;
     private int meta = -1;
 
-    private NBTTagCompound tag;
+    private CompoundTag tag;
     private NBTMode mode = NBTMode.IGNORE;
 
     private ItemStackPredicate(Item item) {
@@ -50,7 +50,7 @@ public final class ItemStackPredicate implements Predicate<ItemStack> {
         return this;
     }
 
-    public ItemStackPredicate setTag(NBTMode mode, NBTTagCompound tag) {
+    public ItemStackPredicate setTag(NBTMode mode, CompoundTag tag) {
         this.mode = mode;
         this.tag = tag;
         return this;
@@ -63,26 +63,26 @@ public final class ItemStackPredicate implements Predicate<ItemStack> {
         return mode.test(tag, itemStack.stackTagCompound);
     }
 
-    public enum NBTMode implements BiPredicate<NBTTagCompound, NBTTagCompound> {
+    public enum NBTMode implements BiPredicate<CompoundTag, CompoundTag> {
 
         IGNORE {
 
             @Override
-            public boolean test(NBTTagCompound lhs, NBTTagCompound rhs) {
+            public boolean test(CompoundTag lhs, CompoundTag rhs) {
                 return true;
             }
         },
         IN {
 
             @Override
-            public boolean test(NBTTagCompound lhs, NBTTagCompound rhs) {
+            public boolean test(CompoundTag lhs, CompoundTag rhs) {
                 if (lhs == null || lhs.hasNoTags()) return true;
                 if (rhs == null || rhs.hasNoTags()) return false;
                 for (String key : MiscUtils.getTagKeys(lhs)) {
                     if (!rhs.hasKey(key, lhs.func_150299_b(key))) return false;
                     NBTBase tag = lhs.getTag(key);
-                    if (tag instanceof NBTTagCompound) {
-                        if (!test((NBTTagCompound) tag, rhs.getCompoundTag(key))) return false;
+                    if (tag instanceof CompoundTag) {
+                        if (!test((CompoundTag) tag, rhs.getCompoundTag(key))) return false;
                     } else {
                         if (!tag.equals(rhs.getTag(key))) return false;
                     }
@@ -93,7 +93,7 @@ public final class ItemStackPredicate implements Predicate<ItemStack> {
         EXACT {
 
             @Override
-            public boolean test(NBTTagCompound lhs, NBTTagCompound rhs) {
+            public boolean test(CompoundTag lhs, CompoundTag rhs) {
                 if (lhs != null && lhs.hasNoTags()) lhs = null;
                 if (rhs != null && rhs.hasNoTags()) rhs = null;
                 return Objects.equals(lhs, rhs);
@@ -102,11 +102,11 @@ public final class ItemStackPredicate implements Predicate<ItemStack> {
         IGNORE_KNOWN_INSIGNIFICANT_TAGS {
 
             @Override
-            public boolean test(NBTTagCompound lhs, NBTTagCompound rhs) {
+            public boolean test(CompoundTag lhs, CompoundTag rhs) {
                 // fast path for empty tags
                 if (rhs == null || rhs.hasNoTags()) return lhs == null || lhs.hasNoTags();
                 // TODO make an implementation without copying a potentially huge tag
-                rhs = (NBTTagCompound) rhs.copy();
+                rhs = (CompoundTag) rhs.copy();
                 for (String s : KNOWN_INSIGNIFICANT_TAGS) rhs.removeTag(s);
                 return EXACT.test(lhs, rhs);
             }

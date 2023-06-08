@@ -1,11 +1,10 @@
-package com.gtnewhorizon;
+package com.gtnewhorizon.structurelib;
 
-import com.gtnewhorizon.structurelib.StructureLib;
-import com.gtnewhorizon.structurelib.StructureLibAPI;
 import com.gtnewhorizon.structurelib.block.BlockHint;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class Registry {
@@ -39,5 +38,23 @@ public class Registry {
         item.setRegistryName(StructureLibAPI.MOD_ID, name);
         ForgeRegistries.ITEMS.register(item);
         return item;
+    }
+
+    public static Block getHint(int dots){
+        return switch (dots){
+            case 1 -> HINT_0;
+            case 2 -> HINT_1;
+            case 3 -> HINT_2;
+            case 4 -> HINT_3;
+            case 5 -> HINT_4;
+            case 6 -> HINT_5;
+            case 7 -> HINT_6;
+            case 8 -> HINT_7;
+            case 9 -> HINT_8;
+            case 10 -> HINT_9;
+            case 11 -> HINT_10;
+            case 12 -> HINT_11;
+            default -> Blocks.AIR;
+        };
     }
 }

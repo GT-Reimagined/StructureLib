@@ -7,6 +7,7 @@ import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 
 import com.gtnewhorizon.structurelib.alignment.enumerable.ExtendedFacing;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -18,7 +19,7 @@ public class AutoPlaceEnvironment {
 
     private IItemSource source;
     private final Player actor;
-    private final Consumer<IChatComponent> chatter;
+    private final Consumer<Component> chatter;
     private final IStructureDefinition<?> definition;
     private final String piece;
     private final ExtendedFacing facing;
@@ -26,7 +27,7 @@ public class AutoPlaceEnvironment {
     private final int[] baseOffsetABC;
 
     public static AutoPlaceEnvironment fromLegacy(IItemSource source, Player actor,
-            Consumer<IChatComponent> chatter) {
+            Consumer<Component> chatter) {
         if (source instanceof WrappedIItemSource) {
             AutoPlaceEnvironment original = ((WrappedIItemSource) source).container;
             // feels like this is extremely likely to cause issues, but this does allow us to recover lost info.
@@ -42,7 +43,7 @@ public class AutoPlaceEnvironment {
         return new AutoPlaceEnvironment(source, actor, chatter, null, null, null, null, null);
     }
 
-    AutoPlaceEnvironment(Player actor, Consumer<IChatComponent> chatter, IStructureDefinition<?> definition,
+    AutoPlaceEnvironment(Player actor, Consumer<Component> chatter, IStructureDefinition<?> definition,
             String piece, ExtendedFacing facing, int[] baseOffsetABC) {
         this.source = null;
         this.actor = actor;
@@ -54,7 +55,7 @@ public class AutoPlaceEnvironment {
         this.baseOffsetABC = baseOffsetABC;
     }
 
-    AutoPlaceEnvironment(IItemSource source, Player actor, Consumer<IChatComponent> chatter,
+    AutoPlaceEnvironment(IItemSource source, Player actor, Consumer<Component> chatter,
             IStructureDefinition<?> definition, String piece, ExtendedFacing facing, int[] offsetABC,
             int[] baseOffsetABC) {
         this.source = definition != null && !(source instanceof WrappedIItemSource)
@@ -102,7 +103,7 @@ public class AutoPlaceEnvironment {
     /**
      * The initiator of actions. for very critical errors you can also just send the error messages here, bypassing any
      * filter that {@link #getChatter()} might have. You might want to use
-     * {@link com.gtnewhorizon.structurelib.StructureLibAPI#addThrottledChat(Object, Player, IChatComponent, short)}
+     * {@link com.gtnewhorizon.structurelib.StructureLibAPI#addThrottledChat(Object, Player, Component, short)}
      * to help reduce spam.
      */
     public Player getActor() {
@@ -113,7 +114,7 @@ public class AutoPlaceEnvironment {
      * send error messages here. Caller will choose an appropriate way to forward it to player if the other fallbacks
      * also fails.
      */
-    public Consumer<IChatComponent> getChatter() {
+    public Consumer<Component> getChatter() {
         return chatter;
     }
 
@@ -164,7 +165,7 @@ public class AutoPlaceEnvironment {
      * @param chatter new chatter
      * @return new instance
      */
-    public AutoPlaceEnvironment withChatter(Consumer<IChatComponent> chatter) {
+    public AutoPlaceEnvironment withChatter(Consumer<Component> chatter) {
         return new AutoPlaceEnvironment(source, actor, chatter, definition, piece, facing, offsetABC, baseOffsetABC);
     }
 
@@ -213,12 +214,12 @@ public class AutoPlaceEnvironment {
     public enum APILevel {
         /**
          * Implements {@link #getChatter()}, {@link #getActor()} and {@link #getSource()}. {@link #getActor()} is
-         * guaranteed to be an {@link net.minecraft.entity.player.ServerPlayer}
+         * guaranteed to be an {@link ServerPlayer}
          */
         Legacy,
         /**
          * Implements {@link #getChatter()}, {@link #getActor()} and {@link #getSource()}. {@link #getActor()} is
-         * <b>NOT</b> guaranteed to be an {@link net.minecraft.entity.player.ServerPlayer}
+         * <b>NOT</b> guaranteed to be an {@link ServerPlayer}
          */
         LegacyRelaxed,
         /**

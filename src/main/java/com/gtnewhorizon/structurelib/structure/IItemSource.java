@@ -5,14 +5,12 @@ import java.util.function.Predicate;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.entity.player.ServerPlayer;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-
 import com.gtnewhorizon.structurelib.util.InventoryIterable;
 import com.gtnewhorizon.structurelib.util.InventoryUtility;
 import com.gtnewhorizon.structurelib.util.ItemStackPredicate;
 import com.gtnewhorizon.structurelib.util.ItemStackPredicate.NBTMode;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * Represent an item source. Take only, cannot be placed back.
@@ -78,9 +76,9 @@ public interface IItemSource {
      * @throws IllegalArgumentException if given stack is invalid, or has a stack size other than 1.
      */
     default boolean takeOne(ItemStack stack, boolean simulate) {
-        if (stack == null || stack.getItem() == null || stack.stackSize != 1) throw new IllegalArgumentException();
+        if (stack.isEmpty() || stack.getCount() != 1) throw new IllegalArgumentException();
         ItemStack took = takeOne(ItemStackPredicate.from(stack, NBTMode.EXACT), simulate);
-        return took != null && took.stackSize > 0;
+        return took != null && took.getCount() > 0;
     }
 
     /**
@@ -96,14 +94,14 @@ public interface IItemSource {
      * @throws IllegalArgumentException if given stack is invalid
      */
     default boolean takeAll(ItemStack stack, boolean simulate) {
-        if (stack == null || stack.getItem() == null) throw new IllegalArgumentException();
+        if (stack.isEmpty()) throw new IllegalArgumentException();
         // fast path for 1 item take requests
-        if (stack.stackSize == 1) return takeOne(stack, simulate);
+        if (stack.getCount() == 1) return takeOne(stack, simulate);
         ItemStackPredicate predicate = ItemStackPredicate.from(stack, NBTMode.EXACT);
-        Map<ItemStack, Integer> have = take(predicate, true, stack.stackSize);
-        if (have.values().stream().mapToInt(Integer::intValue).sum() < stack.stackSize) return false;
+        Map<ItemStack, Integer> have = take(predicate, true, stack.getCount());
+        if (have.values().stream().mapToInt(Integer::intValue).sum() < stack.getCount()) return false;
         if (simulate) return true;
-        take(predicate, false, stack.stackSize);
+        take(predicate, false, stack.getCount());
         return true;
     }
 
@@ -123,14 +121,14 @@ public interface IItemSource {
 
             @Override
             public boolean takeOne(ItemStack stack, boolean simulate) {
-                if (stack == null || stack.getItem() == null || stack.stackSize != 1)
+                if (stack.isEmpty() || stack.getCount() != 1)
                     throw new IllegalArgumentException();
                 return InventoryUtility.takeFromInventory(player, stack, simulate) == 1;
             }
 
             @Override
             public boolean takeAll(ItemStack stack, boolean simulate) {
-                return InventoryUtility.takeFromInventory(player, stack, simulate) == stack.stackSize;
+                return InventoryUtility.takeFromInventory(player, stack, simulate) == stack.getCount();
             }
         };
     }

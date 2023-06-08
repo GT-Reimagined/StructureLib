@@ -51,7 +51,7 @@ class LazyStructureElement<T> implements IStructureElementDeferred<T> {
 
     @Override
     public PlaceResult survivalPlaceBlock(T t, Level world, int x, int y, int z, ItemStack trigger, IItemSource s,
-            ServerPlayer actor, Consumer<IChatComponent> chatter) {
+            ServerPlayer actor, Consumer<Component> chatter) {
         return get(t).survivalPlaceBlock(t, world, x, y, z, trigger, s, actor, chatter);
     }
 

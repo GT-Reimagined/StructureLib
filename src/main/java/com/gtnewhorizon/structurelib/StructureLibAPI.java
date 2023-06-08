@@ -313,7 +313,7 @@ public class StructureLibAPI {
      */
     public static boolean isBlockTriviallyReplaceable(Level w, int x, int y, int z, Player actor) {
         // TODO extend this function a bit
-        Block block = w.getBlock(x, y, z);
+        Block block = w.getBlockState(new BlockPos(x, y, z)).getBlock();
         return block.isAir(w, x, y, z) || block.isReplaceable(w, x, y, z);
     }
 
@@ -328,7 +328,7 @@ public class StructureLibAPI {
      *                         millisecond. we purposefully chose to not use a bigger data type to limit how long this
      *                         interval can be
      */
-    public static void addThrottledChat(Object throttleKey, Player player, IChatComponent text,
+    public static void addThrottledChat(Object throttleKey, Player player, Component text,
             short intervalRequired) {
         addThrottledChat(throttleKey, player, text, intervalRequired, false);
     }
@@ -345,7 +345,7 @@ public class StructureLibAPI {
      *                            this interval can be
      * @param forceUpdateLastSend if true, always update the last send time, even if the message isn't actually sent.
      */
-    public static void addThrottledChat(Object throttleKey, Player player, IChatComponent text,
+    public static void addThrottledChat(Object throttleKey, Player player, Component text,
             short intervalRequired, boolean forceUpdateLastSend) {
         proxy.addThrottledChat(throttleKey, player, text, intervalRequired, forceUpdateLastSend);
     }
