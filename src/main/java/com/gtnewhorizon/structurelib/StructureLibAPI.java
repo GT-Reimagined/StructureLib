@@ -27,22 +27,6 @@ import net.minecraft.world.level.block.Block;
 public class StructureLibAPI {
 
     public static final String MOD_ID = "structurelib";
-    public static final int HINT_BLOCK_META_GENERIC_0 = 0;
-    public static final int HINT_BLOCK_META_GENERIC_1 = 1;
-    public static final int HINT_BLOCK_META_GENERIC_2 = 2;
-    public static final int HINT_BLOCK_META_GENERIC_3 = 3;
-    public static final int HINT_BLOCK_META_GENERIC_4 = 4;
-    public static final int HINT_BLOCK_META_GENERIC_5 = 5;
-    public static final int HINT_BLOCK_META_GENERIC_6 = 6;
-    public static final int HINT_BLOCK_META_GENERIC_7 = 7;
-    public static final int HINT_BLOCK_META_GENERIC_8 = 8;
-    public static final int HINT_BLOCK_META_GENERIC_9 = 9;
-    public static final int HINT_BLOCK_META_GENERIC_10 = 10;
-    public static final int HINT_BLOCK_META_GENERIC_11 = 11;
-    public static final int HINT_BLOCK_META_DEFAULT = 12;
-    public static final int HINT_BLOCK_META_AIR = 13;
-    public static final int HINT_BLOCK_META_NOT_AIR = 14;
-    public static final int HINT_BLOCK_META_ERROR = 15;
     static final ThreadLocal<Object> instrument = new ThreadLocal<>();
 
     /**
@@ -257,27 +241,6 @@ public class StructureLibAPI {
      */
     public static void sendAlignment(IAlignmentProvider provider, Level dimension) {
         StructureLib.net.sendToDimension(new AlignmentMessage.AlignmentData(provider), dimension.provider.dimensionId);
-    }
-
-    /**
-     * Get the Block for StructureLib supplied hint block.
-     */
-    public static Block getBlockHint() {
-        return StructureLib.blockHint;
-    }
-
-    /**
-     * Get the ItemBlock for StructureLib supplied hint block.
-     */
-    public static Item getItemBlockHint() {
-        return StructureLib.itemBlockHint;
-    }
-
-    /**
-     * Get the hologram item.
-     */
-    public static Item getDefaultHologramItem() {
-        return StructureLib.itemConstructableTrigger;
     }
 
     /**

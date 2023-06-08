@@ -1,46 +1,25 @@
 package com.gtnewhorizon.structurelib;
 
-import net.minecraft.block.Block;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.player.Player;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.launchwrapper.Launch;
 
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.fml.common.Mod;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.gtnewhorizon.structurelib.block.BlockHint;
 import com.gtnewhorizon.structurelib.command.CommandConfigureChannels;
-import com.gtnewhorizon.structurelib.item.ItemBlockHint;
-import com.gtnewhorizon.structurelib.item.ItemConstructableTrigger;
-import com.gtnewhorizon.structurelib.item.ItemFrontRotationTool;
 import com.gtnewhorizon.structurelib.net.AlignmentMessage;
 import com.gtnewhorizon.structurelib.net.ErrorHintParticleMessage;
 import com.gtnewhorizon.structurelib.net.SetChannelDataMessage;
 import com.gtnewhorizon.structurelib.net.UpdateHintParticleMessage;
 import com.gtnewhorizon.structurelib.util.XSTR;
 
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.event.FMLServerStartingEvent;
-import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * This class does not contain a stable API. Refrain from using this class.
  */
-@Mod(
-        modid = StructureLibAPI.MOD_ID,
-        name = "StructureLib",
-        version = "GRADLETOKEN_VERSION",
-        acceptableRemoteVersions = "*",
-        guiFactory = "com.gtnewhorizon.structurelib.GuiFactory")
+@Mod(StructureLibAPI.MOD_ID)
 public class StructureLib {
 
     private static final String STRUCTURECOMPAT_MODID = "structurecompat";
@@ -81,42 +60,22 @@ public class StructureLib {
     static StructureLib INSTANCE;
 
     static Object COMPAT;
-
-    static Block blockHint;
-    static Item itemBlockHint;
-    static Item itemFrontRotationTool;
-    static Item itemConstructableTrigger;
-    public static final CreativeTabs creativeTab = new CreativeTabs("structurelib") {
-
+    public static final CreativeModeTab creativeTab = new CreativeModeTab("structurelib") {
         @Override
-        @SideOnly(Side.CLIENT)
-        public Item getTabIconItem() {
-            return StructureLibAPI.getItemBlockHint();
+        public ItemStack makeIcon() {
+            return new ItemStack(Registry.HINT_0);
         }
     };
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent e) {
         ConfigurationHandler.INSTANCE.init(e.getSuggestedConfigurationFile());
-        GameRegistry.registerBlock(blockHint = new BlockHint(), ItemBlockHint.class, "blockhint");
-        itemBlockHint = ItemBlock.getItemFromBlock(StructureLibAPI.getBlockHint());
-        GameRegistry.registerItem(
-                itemFrontRotationTool = new ItemFrontRotationTool(),
-                itemFrontRotationTool.getUnlocalizedName());
-        GameRegistry.registerItem(
-                itemConstructableTrigger = new ItemConstructableTrigger(),
-                itemConstructableTrigger.getUnlocalizedName());
         proxy.preInit(e);
         NetworkRegistry.INSTANCE.registerGuiHandler(instance(), new GuiHandler());
 
         if (Loader.isModLoaded(STRUCTURECOMPAT_MODID)) {
             COMPAT = Loader.instance().getIndexedModList().get(STRUCTURECOMPAT_MODID).getMod();
         }
-    }
-
-    @Mod.EventHandler
-    public void serverStarting(FMLServerStartingEvent e) {
-        e.registerServerCommand(new CommandConfigureChannels());
     }
 
     public static void addClientSideChatMessages(String... messages) {

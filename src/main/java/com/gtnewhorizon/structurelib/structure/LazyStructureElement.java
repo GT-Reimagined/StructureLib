@@ -1,14 +1,15 @@
 package com.gtnewhorizon.structurelib.structure;
 
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+
 import java.util.function.Consumer;
 import java.util.function.Function;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.entity.player.ServerPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.IChatComponent;
-import net.minecraft.world.Level;
 
 class LazyStructureElement<T> implements IStructureElementDeferred<T> {
 
@@ -51,7 +52,7 @@ class LazyStructureElement<T> implements IStructureElementDeferred<T> {
 
     @Override
     public PlaceResult survivalPlaceBlock(T t, Level world, int x, int y, int z, ItemStack trigger, IItemSource s,
-            ServerPlayer actor, Consumer<Component> chatter) {
+                                          ServerPlayer actor, Consumer<Component> chatter) {
         return get(t).survivalPlaceBlock(t, world, x, y, z, trigger, s, actor, chatter);
     }
 

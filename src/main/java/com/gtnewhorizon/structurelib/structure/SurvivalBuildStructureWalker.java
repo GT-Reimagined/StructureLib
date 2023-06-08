@@ -1,11 +1,11 @@
 package com.gtnewhorizon.structurelib.structure;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.Level;
 
 import com.gtnewhorizon.structurelib.StructureLibAPI;
 import com.gtnewhorizon.structurelib.alignment.enumerable.ExtendedFacing;
 import com.gtnewhorizon.structurelib.structure.IStructureElement.PlaceResult;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 class SurvivalBuildStructureWalker<T> implements IStructureWalker<T> {
 
@@ -29,7 +29,7 @@ class SurvivalBuildStructureWalker<T> implements IStructureWalker<T> {
 
         env = new AutoPlaceEnvironment(
                 params.getActor(),
-                params.getActor()::addChatComponentMessage,
+                c -> params.getActor().sendMessage(c, params.getActor().getUUID()),
                 definition,
                 piece,
                 facing,

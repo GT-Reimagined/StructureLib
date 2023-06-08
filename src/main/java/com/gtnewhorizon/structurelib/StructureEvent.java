@@ -1,10 +1,10 @@
 package com.gtnewhorizon.structurelib;
 
-import net.minecraft.world.Level;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.MinecraftForge;
 
 import com.gtnewhorizon.structurelib.structure.IStructureElement;
-import cpw.mods.fml.common.eventhandler.Event;
+import net.minecraftforge.eventbus.api.Event;
 
 /**
  * Subscribers are <b>required</b> to not keep reference to these events, nor to depend on values of these events after

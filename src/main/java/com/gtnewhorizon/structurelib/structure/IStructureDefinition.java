@@ -342,7 +342,7 @@ public interface IStructureDefinition<T> {
     static <T> boolean iterate(T object, ItemStack trigger, IStructureElement<T>[] elements, Level world,
             ExtendedFacing extendedFacing, int basePositionX, int basePositionY, int basePositionZ, int basePositionA,
             int basePositionB, int basePositionC, boolean hintsOnly, Boolean checkBlocksIfNotNullForceCheckAllIfTrue) {
-        if (world.isClientSide && hintsOnly) {
+        if (!world.isClientSide && hintsOnly) {
             return false;
         }
 

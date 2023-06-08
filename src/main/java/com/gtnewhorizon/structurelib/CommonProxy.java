@@ -4,28 +4,26 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import net.minecraft.block.Block;
-import net.minecraft.entity.player.Player;
-import net.minecraft.entity.player.ServerPlayer;
-import net.minecraft.item.ItemStack;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.IChatComponent;
-import net.minecraft.util.IIcon;
-import net.minecraft.world.Level;
 
 import com.gtnewhorizon.structurelib.net.ErrorHintParticleMessage;
 import com.gtnewhorizon.structurelib.net.UpdateHintParticleMessage;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 
 public class CommonProxy {
 
     public void hintParticleTinted(Level w, int x, int y, int z, IIcon[] icons, short[] RGBa) {}
 
-    public void hintParticleTinted(Level w, int x, int y, int z, Block block, int meta, short[] RGBa) {}
+    public void hintParticleTinted(Level w, int x, int y, int z, Block block, short[] RGBa) {}
 
     public void hintParticle(Level w, int x, int y, int z, IIcon[] icons) {}
 
-    public void hintParticle(Level w, int x, int y, int z, Block block, int meta) {}
+    public void hintParticle(Level w, int x, int y, int z, Block block) {}
 
     public boolean updateHintParticleTint(Player player, Level w, int x, int y, int z, short[] rgBa) {
         if (player instanceof ServerPlayer) { // just in case
@@ -89,7 +87,7 @@ public class CommonProxy {
             old = submap.get(throttleKey);
         }
         if (old == null || now - old >= intervalRequired) {
-            player.addChatComponentMessage(text);
+            player.sendMessage(text, player.getUUID());
             if (!forceUpdateLastSend) submap.put(throttleKey, now);
         }
     }

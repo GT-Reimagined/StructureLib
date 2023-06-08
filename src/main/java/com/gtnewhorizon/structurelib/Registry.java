@@ -1,6 +1,8 @@
 package com.gtnewhorizon.structurelib;
 
 import com.gtnewhorizon.structurelib.block.BlockHint;
+import com.gtnewhorizon.structurelib.item.ItemConstructableTrigger;
+import com.gtnewhorizon.structurelib.item.ItemFrontRotationTool;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -24,6 +26,11 @@ public class Registry {
     public static final Block HINT_DEFAULT = add("hint_default", new BlockHint());
     public static final Block HINT_ERROR = add("hint_error", new BlockHint());
     public static final Block HINT_NOAIR = add("hint_noair", new BlockHint());
+
+    public static final Item FRONT_ROTATION_TOOL = add("front_rotation_tool", new ItemFrontRotationTool());
+    public static final Item CONSTRUCTABLE_TRIGGER = add("constructable_trigger", new ItemConstructableTrigger());
+
+    public static void init(){}
 
     private static <B extends Block> B add(String name, B block) {
         block.setRegistryName(StructureLibAPI.MOD_ID, name);

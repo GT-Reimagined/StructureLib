@@ -4,37 +4,24 @@ import static com.gtnewhorizon.structurelib.StructureLib.RANDOM;
 
 import java.util.*;
 
-import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiNewChat;
-import net.minecraft.client.particle.EntityFX;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.culling.Frustrum;
-import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.Player;
-import net.minecraft.entity.player.ServerPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.profiler.Profiler;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.IChatComponent;
-import net.minecraft.util.IIcon;
-import net.minecraft.util.Vec3;
-import net.minecraft.world.Level;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.event.RenderLevelLastEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.world.LevelEvent;
 
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.lwjgl.opengl.GL11;
 
 import com.gtnewhorizon.structurelib.entity.fx.WeightlessParticleFX;
 import com.gtnewhorizon.structurelib.net.SetChannelDataMessage;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.TickEvent.ClientTickEvent;
-import cpw.mods.fml.common.gameevent.TickEvent.Phase;
+
 
 public class ClientProxy extends CommonProxy {
 
@@ -107,8 +94,8 @@ public class ClientProxy extends CommonProxy {
     }
 
     @Override
-    public void hintParticleTinted(Level w, int x, int y, int z, Block block, int meta, short[] RGBa) {
-        hintParticleTinted(w, x, y, z, createIIconFromBlock(block, meta), RGBa);
+    public void hintParticleTinted(Level w, int x, int y, int z, Block block, short[] RGBa) {
+        hintParticleTinted(w, x, y, z, createIIconFromBlock(block), RGBa);
     }
 
     @Override
@@ -117,8 +104,8 @@ public class ClientProxy extends CommonProxy {
     }
 
     @Override
-    public void hintParticle(Level w, int x, int y, int z, Block block, int meta) {
-        hintParticleTinted(w, x, y, z, createIIconFromBlock(block, meta), RGBA_NO_TINT);
+    public void hintParticle(Level w, int x, int y, int z, Block block) {
+        hintParticleTinted(w, x, y, z, createIIconFromBlock(block), RGBA_NO_TINT);
     }
 
     @Override
@@ -161,7 +148,7 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     public void addThrottledChat(Object throttleKey, Player player, Component text, short intervalRequired,
-            boolean forceUpdateLastSend) {
+                                 boolean forceUpdateLastSend) {
         if (player instanceof ServerPlayer)
             super.addThrottledChat(throttleKey, player, text, intervalRequired, forceUpdateLastSend);
         else if (player != null)
@@ -194,12 +181,12 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     public Player getCurrentPlayer() {
-        return Minecraft.getMinecraft().thePlayer;
+        return Minecraft.getInstance().player;
     }
 
     @Override
     public boolean isCurrentPlayer(Player player) {
-        return player == Minecraft.getMinecraft().thePlayer;
+        return player == Minecraft.getInstance().player;
     }
 
     @Override
@@ -215,13 +202,13 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     public void endHinting(Level w) {
-        if (!w.isRemote || currentHints == null) return;
+        if (!w.isClientSide || currentHints == null) return;
         while (!allGroups.isEmpty() && allGroups.size() >= ConfigurationHandler.INSTANCE.getMaxCoexistingHologram()) {
             allGroups.remove(0);
         }
         if (!currentHints.getHints().isEmpty()) allGroups.add(currentHints);
         // we use the player existence time here as some worlds don't really advance the time ticker
-        currentHints.setCreationTime(getCurrentPlayer().ticksExisted);
+        currentHints.setCreationTime(getCurrentPlayer().tickCount);
         currentHints = null;
     }
 

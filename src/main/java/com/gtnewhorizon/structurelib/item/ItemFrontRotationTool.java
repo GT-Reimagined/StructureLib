@@ -7,8 +7,16 @@ import java.util.List;
 import com.gtnewhorizon.structurelib.StructureLib;
 import com.gtnewhorizon.structurelib.alignment.AlignmentUtility;
 
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Nullable;
 
 public class ItemFrontRotationTool extends Item {
 
@@ -16,23 +24,21 @@ public class ItemFrontRotationTool extends Item {
         super(new Properties().tab(StructureLib.creativeTab).stacksTo(1));
     }
 
-    /*@Override
-    public boolean onItemUseFirst(ItemStack stack, Player player, Level world, int x, int y, int z, int side,
-                                  float hitX, float hitY, float hitZ) {
-        return AlignmentUtility.handle(player, world, x, y, z);
+    @Override
+    public InteractionResult useOn(UseOnContext context) {
+        if (AlignmentUtility.handle(context.getPlayer(), context.getLevel(), context.getClickedPos().getX(), context.getClickedPos().getY(), context.getClickedPos().getZ())){
+            return InteractionResult.SUCCESS;
+        }
+        return super.useOn(context);
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack p_77624_1_, Player p_77624_2_, List aList, boolean p_77624_4_) {
-        aList.add(translateToLocal("item.structurelib.frontRotationTool.desc.0")); // Triggers Front Rotation Interface
-        aList.add(EnumChatFormatting.BLUE + translateToLocal("item.structurelib.frontRotationTool.desc.1")); // Rotates
-                                                                                                             // only the
-                                                                                                             // front
-                                                                                                             // panel,
-        aList.add(EnumChatFormatting.BLUE + translateToLocal("item.structurelib.frontRotationTool.desc.2")); // which
-                                                                                                             // allows
-                                                                                                             // structure
-                                                                                                             // rotation.
-    }*/
+    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+        super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
+        tooltipComponents.add(new TranslatableComponent("item.structurelib.frontRotationTool.desc.0")); // Triggers Front Rotation Interface
+        // Rotates only the front panel,
+        tooltipComponents.add(new TranslatableComponent("item.structurelib.frontRotationTool.desc.1").withStyle(ChatFormatting.BLUE));
+        // which allows structure rotation.
+        tooltipComponents.add(new TranslatableComponent("item.structurelib.frontRotationTool.desc.2").withStyle(ChatFormatting.BLUE));
+    }
 }
