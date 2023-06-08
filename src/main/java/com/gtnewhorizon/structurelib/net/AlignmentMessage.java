@@ -1,8 +1,8 @@
 package com.gtnewhorizon.structurelib.net;
 
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
+import net.minecraft.tileentity.BlockEntity;
+import net.minecraft.world.Level;
 import net.minecraftforge.common.DimensionManager;
 
 import com.gtnewhorizon.structurelib.StructureLib;
@@ -49,18 +49,18 @@ public abstract class AlignmentMessage implements IMessage {
     }
 
     private AlignmentMessage(IAlignmentProvider provider) {
-        if (!(provider instanceof TileEntity)) throw new IllegalArgumentException("Provider must be a TileEntity");
+        if (!(provider instanceof BlockEntity)) throw new IllegalArgumentException("Provider must be a BlockEntity");
         IAlignment alignment = provider.getAlignment();
         if (alignment == null) throw new IllegalArgumentException("Passed in provider does not provide an alignment!");
-        TileEntity base = (TileEntity) provider;
+        BlockEntity base = (BlockEntity) provider;
         mPosX = base.xCoord;
         mPosY = base.yCoord;
         mPosZ = base.zCoord;
-        mPosD = base.getWorldObj().provider.dimensionId;
+        mPosD = base.getLevelObj().provider.dimensionId;
         mAlign = alignment.getExtendedFacing().getIndex();
     }
 
-    private AlignmentMessage(World world, int x, int y, int z, IAlignment front) {
+    private AlignmentMessage(Level world, int x, int y, int z, IAlignment front) {
         mPosX = x;
         mPosY = y;
         mPosZ = z;
@@ -76,7 +76,7 @@ public abstract class AlignmentMessage implements IMessage {
             super(provider);
         }
 
-        public AlignmentQuery(World world, int x, int y, int z, IAlignment front) {
+        public AlignmentQuery(Level world, int x, int y, int z, IAlignment front) {
             super(world, x, y, z, front);
         }
     }
@@ -97,7 +97,7 @@ public abstract class AlignmentMessage implements IMessage {
             super(provider);
         }
 
-        public AlignmentData(World world, int x, int y, int z, IAlignment front) {
+        public AlignmentData(Level world, int x, int y, int z, IAlignment front) {
             super(world, x, y, z, front);
         }
     }
@@ -107,8 +107,8 @@ public abstract class AlignmentMessage implements IMessage {
         @Override
         public IMessage onMessage(AlignmentData pMessage, MessageContext pCtx) {
             if (StructureLib.getCurrentPlayer().worldObj.provider.dimensionId == pMessage.mPosD) {
-                TileEntity te = StructureLib.getCurrentPlayer().worldObj
-                        .getTileEntity(pMessage.mPosX, pMessage.mPosY, pMessage.mPosZ);
+                BlockEntity te = StructureLib.getCurrentPlayer().worldObj
+                        .getBlockEntity(pMessage.mPosX, pMessage.mPosY, pMessage.mPosZ);
                 if (te instanceof IAlignmentProvider) {
                     IAlignment alignment = ((IAlignmentProvider) te).getAlignment();
                     if (alignment != null) {
@@ -124,9 +124,9 @@ public abstract class AlignmentMessage implements IMessage {
 
         @Override
         public AlignmentData onMessage(AlignmentQuery pMessage, MessageContext pCtx) {
-            World world = DimensionManager.getWorld(pMessage.mPosD);
+            Level world = DimensionManager.getLevel(pMessage.mPosD);
             if (world != null) {
-                TileEntity te = world.getTileEntity(pMessage.mPosX, pMessage.mPosY, pMessage.mPosZ);
+                BlockEntity te = world.getBlockEntity(pMessage.mPosX, pMessage.mPosY, pMessage.mPosZ);
                 if (te instanceof IAlignmentProvider) {
                     IAlignment alignment = ((IAlignmentProvider) te).getAlignment();
                     if (alignment == null) return null;

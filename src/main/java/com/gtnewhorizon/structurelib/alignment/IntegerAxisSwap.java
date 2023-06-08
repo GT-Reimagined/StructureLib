@@ -2,11 +2,10 @@ package com.gtnewhorizon.structurelib.alignment;
 
 import static java.lang.Math.abs;
 
-import net.minecraft.util.Vec3;
-import net.minecraftforge.common.util.ForgeDirection;
 
-import com.gtnewhorizon.structurelib.alignment.enumerable.Direction;
 import com.gtnewhorizon.structurelib.util.Vec3Impl;
+import net.minecraft.core.Direction;
+import net.minecraft.world.phys.Vec3;
 
 public class IntegerAxisSwap {
 
@@ -14,7 +13,7 @@ public class IntegerAxisSwap {
     private final Vec3Impl forSecondAxis;
     private final Vec3Impl forThirdAxis;
 
-    public IntegerAxisSwap(ForgeDirection forFirstAxis, ForgeDirection forSecondAxis, ForgeDirection forThirdAxis) {
+    public IntegerAxisSwap(Direction forFirstAxis, Direction forSecondAxis, Direction forThirdAxis) {
         this.forFirstAxis = Direction.getAxisVector(forFirstAxis);
         this.forSecondAxis = Direction.getAxisVector(forSecondAxis);
         this.forThirdAxis = Direction.getAxisVector(forThirdAxis);

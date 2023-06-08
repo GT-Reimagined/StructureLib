@@ -1,9 +1,9 @@
 package com.gtnewhorizon.structurelib.alignment;
 
-import net.minecraftforge.common.util.ForgeDirection;
 
 import com.gtnewhorizon.structurelib.alignment.enumerable.Flip;
 import com.gtnewhorizon.structurelib.alignment.enumerable.Rotation;
+import net.minecraft.core.Direction;
 
 class AlignmentLimits implements IAlignmentLimits {
 
@@ -14,7 +14,7 @@ class AlignmentLimits implements IAlignmentLimits {
     }
 
     @Override
-    public boolean isNewExtendedFacingValid(ForgeDirection direction, Rotation rotation, Flip flip) {
+    public boolean isNewExtendedFacingValid(Direction direction, Rotation rotation, Flip flip) {
         return validStates[IAlignment.getAlignmentIndex(direction, rotation, flip)];
     }
 }

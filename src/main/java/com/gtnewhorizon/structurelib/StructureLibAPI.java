@@ -3,13 +3,13 @@ package com.gtnewhorizon.structurelib;
 import static com.gtnewhorizon.structurelib.StructureLib.proxy;
 
 import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.Player;
+import net.minecraft.entity.player.ServerPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.util.IIcon;
-import net.minecraft.world.World;
+import net.minecraft.world.Level;
 
 import com.gtnewhorizon.structurelib.alignment.IAlignment;
 import com.gtnewhorizon.structurelib.alignment.IAlignmentProvider;
@@ -98,9 +98,9 @@ public class StructureLibAPI {
      * hologram.
      * <p>
      * You don't need to call this unless your constructable tool didn't call
-     * {@link com.gtnewhorizon.structurelib.alignment.constructable.ConstructableUtility#handle(ItemStack, EntityPlayer, World, int, int, int, int)}
+     * {@link com.gtnewhorizon.structurelib.alignment.constructable.ConstructableUtility#handle(ItemStack, Player, Level, int, int, int, int)}
      */
-    public static void startHinting(World w) {
+    public static void startHinting(Level w) {
         proxy.startHinting(w);
     }
 
@@ -109,16 +109,16 @@ public class StructureLibAPI {
      * hologram.
      * <p>
      * You don't need to call this unless your constructable tool didn't call
-     * {@link com.gtnewhorizon.structurelib.alignment.constructable.ConstructableUtility#handle(ItemStack, EntityPlayer, World, int, int, int, int)}
+     * {@link com.gtnewhorizon.structurelib.alignment.constructable.ConstructableUtility#handle(ItemStack, Player, Level, int, int, int, int)}
      */
-    public static void endHinting(World w) {
+    public static void endHinting(Level w) {
         proxy.endHinting(w);
     }
 
     /**
      * Generate a new hint particle on client side at given location using given textures with a tint.
      *
-     * @param w     World to spawn. Usually the client world.
+     * @param w     Level to spawn. Usually the client world.
      * @param x     x coord
      * @param y     y coord
      * @param z     z coord
@@ -126,14 +126,14 @@ public class StructureLibAPI {
      * @param RGBa  a 4 short array. tint in rgba form. currently alpha channel is ignored, but we might change this
      *              later on.
      */
-    public static void hintParticleTinted(World w, int x, int y, int z, IIcon[] icons, short[] RGBa) {
+    public static void hintParticleTinted(Level w, int x, int y, int z, IIcon[] icons, short[] RGBa) {
         proxy.hintParticleTinted(w, x, y, z, icons, RGBa);
     }
 
     /**
      * Generate a new hint particle on client side at given location using textures from given block with a tint.
      *
-     * @param w     World to spawn. Usually the client world.
+     * @param w     Level to spawn. Usually the client world.
      * @param x     x coord
      * @param y     y coord
      * @param z     z coord
@@ -142,34 +142,34 @@ public class StructureLibAPI {
      * @param RGBa  a 4 short array. tint in rgba form. currently alpha channel is ignored, but we might change this
      *              later on.
      */
-    public static void hintParticleTinted(World w, int x, int y, int z, Block block, int meta, short[] RGBa) {
+    public static void hintParticleTinted(Level w, int x, int y, int z, Block block, int meta, short[] RGBa) {
         proxy.hintParticleTinted(w, x, y, z, block, meta, RGBa);
     }
 
     /**
      * Generate a new hint particle on client side at given location using given textures.
      *
-     * @param w     World to spawn. Usually the client world.
+     * @param w     Level to spawn. Usually the client world.
      * @param x     x coord
      * @param y     y coord
      * @param z     z coord
      * @param icons 6 texture. in forge direction order.
      */
-    public static void hintParticle(World w, int x, int y, int z, IIcon[] icons) {
+    public static void hintParticle(Level w, int x, int y, int z, IIcon[] icons) {
         proxy.hintParticle(w, x, y, z, icons);
     }
 
     /**
      * Generate a new hint particle on client side at given location using textures from given block.
      *
-     * @param w     World to spawn. Usually the client world.
+     * @param w     Level to spawn. Usually the client world.
      * @param x     x coord
      * @param y     y coord
      * @param z     z coord
      * @param block block to take texture from
      * @param meta  the meta of block to take texture from
      */
-    public static void hintParticle(World w, int x, int y, int z, Block block, int meta) {
+    public static void hintParticle(Level w, int x, int y, int z, Block block, int meta) {
         proxy.hintParticle(w, x, y, z, block, meta);
     }
 
@@ -181,7 +181,7 @@ public class StructureLibAPI {
      *
      * @return false if nothing updated. true if updated or update instruction sent.
      */
-    public static boolean markHintParticleError(EntityPlayer player, World w, int x, int y, int z) {
+    public static boolean markHintParticleError(Player player, Level w, int x, int y, int z) {
         return proxy.markHintParticleError(player, w, x, y, z);
     }
 
@@ -190,7 +190,7 @@ public class StructureLibAPI {
      *
      * @return false if nothing updated. true if updated.
      */
-    public static boolean updateHintParticleTint(EntityPlayer player, World w, int x, int y, int z, short[] RGBa) {
+    public static boolean updateHintParticleTint(Player player, Level w, int x, int y, int z, short[] RGBa) {
         return proxy.updateHintParticleTint(player, w, x, y, z, RGBa);
     }
 
@@ -229,7 +229,7 @@ public class StructureLibAPI {
      *
      * @throws IllegalArgumentException if is not tile entity or provided a null alignment
      */
-    public static void sendAlignment(IAlignmentProvider provider, EntityPlayerMP player) {
+    public static void sendAlignment(IAlignmentProvider provider, ServerPlayer player) {
         StructureLib.net.sendTo(new AlignmentMessage.AlignmentData(provider), player);
     }
 
@@ -254,7 +254,7 @@ public class StructureLibAPI {
      *
      * @throws IllegalArgumentException if is not tile entity or provided a null alignment
      */
-    public static void sendAlignment(IAlignmentProvider provider, World dimension) {
+    public static void sendAlignment(IAlignmentProvider provider, Level dimension) {
         StructureLib.net.sendToDimension(new AlignmentMessage.AlignmentData(provider), dimension.provider.dimensionId);
     }
 
@@ -297,11 +297,11 @@ public class StructureLibAPI {
      * be changed, but the general idea will always stay the same.
      * <p>
      * Use this in your
-     * {@link com.gtnewhorizon.structurelib.structure.IStructureElement#survivalPlaceBlock(Object, World, int, int, int, ItemStack, AutoPlaceEnvironment)}
+     * {@link com.gtnewhorizon.structurelib.structure.IStructureElement#survivalPlaceBlock(Object, Level, int, int, int, ItemStack, AutoPlaceEnvironment)}
      */
     @Deprecated
-    public static boolean isBlockTriviallyReplaceable(World w, int x, int y, int z, EntityPlayerMP actor) {
-        return isBlockTriviallyReplaceable(w, x, y, z, (EntityPlayer) actor);
+    public static boolean isBlockTriviallyReplaceable(Level w, int x, int y, int z, ServerPlayer actor) {
+        return isBlockTriviallyReplaceable(w, x, y, z, (Player) actor);
     }
 
     /**
@@ -309,9 +309,9 @@ public class StructureLibAPI {
      * be changed, but the general idea will always stay the same.
      * <p>
      * Use this in your
-     * {@link com.gtnewhorizon.structurelib.structure.IStructureElement#survivalPlaceBlock(Object, World, int, int, int, ItemStack, AutoPlaceEnvironment)}
+     * {@link com.gtnewhorizon.structurelib.structure.IStructureElement#survivalPlaceBlock(Object, Level, int, int, int, ItemStack, AutoPlaceEnvironment)}
      */
-    public static boolean isBlockTriviallyReplaceable(World w, int x, int y, int z, EntityPlayer actor) {
+    public static boolean isBlockTriviallyReplaceable(Level w, int x, int y, int z, Player actor) {
         // TODO extend this function a bit
         Block block = w.getBlock(x, y, z);
         return block.isAir(w, x, y, z) || block.isReplaceable(w, x, y, z);
@@ -328,7 +328,7 @@ public class StructureLibAPI {
      *                         millisecond. we purposefully chose to not use a bigger data type to limit how long this
      *                         interval can be
      */
-    public static void addThrottledChat(Object throttleKey, EntityPlayer player, IChatComponent text,
+    public static void addThrottledChat(Object throttleKey, Player player, IChatComponent text,
             short intervalRequired) {
         addThrottledChat(throttleKey, player, text, intervalRequired, false);
     }
@@ -345,7 +345,7 @@ public class StructureLibAPI {
      *                            this interval can be
      * @param forceUpdateLastSend if true, always update the last send time, even if the message isn't actually sent.
      */
-    public static void addThrottledChat(Object throttleKey, EntityPlayer player, IChatComponent text,
+    public static void addThrottledChat(Object throttleKey, Player player, IChatComponent text,
             short intervalRequired, boolean forceUpdateLastSend) {
         proxy.addThrottledChat(throttleKey, player, text, intervalRequired, forceUpdateLastSend);
     }

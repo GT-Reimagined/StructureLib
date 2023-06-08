@@ -1,6 +1,6 @@
 package com.gtnewhorizon.structurelib.structure.adders;
 
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.BlockEntity;
 
 public interface ITileAdder<T> {
 
@@ -10,5 +10,5 @@ public interface ITileAdder<T> {
      * @param tileEntity tile
      * @return managed to add hatch (structure still valid)
      */
-    boolean apply(T t, TileEntity tileEntity);
+    boolean apply(T t, BlockEntity tileEntity);
 }

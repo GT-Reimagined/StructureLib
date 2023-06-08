@@ -7,10 +7,10 @@ import java.util.function.Predicate;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IChatComponent;
-import net.minecraft.world.World;
+import net.minecraft.world.Level;
 
 import com.google.common.collect.Iterables;
 
@@ -22,7 +22,7 @@ public interface IStructureElementChain<T> extends IStructureElement<T> {
     IStructureElement<T>[] fallbacks();
 
     @Override
-    default boolean check(T t, World world, int x, int y, int z) {
+    default boolean check(T t, Level world, int x, int y, int z) {
         for (IStructureElement<T> fallback : fallbacks()) {
             if (fallback.check(t, world, x, y, z)) {
                 return true;
@@ -32,7 +32,7 @@ public interface IStructureElementChain<T> extends IStructureElement<T> {
     }
 
     @Override
-    default boolean spawnHint(T t, World world, int x, int y, int z, ItemStack trigger) {
+    default boolean spawnHint(T t, Level world, int x, int y, int z, ItemStack trigger) {
         for (IStructureElement<T> fallback : fallbacks()) {
             if (fallback.spawnHint(t, world, x, y, z, trigger)) {
                 return true;
@@ -42,7 +42,7 @@ public interface IStructureElementChain<T> extends IStructureElement<T> {
     }
 
     @Override
-    default boolean placeBlock(T t, World world, int x, int y, int z, ItemStack trigger) {
+    default boolean placeBlock(T t, Level world, int x, int y, int z, ItemStack trigger) {
         for (IStructureElement<T> fallback : fallbacks()) {
             if (fallback.placeBlock(t, world, x, y, z, trigger)) {
                 return true;
@@ -53,7 +53,7 @@ public interface IStructureElementChain<T> extends IStructureElement<T> {
 
     @Nullable
     @Override
-    default BlocksToPlace getBlocksToPlace(T t, World world, int x, int y, int z, ItemStack trigger,
+    default BlocksToPlace getBlocksToPlace(T t, Level world, int x, int y, int z, ItemStack trigger,
             AutoPlaceEnvironment env) {
         Predicate<ItemStack> predicate = null;
         List<Iterable<ItemStack>> is = new ArrayList<>();
@@ -69,8 +69,8 @@ public interface IStructureElementChain<T> extends IStructureElement<T> {
     }
 
     @Override
-    default PlaceResult survivalPlaceBlock(T t, World world, int x, int y, int z, ItemStack trigger, IItemSource s,
-            EntityPlayerMP actor, Consumer<IChatComponent> chatter) {
+    default PlaceResult survivalPlaceBlock(T t, Level world, int x, int y, int z, ItemStack trigger, IItemSource s,
+            ServerPlayer actor, Consumer<IChatComponent> chatter) {
         boolean haveSkip = false;
         List<IChatComponent> bufferedNoise = new ArrayList<>();
         for (IStructureElement<T> fallback : fallbacks()) {
@@ -92,7 +92,7 @@ public interface IStructureElementChain<T> extends IStructureElement<T> {
     }
 
     @Override
-    default PlaceResult survivalPlaceBlock(T t, World world, int x, int y, int z, ItemStack trigger,
+    default PlaceResult survivalPlaceBlock(T t, Level world, int x, int y, int z, ItemStack trigger,
             AutoPlaceEnvironment env) {
         boolean haveSkip = false;
         List<IChatComponent> bufferedNoise = new ArrayList<>();

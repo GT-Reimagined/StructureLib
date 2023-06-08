@@ -1,0 +1,26 @@
+modLoader="javafml"
+license="MIT"
+loaderVersion="[40,)"
+issueTrackerURL="https://github.com/Trinsdar/StructureLib-port/issues"
+
+[[mods]]
+modId="structurelib"
+version="${version}"
+displayName="Structure Lib"
+displayURL="https://github.com/Trinsdar/StructureLib-port"
+#logoFile="examplemod.png"
+credits="Technus, for the original implementation of this mod as part of TecTech"
+authors="glee8e, Trinsdar"
+description='''Multiblocks with ease'''
+[[dependencies.structurelib]]
+modId="forge"
+mandatory=true
+versionRange="[40.1.68,)"
+ordering="AFTER"
+side="BOTH"
+[[dependencies.structurelib]]
+modId="minecraft"
+mandatory=true
+versionRange="[1.18.2,)"
+ordering="AFTER"
+side="BOTH"

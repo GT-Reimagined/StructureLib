@@ -12,18 +12,18 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.culling.Frustrum;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.Player;
+import net.minecraft.entity.player.ServerPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.profiler.Profiler;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.Vec3;
-import net.minecraft.world.World;
-import net.minecraftforge.client.event.RenderWorldLastEvent;
+import net.minecraft.world.Level;
+import net.minecraftforge.client.event.RenderLevelLastEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.event.world.LevelEvent;
 
 import org.lwjgl.opengl.GL11;
 
@@ -78,7 +78,7 @@ public class ClientProxy extends CommonProxy {
     private static final Map<Object, Long> localThrottleMap = new HashMap<>();
 
     @Override
-    public void hintParticleTinted(World w, int x, int y, int z, IIcon[] icons, short[] RGBa) {
+    public void hintParticleTinted(Level w, int x, int y, int z, IIcon[] icons, short[] RGBa) {
         ensureHinting();
         HintParticleInfo info = new HintParticleInfo(w, x, y, z, icons, RGBa);
 
@@ -107,23 +107,23 @@ public class ClientProxy extends CommonProxy {
     }
 
     @Override
-    public void hintParticleTinted(World w, int x, int y, int z, Block block, int meta, short[] RGBa) {
+    public void hintParticleTinted(Level w, int x, int y, int z, Block block, int meta, short[] RGBa) {
         hintParticleTinted(w, x, y, z, createIIconFromBlock(block, meta), RGBa);
     }
 
     @Override
-    public void hintParticle(World w, int x, int y, int z, IIcon[] icons) {
+    public void hintParticle(Level w, int x, int y, int z, IIcon[] icons) {
         hintParticleTinted(w, x, y, z, icons, RGBA_NO_TINT);
     }
 
     @Override
-    public void hintParticle(World w, int x, int y, int z, Block block, int meta) {
+    public void hintParticle(Level w, int x, int y, int z, Block block, int meta) {
         hintParticleTinted(w, x, y, z, createIIconFromBlock(block, meta), RGBA_NO_TINT);
     }
 
     @Override
-    public boolean updateHintParticleTint(EntityPlayer player, World w, int x, int y, int z, short[] rgBa) {
-        if (player instanceof EntityPlayerMP) return super.updateHintParticleTint(player, w, x, y, z, rgBa);
+    public boolean updateHintParticleTint(Player player, Level w, int x, int y, int z, short[] rgBa) {
+        if (player instanceof ServerPlayer) return super.updateHintParticleTint(player, w, x, y, z, rgBa);
         if (player != getCurrentPlayer()) return false; // how?
         HintParticleInfo hint = getHintParticleInfo(w, x, y, z);
         if (hint == null) {
@@ -133,7 +133,7 @@ public class ClientProxy extends CommonProxy {
         return true;
     }
 
-    private static HintParticleInfo getHintParticleInfo(World w, int x, int y, int z) {
+    private static HintParticleInfo getHintParticleInfo(Level w, int x, int y, int z) {
         HintParticleInfo info = new HintParticleInfo(w, x, y, z, null, null);
         HintGroup existing = allHints.get(info);
         if (existing != null) {
@@ -147,8 +147,8 @@ public class ClientProxy extends CommonProxy {
     }
 
     @Override
-    public boolean markHintParticleError(EntityPlayer player, World w, int x, int y, int z) {
-        if (player instanceof EntityPlayerMP) return super.markHintParticleError(player, w, x, y, z);
+    public boolean markHintParticleError(Player player, Level w, int x, int y, int z) {
+        if (player instanceof ServerPlayer) return super.markHintParticleError(player, w, x, y, z);
         if (player != getCurrentPlayer()) return false; // how?
         HintParticleInfo hint = getHintParticleInfo(w, x, y, z);
         if (hint == null) {
@@ -160,9 +160,9 @@ public class ClientProxy extends CommonProxy {
     }
 
     @Override
-    public void addThrottledChat(Object throttleKey, EntityPlayer player, IChatComponent text, short intervalRequired,
+    public void addThrottledChat(Object throttleKey, Player player, IChatComponent text, short intervalRequired,
             boolean forceUpdateLastSend) {
-        if (player instanceof EntityPlayerMP)
+        if (player instanceof ServerPlayer)
             super.addThrottledChat(throttleKey, player, text, intervalRequired, forceUpdateLastSend);
         else if (player != null)
             addThrottledChat(throttleKey, player, text, intervalRequired, forceUpdateLastSend, localThrottleMap);
@@ -193,17 +193,17 @@ public class ClientProxy extends CommonProxy {
     }
 
     @Override
-    public EntityPlayer getCurrentPlayer() {
+    public Player getCurrentPlayer() {
         return Minecraft.getMinecraft().thePlayer;
     }
 
     @Override
-    public boolean isCurrentPlayer(EntityPlayer player) {
+    public boolean isCurrentPlayer(Player player) {
         return player == Minecraft.getMinecraft().thePlayer;
     }
 
     @Override
-    public void startHinting(World w) {
+    public void startHinting(Level w) {
         if (!w.isRemote) return;
         if (currentHints != null) endHinting(w);
         currentHints = new HintGroup();
@@ -214,7 +214,7 @@ public class ClientProxy extends CommonProxy {
     }
 
     @Override
-    public void endHinting(World w) {
+    public void endHinting(Level w) {
         if (!w.isRemote || currentHints == null) return;
         while (!allGroups.isEmpty() && allGroups.size() >= ConfigurationHandler.INSTANCE.getMaxCoexistingHologram()) {
             allGroups.remove(0);
@@ -228,7 +228,7 @@ public class ClientProxy extends CommonProxy {
     @Override
     public long getOverworldTime() {
         // there is no overworld, better just hope current world time is ok...
-        return Minecraft.getMinecraft().theWorld.getTotalWorldTime();
+        return Minecraft.getMinecraft().theLevel.getTotalLevelTime();
     }
 
     @Override
@@ -267,7 +267,7 @@ public class ClientProxy extends CommonProxy {
 
     private static class HintParticleInfo {
 
-        private final World w;
+        private final Level w;
         // these are the block coordinate for e.g. w.getBlock()
         private final int x, y, z;
         private final IIcon[] icons;
@@ -276,7 +276,7 @@ public class ClientProxy extends CommonProxy {
 
         private final long creationTime = System.currentTimeMillis(); // use tick time instead maybe
 
-        public HintParticleInfo(World w, int x, int y, int z, IIcon[] icons, short[] tint) {
+        public HintParticleInfo(Level w, int x, int y, int z, IIcon[] icons, short[] tint) {
             this.w = w;
             this.x = x;
             this.y = y;
@@ -479,7 +479,7 @@ public class ClientProxy extends CommonProxy {
     public static class ForgeEventHandler {
 
         @SubscribeEvent
-        public void onWorldLoad(WorldEvent.Load e) {
+        public void onLevelLoad(LevelEvent.Load e) {
             if (e.world.isRemote) {
                 // flush hints. we are in a different world now.
                 allHintsForRender.clear();
@@ -492,7 +492,7 @@ public class ClientProxy extends CommonProxy {
         }
 
         @SubscribeEvent
-        public void onRenderWorldLast(RenderWorldLastEvent e) {
+        public void onRenderLevelLast(RenderLevelLastEvent e) {
             if (allHintsForRender.isEmpty()) return;
 
             // seriously, I'm not a OpenGL expert, so I'm probably doing a lot of very stupid stuff here.

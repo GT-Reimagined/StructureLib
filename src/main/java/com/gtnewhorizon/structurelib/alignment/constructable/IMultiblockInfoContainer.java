@@ -2,18 +2,17 @@ package com.gtnewhorizon.structurelib.alignment.constructable;
 
 import java.util.HashMap;
 
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
 
 import com.gtnewhorizon.structurelib.alignment.enumerable.ExtendedFacing;
 import com.gtnewhorizon.structurelib.structure.AutoPlaceEnvironment;
 import com.gtnewhorizon.structurelib.structure.IItemSource;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
  * To implement IConstructable on not own TileEntities
@@ -26,7 +25,7 @@ public interface IMultiblockInfoContainer<T> {
      * There is no specific loading phase restriction, but you should generally not call it before the tile entity is
      * properly registered.
      */
-    static <T extends TileEntity> void registerTileClass(Class<T> clazz, IMultiblockInfoContainer<?> info) {
+    static <T extends BlockEntity> void registerTileClass(Class<T> clazz, IMultiblockInfoContainer<?> info) {
         MULTIBLOCK_MAP.put(clazz.getCanonicalName(), info);
     }
 
@@ -43,14 +42,14 @@ public interface IMultiblockInfoContainer<T> {
 
     /**
      * Construct the structure using
-     * {@link com.gtnewhorizon.structurelib.structure.IStructureElement#survivalPlaceBlock(Object, World, int, int, int, ItemStack, AutoPlaceEnvironment)}
+     * {@link com.gtnewhorizon.structurelib.structure.IStructureElement#survivalPlaceBlock(Object, Level, int, int, int, ItemStack, AutoPlaceEnvironment)}
      *
      * @return -1 if done, a helping pointer
      */
     int survivalConstruct(ItemStack stackSize, int elementBudge, ISurvivalBuildEnvironment env, T tileEntity,
             ExtendedFacing aSide);
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     String[] getDescription(ItemStack stackSize);
 
     default ISurvivalConstructable toConstructable(T tileEntity, ExtendedFacing aSide) {
@@ -64,7 +63,7 @@ public interface IMultiblockInfoContainer<T> {
 
             @Override
             public int survivalConstruct(ItemStack stackSize, int elementBudget, IItemSource source,
-                    EntityPlayerMP actor) {
+                    ServerPlayer actor) {
                 return IMultiblockInfoContainer.this.survivalConstruct(
                         stackSize,
                         elementBudget,

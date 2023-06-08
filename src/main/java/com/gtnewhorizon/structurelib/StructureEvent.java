@@ -1,6 +1,6 @@
 package com.gtnewhorizon.structurelib;
 
-import net.minecraft.world.World;
+import net.minecraft.world.Level;
 import net.minecraftforge.common.MinecraftForge;
 
 import com.gtnewhorizon.structurelib.structure.IStructureElement;
@@ -38,7 +38,7 @@ public abstract class StructureEvent extends Event {
      */
     public static final class StructureElementVisitedEvent extends StructureEvent {
 
-        private final World world;
+        private final Level world;
         private final int x, y, z;
         private final int a, b, c;
         private final IStructureElement<?> element;
@@ -50,7 +50,7 @@ public abstract class StructureEvent extends Event {
          * Any {@link Exception} thrown by event listeners will be logged and ignored. {@link Error} will be propagated
          * as is.
          */
-        public static void fireEvent(World world, int x, int y, int z, int a, int b, int c,
+        public static void fireEvent(Level world, int x, int y, int z, int a, int b, int c,
                 IStructureElement<?> element) {
             if (StructureLibAPI.isInstrumentEnabled()) {
                 try {
@@ -61,7 +61,7 @@ public abstract class StructureEvent extends Event {
             }
         }
 
-        StructureElementVisitedEvent(World world, int x, int y, int z, int a, int b, int c,
+        StructureElementVisitedEvent(Level world, int x, int y, int z, int a, int b, int c,
                 IStructureElement<?> element) {
             this.world = world;
             this.x = x;
@@ -118,7 +118,7 @@ public abstract class StructureEvent extends Event {
                     + ", element="
                     + element
                     + ", world="
-                    + getWorld()
+                    + getLevel()
                     + ", x="
                     + getX()
                     + ", y="
@@ -131,7 +131,7 @@ public abstract class StructureEvent extends Event {
         /**
          * Location of this event.
          */
-        public World getWorld() {
+        public Level getLevel() {
             return world;
         }
 

@@ -5,7 +5,7 @@ import java.util.function.Predicate;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 
@@ -112,7 +112,7 @@ public interface IItemSource {
      * <p>
      * This will be backed by {@link InventoryUtility}
      */
-    static IItemSource fromPlayer(EntityPlayerMP player) {
+    static IItemSource fromPlayer(ServerPlayer player) {
         return new IItemSource() {
 
             @Nonnull

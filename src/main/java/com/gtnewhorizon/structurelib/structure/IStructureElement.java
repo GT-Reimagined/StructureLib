@@ -12,13 +12,13 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.Player;
+import net.minecraft.entity.player.ServerPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IChatComponent;
-import net.minecraft.world.World;
+import net.minecraft.world.Level;
 
 import com.gtnewhorizon.structurelib.StructureLibAPI;
 import com.gtnewhorizon.structurelib.util.ItemStackPredicate;
@@ -30,17 +30,17 @@ import com.gtnewhorizon.structurelib.util.ItemStackPredicate.NBTMode;
  */
 public interface IStructureElement<T> {
 
-    boolean check(T t, World world, int x, int y, int z);
+    boolean check(T t, Level world, int x, int y, int z);
 
-    boolean spawnHint(T t, World world, int x, int y, int z, ItemStack trigger);
+    boolean spawnHint(T t, Level world, int x, int y, int z, ItemStack trigger);
 
-    boolean placeBlock(T t, World world, int x, int y, int z, ItemStack trigger);
+    boolean placeBlock(T t, Level world, int x, int y, int z, ItemStack trigger);
 
     /**
      * Try place the block by taking resource from given IItemSource.
      * <p>
      * You might want to use
-     * {@link StructureUtility#survivalPlaceBlock(Block, int, World, int, int, int, IItemSource, net.minecraft.entity.player.EntityPlayer)}
+     * {@link StructureUtility#survivalPlaceBlock(Block, int, Level, int, int, int, IItemSource, net.minecraft.entity.player.Player)}
      * or its overloads to implement this.
      *
      * @param trigger trigger item
@@ -54,8 +54,8 @@ public interface IStructureElement<T> {
      *             as you know the caller will not call this overload.
      */
     @Deprecated
-    default PlaceResult survivalPlaceBlock(T t, World world, int x, int y, int z, ItemStack trigger, IItemSource s,
-            EntityPlayerMP actor, Consumer<IChatComponent> chatter) {
+    default PlaceResult survivalPlaceBlock(T t, Level world, int x, int y, int z, ItemStack trigger, IItemSource s,
+            ServerPlayer actor, Consumer<IChatComponent> chatter) {
         if (PANIC_MODE) throw new RuntimeException("Panic Tripwire hit");
         if (StructureLibAPI.isDebugEnabled()) LOGGER.error(
                 "Default implementation of survivalPlaceBlock hit! Things aren't going to work well! IStructureElement class: {}",
@@ -67,14 +67,14 @@ public interface IStructureElement<T> {
     /**
      * A simplified version of survivalPlaceBlock. Return null if not implemented.
      * <p>
-     * <b>BY OVERRIDING THIS TO NULL, YOU ACKNOWLEDGE THAT THE {@link #check(Object, World, int, int, int)} OF THIS
+     * <b>BY OVERRIDING THIS TO NULL, YOU ACKNOWLEDGE THAT THE {@link #check(Object, Level, int, int, int)} OF THIS
      * CLASS IS SIDE EFFECT FREE AND CAN HAVE ITS CHECK CALLED WITHOUT BREAKING ANYTHING. OTHERWISE OVERRIDE THE
-     * {@link #survivalPlaceBlock(Object, World, int, int, int, ItemStack, AutoPlaceEnvironment)} TO PROVIDE A
+     * {@link #survivalPlaceBlock(Object, Level, int, int, int, ItemStack, AutoPlaceEnvironment)} TO PROVIDE A
      * SIDEEFFECT FREE {@link PlaceResult#SKIP}.</b>
      * <p>
      * It should be noticed that this filter is only advisory and the actual
-     * {@link #survivalPlaceBlock(Object, World, int, int, int, ItemStack, AutoPlaceEnvironment)} or
-     * {@link #check(Object, World, int, int, int)} are free to reject/accept/place blocks not contained in this list,
+     * {@link #survivalPlaceBlock(Object, Level, int, int, int, ItemStack, AutoPlaceEnvironment)} or
+     * {@link #check(Object, Level, int, int, int)} are free to reject/accept/place blocks not contained in this list,
      * e.g. when the element can be placed anywhere in the structure, but no more than 3 overall; when the structure
      * element cannot know all blocks it will accept at the time of calling; when this is backed by a legacy
      * {@link IStructureElement} that just didn't implement this API.
@@ -82,10 +82,10 @@ public interface IStructureElement<T> {
      * @param trigger trigger item
      * @param env     autoplacing environment
      * @return null if not implemented, otherwise an instance describing what kind of blocks will be placed by
-     *         {@link #survivalPlaceBlock(Object, World, int, int, int, ItemStack, AutoPlaceEnvironment)}
+     *         {@link #survivalPlaceBlock(Object, Level, int, int, int, ItemStack, AutoPlaceEnvironment)}
      */
     @Nullable
-    default BlocksToPlace getBlocksToPlace(T t, World world, int x, int y, int z, ItemStack trigger,
+    default BlocksToPlace getBlocksToPlace(T t, Level world, int x, int y, int z, ItemStack trigger,
             AutoPlaceEnvironment env) {
         return null;
     }
@@ -94,42 +94,42 @@ public interface IStructureElement<T> {
      * Try place the block by taking resource from given {@link IItemSource}.
      * <p>
      * You might want to use
-     * {@link StructureUtility#survivalPlaceBlock(Block, int, World, int, int, int, IItemSource, net.minecraft.entity.player.EntityPlayer)}
+     * {@link StructureUtility#survivalPlaceBlock(Block, int, Level, int, int, int, IItemSource, net.minecraft.entity.player.Player)}
      * or its overloads to implement this.
      * <p>
      * The default implementation provided will
      * <ol>
      * <li>Get {@link BlocksToPlace} via
-     * {@link #getBlocksToPlace(Object, World, int, int, int, ItemStack, AutoPlaceEnvironment)}. If not null
+     * {@link #getBlocksToPlace(Object, Level, int, int, int, ItemStack, AutoPlaceEnvironment)}. If not null
      * <ol>
-     * <li>call {@link #check(Object, World, int, int, int)}. If this returns {@code true}, {@link PlaceResult#SKIP}
+     * <li>call {@link #check(Object, Level, int, int, int)}. If this returns {@code true}, {@link PlaceResult#SKIP}
      * will be returned without further action.</li>
      * <li>Use the {@link BlocksToPlace} retrieved earlier and passed in {@link IItemSource} to determine an item to
      * place</li>
      * <li>Hand over control to
-     * {@link StructureUtility#survivalPlaceBlock(ItemStack, NBTMode, NBTTagCompound, boolean, World, int, int, int, IItemSource, EntityPlayer, Consumer)}</li>
+     * {@link StructureUtility#survivalPlaceBlock(ItemStack, NBTMode, NBTTagCompound, boolean, Level, int, int, int, IItemSource, Player, Consumer)}</li>
      * </ol>
      * </li>
      * <li>Call legacy
-     * {@link #survivalPlaceBlock(Object, World, int, int, int, ItemStack, IItemSource, EntityPlayerMP, Consumer)} if
-     * {@code env.getActor()} contains an {@link EntityPlayerMP}</li>
+     * {@link #survivalPlaceBlock(Object, Level, int, int, int, ItemStack, IItemSource, ServerPlayer, Consumer)} if
+     * {@code env.getActor()} contains an {@link ServerPlayer}</li>
      * <li>Emit warning under debug mode (or throw exception under panic mode), then return
      * {@link PlaceResult#SKIP}</li>
      * </ol>
      * It should be noticed that the default implementation is likely to cause unexpected issues if the
-     * {@link #check(Object, World, int, int, int)} is not side effect free, or is not idempotent. E.g. the
-     * {@link #check(Object, World, int, int, int)} will add current coord to a {@link java.util.List}. As this method
+     * {@link #check(Object, Level, int, int, int)} is not side effect free, or is not idempotent. E.g. the
+     * {@link #check(Object, Level, int, int, int)} will add current coord to a {@link java.util.List}. As this method
      * might be invoked at a location that is already accepted, this will cause the machine to have multiple of this
      * coord in its list.
      *
      * @param trigger trigger item
      * @param env     autoplacing environment
      */
-    default PlaceResult survivalPlaceBlock(T t, World world, int x, int y, int z, ItemStack trigger,
+    default PlaceResult survivalPlaceBlock(T t, Level world, int x, int y, int z, ItemStack trigger,
             AutoPlaceEnvironment env) {
         BlocksToPlace e = getBlocksToPlace(t, world, x, y, z, trigger, env);
         IItemSource source = env.getSource();
-        EntityPlayer actor = env.getActor();
+        Player actor = env.getActor();
         Consumer<IChatComponent> chatter = env.getChatter();
         if (e != null) {
             if (check(t, world, x, y, z)) return PlaceResult.SKIP;
@@ -165,8 +165,8 @@ public interface IStructureElement<T> {
             }
             return PlaceResult.REJECT;
         }
-        if (actor instanceof EntityPlayerMP)
-            return survivalPlaceBlock(t, world, x, y, z, trigger, source, (EntityPlayerMP) actor, chatter);
+        if (actor instanceof ServerPlayer)
+            return survivalPlaceBlock(t, world, x, y, z, trigger, source, (ServerPlayer) actor, chatter);
         if (PANIC_MODE) throw new RuntimeException("Panic Tripwire hit");
         if (StructureLibAPI.isDebugEnabled()) LOGGER.info(
                 "Fallback shim code of survivalPlaceBlock hit! Things aren't going to work well! IStructureElement class: {}",
@@ -181,12 +181,12 @@ public interface IStructureElement<T> {
         return new IStructureElementNoPlacement<T>() {
 
             @Override
-            public boolean check(T t, World world, int x, int y, int z) {
+            public boolean check(T t, Level world, int x, int y, int z) {
                 return IStructureElement.this.check(t, world, x, y, z);
             }
 
             @Override
-            public boolean spawnHint(T t, World world, int x, int y, int z, ItemStack trigger) {
+            public boolean spawnHint(T t, Level world, int x, int y, int z, ItemStack trigger) {
                 return IStructureElement.this.spawnHint(t, world, x, y, z, trigger);
             }
         };

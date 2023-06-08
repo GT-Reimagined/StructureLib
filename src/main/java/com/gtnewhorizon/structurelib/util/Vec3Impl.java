@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 import net.minecraft.dispenser.IPosition;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.common.util.Direction;
 
 public class Vec3Impl implements Comparable<Vec3Impl> {
 
@@ -70,7 +70,7 @@ public class Vec3Impl implements Comparable<Vec3Impl> {
         return this.val2;
     }
 
-    public Vec3Impl offset(ForgeDirection facing, int n) {
+    public Vec3Impl offset(Direction facing, int n) {
         return n == 0 ? this
                 : new Vec3Impl(val0 + facing.offsetX * n, val1 + facing.offsetY * n, val2 + facing.offsetZ * n);
     }

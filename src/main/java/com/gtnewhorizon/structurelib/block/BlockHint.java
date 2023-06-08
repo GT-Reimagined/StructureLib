@@ -2,32 +2,25 @@ package com.gtnewhorizon.structurelib.block;
 
 import java.util.List;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
-import net.minecraft.world.IBlockAccess;
-
 import com.gtnewhorizon.structurelib.StructureLib;
 import com.gtnewhorizon.structurelib.StructureLibAPI;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.material.Material;
 
 public class BlockHint extends Block {
 
-    private static final IIcon[] hint = new IIcon[16];
+    //private static final IIcon[] hint = new IIcon[16];
 
     public BlockHint() {
-        super(Material.iron);
-        setBlockName("structurelib.blockhint");
-        setCreativeTab(StructureLib.creativeTab);
+        super(BlockBehaviour.Properties.of(Material.METAL));
     }
 
-    @Override
+    /*@Override
     public void registerBlockIcons(IIconRegister aIconRegister) {
         // super.registerBlockIcons(aIconRegister);
         hint[0] = aIconRegister.registerIcon(StructureLibAPI.MOD_ID + ":iconsets/HINT_0");
@@ -46,25 +39,5 @@ public class BlockHint extends Block {
         hint[13] = aIconRegister.registerIcon(StructureLibAPI.MOD_ID + ":iconsets/HINT_AIR");
         hint[14] = aIconRegister.registerIcon(StructureLibAPI.MOD_ID + ":iconsets/HINT_NOAIR");
         hint[15] = aIconRegister.registerIcon(StructureLibAPI.MOD_ID + ":iconsets/HINT_ERROR");
-    }
-
-    @Override
-    public IIcon getIcon(int aSide, int aMeta) {
-        return hint[aMeta];
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public IIcon getIcon(IBlockAccess aWorld, int xCoord, int yCoord, int zCoord, int aSide) {
-        int tMeta = aWorld.getBlockMetadata(xCoord, yCoord, zCoord);
-        return getIcon(aSide, tMeta);
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public void getSubBlocks(Item aItem, CreativeTabs par2CreativeTabs, List aList) {
-        for (int i = 0; i <= 15; i++) {
-            aList.add(new ItemStack(aItem, 1, i));
-        }
-    }
+    }*/
 }

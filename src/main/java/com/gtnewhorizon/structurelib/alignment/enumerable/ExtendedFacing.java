@@ -8,14 +8,12 @@ import static java.util.stream.Collectors.*;
 
 import java.util.*;
 
-import net.minecraft.util.StatCollector;
-import net.minecraft.util.Vec3;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import com.google.common.collect.ImmutableSet;
 import com.gtnewhorizon.structurelib.alignment.IAlignment;
 import com.gtnewhorizon.structurelib.alignment.IntegerAxisSwap;
 import com.gtnewhorizon.structurelib.util.Vec3Impl;
+import net.minecraft.core.Direction;
+import net.minecraft.world.phys.Vec3;
 
 public enum ExtendedFacing {
 
@@ -118,7 +116,7 @@ public enum ExtendedFacing {
 
     public static final ExtendedFacing DEFAULT = NORTH_NORMAL_NONE;
     public static final ExtendedFacing[] VALUES = values();
-    public static final Map<ForgeDirection, List<ExtendedFacing>> FOR_FACING = new HashMap<>();
+    public static final Map<Direction, List<ExtendedFacing>> FOR_FACING = new HashMap<>();
     public static final int STATES_COUNT = VALUES.length;
 
     static {
@@ -134,11 +132,11 @@ public enum ExtendedFacing {
 
     private static final Map<String, ExtendedFacing> NAME_LOOKUP = stream(VALUES)
             .collect(toMap(ExtendedFacing::getName2, (extendedFacing) -> extendedFacing));
-    private static final EnumMap<ForgeDirection, ImmutableSet<ExtendedFacing>> LOOKUP_BY_DIRECTION = stream(VALUES)
+    private static final EnumMap<Direction, ImmutableSet<ExtendedFacing>> LOOKUP_BY_DIRECTION = stream(VALUES)
             .collect(
                     groupingBy(
                             ExtendedFacing::getDirection,
-                            () -> new EnumMap<>(ForgeDirection.class),
+                            () -> new EnumMap<>(Direction.class),
                             collectingAndThen(toSet(), ImmutableSet::copyOf)));
     private static final EnumMap<Rotation, ImmutableSet<ExtendedFacing>> LOOKUP_BY_ROTATION = stream(VALUES).collect(
             groupingBy(
@@ -150,8 +148,8 @@ public enum ExtendedFacing {
                     ExtendedFacing::getFlip,
                     () -> new EnumMap<>(Flip.class),
                     collectingAndThen(toSet(), ImmutableSet::copyOf)));
-    private final ForgeDirection direction;
-    private final ForgeDirection a, b, c;
+    private final Direction direction;
+    private final Direction a, b, c;
     private final Rotation rotation;
     private final Flip flip;
 
@@ -160,40 +158,40 @@ public enum ExtendedFacing {
 
     ExtendedFacing(String name) {
         this.name = name;
-        direction = Direction.VALUES[ordinal() / (ROTATIONS_COUNT * FLIPS_COUNT)].getForgeDirection();
+        direction = Direction.values()[ordinal() / (ROTATIONS_COUNT * FLIPS_COUNT)];
         rotation = Rotation.VALUES[ordinal() / FLIPS_COUNT - direction.ordinal() * ROTATIONS_COUNT];
         flip = Flip.VALUES[ordinal() % FLIPS_COUNT];
-        ForgeDirection a, b, c;
+        Direction a, b, c;
         switch (direction) {
             case DOWN:
-                a = ForgeDirection.WEST;
-                b = ForgeDirection.SOUTH;
-                c = ForgeDirection.UP;
+                a = Direction.WEST;
+                b = Direction.SOUTH;
+                c = Direction.UP;
                 break;
             case UP:
-                a = ForgeDirection.EAST;
-                b = ForgeDirection.SOUTH;
-                c = ForgeDirection.DOWN;
+                a = Direction.EAST;
+                b = Direction.SOUTH;
+                c = Direction.DOWN;
                 break;
             case NORTH:
-                a = ForgeDirection.WEST;
-                b = ForgeDirection.DOWN;
-                c = ForgeDirection.SOUTH;
+                a = Direction.WEST;
+                b = Direction.DOWN;
+                c = Direction.SOUTH;
                 break;
             case SOUTH:
-                a = ForgeDirection.EAST;
-                b = ForgeDirection.DOWN;
-                c = ForgeDirection.NORTH;
+                a = Direction.EAST;
+                b = Direction.DOWN;
+                c = Direction.NORTH;
                 break;
             case WEST:
-                a = ForgeDirection.SOUTH;
-                b = ForgeDirection.DOWN;
-                c = ForgeDirection.EAST;
+                a = Direction.SOUTH;
+                b = Direction.DOWN;
+                c = Direction.EAST;
                 break;
             case EAST:
-                a = ForgeDirection.NORTH;
-                b = ForgeDirection.DOWN;
-                c = ForgeDirection.WEST;
+                a = Direction.NORTH;
+                b = Direction.DOWN;
+                c = Direction.WEST;
                 break;
             default:
                 throw new RuntimeException("Is impossible...");
@@ -214,7 +212,7 @@ public enum ExtendedFacing {
         }
         switch (rotation) {
             case CLOCKWISE: {
-                ForgeDirection _a = a;
+                Direction _a = a;
                 a = b;
                 b = _a.getOpposite();
                 break;
@@ -224,7 +222,7 @@ public enum ExtendedFacing {
                 b = b.getOpposite();
                 break;
             case COUNTER_CLOCKWISE: {
-                ForgeDirection _a = a;
+                Direction _a = a;
                 a = b.getOpposite();
                 b = _a;
                 break;
@@ -240,21 +238,21 @@ public enum ExtendedFacing {
         integerAxisSwap = new IntegerAxisSwap(a, b, c);
     }
 
-    public static ExtendedFacing of(ForgeDirection direction, Rotation rotation, Flip flip) {
-        if (direction == ForgeDirection.UNKNOWN) {
-            return VALUES[IAlignment.getAlignmentIndex(ForgeDirection.NORTH, rotation, flip)];
+    public static ExtendedFacing of(Direction direction, Rotation rotation, Flip flip) {
+        if (direction == null) {
+            return VALUES[IAlignment.getAlignmentIndex(Direction.NORTH, rotation, flip)];
         }
         return VALUES[IAlignment.getAlignmentIndex(direction, rotation, flip)];
     }
 
-    public static ExtendedFacing of(ForgeDirection direction) {
-        if (direction == ForgeDirection.UNKNOWN) {
+    public static ExtendedFacing of(Direction direction) {
+        if (direction == null) {
             return DEFAULT;
         }
         return VALUES[IAlignment.getAlignmentIndex(direction, Rotation.NORMAL, Flip.NONE)];
     }
 
-    public static ImmutableSet<ExtendedFacing> getAllWith(ForgeDirection direction) {
+    public static ImmutableSet<ExtendedFacing> getAllWith(Direction direction) {
         return LOOKUP_BY_DIRECTION.get(direction);
     }
 
@@ -266,7 +264,7 @@ public enum ExtendedFacing {
         return LOOKUP_BY_FLIP.get(flip);
     }
 
-    public ExtendedFacing with(ForgeDirection direction) {
+    public ExtendedFacing with(Direction direction) {
         return of(direction, rotation, flip);
     }
 
@@ -323,7 +321,7 @@ public enum ExtendedFacing {
         return VALUES[rand.nextInt(VALUES.length)];
     }
 
-    public ForgeDirection getDirection() {
+    public Direction getDirection() {
         return direction;
     }
 
@@ -341,41 +339,41 @@ public enum ExtendedFacing {
      * @param abcOffset A,B,C offset (facing relative {@code L-->R,U-->D,F-->B})
      * @return X, Y, Z offset in world
      */
-    public Vec3 getWorldOffset(Vec3 abcOffset) {
+    public Vec3 getLevelOffset(Vec3 abcOffset) {
         return integerAxisSwap.inverseTranslate(abcOffset);
     }
 
-    public Vec3Impl getWorldOffset(Vec3Impl abcOffset) {
+    public Vec3Impl getLevelOffset(Vec3Impl abcOffset) {
         return integerAxisSwap.inverseTranslate(abcOffset);
     }
 
-    public void getWorldOffset(int[] point, int[] out) {
+    public void getLevelOffset(int[] point, int[] out) {
         integerAxisSwap.inverseTranslate(point, out);
     }
 
-    public void getWorldOffset(double[] point, double[] out) {
+    public void getLevelOffset(double[] point, double[] out) {
         integerAxisSwap.inverseTranslate(point, out);
     }
 
     /**
      * do note the ABC coordinate system is (X, -Y, Z).
      */
-    public ForgeDirection getWorldDirection(ForgeDirection abcDirection) {
+    public Direction getLevelDirection(Direction abcDirection) {
         switch (abcDirection) {
             case NORTH:
-                return getRelativeForwardInWorld();
+                return getRelativeForwardInLevel();
             case SOUTH:
-                return getRelativeBackInWorld();
+                return getRelativeBackInLevel();
             case UP:
-                return getRelativeDownInWorld();
+                return getRelativeDownInLevel();
             case DOWN:
-                return getRelativeUpInWorld();
+                return getRelativeUpInLevel();
             case EAST:
-                return getRelativeLeftInWorld();
+                return getRelativeLeftInLevel();
             case WEST:
-                return getRelativeRightInWorld();
+                return getRelativeRightInLevel();
             default:
-                return ForgeDirection.UNKNOWN;
+                return null;
         }
     }
 
@@ -405,27 +403,27 @@ public enum ExtendedFacing {
         return integerAxisSwap;
     }
 
-    public ForgeDirection getRelativeLeftInWorld() {
+    public Direction getRelativeLeftInLevel() {
         return a;
     }
 
-    public ForgeDirection getRelativeRightInWorld() {
+    public Direction getRelativeRightInLevel() {
         return a.getOpposite();
     }
 
-    public ForgeDirection getRelativeDownInWorld() {
+    public Direction getRelativeDownInLevel() {
         return b;
     }
 
-    public ForgeDirection getRelativeUpInWorld() {
+    public Direction getRelativeUpInLevel() {
         return b.getOpposite();
     }
 
-    public ForgeDirection getRelativeBackInWorld() {
+    public Direction getRelativeBackInLevel() {
         return c;
     }
 
-    public ForgeDirection getRelativeForwardInWorld() {
+    public Direction getRelativeForwardInLevel() {
         return c.getOpposite();
     }
 }

@@ -1,14 +1,13 @@
 package com.gtnewhorizon.structurelib.alignment.constructable;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
-
 import com.gtnewhorizon.structurelib.alignment.enumerable.ExtendedFacing;
 import com.gtnewhorizon.structurelib.structure.AutoPlaceEnvironment;
 import com.gtnewhorizon.structurelib.structure.IItemSource;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 /**
  * An extension to {@link IConstructable}. Tile Entities (or delegates returned by
@@ -27,9 +26,9 @@ public interface ISurvivalConstructable extends IConstructable {
 
     /**
      * Construct the structure using
-     * {@link com.gtnewhorizon.structurelib.structure.IStructureElement#survivalPlaceBlock(Object, World, int, int, int, ItemStack, IItemSource, EntityPlayerMP, java.util.function.Consumer)}
+     * {@link com.gtnewhorizon.structurelib.structure.IStructureElement#survivalPlaceBlock(Object, Level, int, int, int, ItemStack, IItemSource, ServerPlayer, java.util.function.Consumer)}
      * or
-     * {@link com.gtnewhorizon.structurelib.structure.IStructureDefinition#survivalBuild(Object, ItemStack, String, World, ExtendedFacing, int, int, int, int, int, int, int, IItemSource, EntityPlayerMP, boolean)}
+     * {@link com.gtnewhorizon.structurelib.structure.IStructureDefinition#survivalBuild(Object, ItemStack, String, Level, ExtendedFacing, int, int, int, int, int, int, int, IItemSource, ServerPlayer, boolean)}
      *
      * @param elementBudget The server configured element budget. The implementor can choose to tune this up a bit if
      *                      the structure is too big, but generally should not be a 4 digits number to not overwhelm the
@@ -37,15 +36,15 @@ public interface ISurvivalConstructable extends IConstructable {
      * @return -1 if done, otherwise number of elements placed this round
      */
     @Deprecated
-    default int survivalConstruct(ItemStack stackSize, int elementBudget, IItemSource source, EntityPlayerMP actor) {
+    default int survivalConstruct(ItemStack stackSize, int elementBudget, IItemSource source, ServerPlayer actor) {
         return survivalConstruct(stackSize, elementBudget, ISurvivalBuildEnvironment.create(source, actor));
     }
 
     /**
      * Construct the structure using
-     * {@link com.gtnewhorizon.structurelib.structure.IStructureElement#survivalPlaceBlock(Object, World, int, int, int, ItemStack, AutoPlaceEnvironment)}
+     * {@link com.gtnewhorizon.structurelib.structure.IStructureElement#survivalPlaceBlock(Object, Level, int, int, int, ItemStack, AutoPlaceEnvironment)}
      * or
-     * {@link com.gtnewhorizon.structurelib.structure.IStructureDefinition#survivalBuild(Object, ItemStack, String, World, ExtendedFacing, int, int, int, int, int, int, int, ISurvivalBuildEnvironment, boolean)}
+     * {@link com.gtnewhorizon.structurelib.structure.IStructureDefinition#survivalBuild(Object, ItemStack, String, Level, ExtendedFacing, int, int, int, int, int, int, int, ISurvivalBuildEnvironment, boolean)}
      *
      * @param elementBudget The server configured element budget. The implementor can choose to tune this up a bit if
      *                      the structure is too big, but generally should not be a 4 digits number to not overwhelm the
@@ -54,9 +53,9 @@ public interface ISurvivalConstructable extends IConstructable {
      *         of elements placed this round
      */
     default int survivalConstruct(ItemStack stackSize, int elementBudget, ISurvivalBuildEnvironment env) {
-        EntityPlayer actor = env.getActor();
-        if (actor instanceof EntityPlayerMP)
-            return survivalConstruct(stackSize, elementBudget, env.getSource(), (EntityPlayerMP) actor);
+        Player actor = env.getActor();
+        if (actor instanceof ServerPlayer)
+            return survivalConstruct(stackSize, elementBudget, env.getSource(), (ServerPlayer) actor);
         else if (!DISABLE_HACKY_MIGRATION_CODE && __get_player() == null) {
             // as far as I know, no implementor would actually do anything to actor beyond passing it down to
             // IStructureDefinition, so it's probably fine to proceed like this
@@ -74,12 +73,12 @@ public interface ISurvivalConstructable extends IConstructable {
      * Internal hack. Do not use.
      */
     @Deprecated
-    static EntityPlayer __get_player() {
+    static Player __get_player() {
         return GlobalStates.entityPlayer.get();
     }
 }
 
 class GlobalStates {
 
-    public static final ThreadLocal<EntityPlayer> entityPlayer = new ThreadLocal<>();
+    public static final ThreadLocal<Player> entityPlayer = new ThreadLocal<>();
 }

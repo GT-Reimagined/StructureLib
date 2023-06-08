@@ -2,7 +2,7 @@ package com.gtnewhorizon.structurelib;
 
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.Player;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.launchwrapper.Launch;
@@ -123,11 +123,11 @@ public class StructureLib {
         proxy.addClientSideChatMessages(messages);
     }
 
-    public static EntityPlayer getCurrentPlayer() {
+    public static Player getCurrentPlayer() {
         return proxy.getCurrentPlayer();
     }
 
-    public static boolean isCurrentPlayer(EntityPlayer player) {
+    public static boolean isCurrentPlayer(Player player) {
         return proxy.isCurrentPlayer(player);
     }
 

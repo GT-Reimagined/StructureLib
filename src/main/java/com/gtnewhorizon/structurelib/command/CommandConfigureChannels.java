@@ -7,10 +7,10 @@ import java.util.stream.Collectors;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.TranslatableComponent;
 
 import com.gtnewhorizon.structurelib.alignment.constructable.ChannelDataAccessor;
 import com.gtnewhorizon.structurelib.item.ItemConstructableTrigger;
@@ -45,9 +45,9 @@ public class CommandConfigureChannels extends CommandBase {
     public void processCommand(ICommandSender sender, String[] args) {
         if (args.length == 0) throw new WrongUsageException(getCommandUsage(sender));
 
-        if (!(sender instanceof EntityPlayerMP)) throw new WrongUsageException("must be a player");
+        if (!(sender instanceof ServerPlayer)) throw new WrongUsageException("must be a player");
 
-        EntityPlayerMP player = (EntityPlayerMP) sender;
+        ServerPlayer player = (ServerPlayer) sender;
 
         ItemStack heldItem = player.getHeldItem();
         if (heldItem == null || !(heldItem.getItem() instanceof ItemConstructableTrigger)) {
@@ -62,7 +62,7 @@ public class CommandConfigureChannels extends CommandBase {
                     sender.addChatMessage(new ChatComponentText("No subchannel"));
                 } else {
                     sender.addChatMessage(
-                            new ChatComponentTranslation(
+                            new TranslatableComponent(
                                     "item.structurelib.constructableTrigger.desc.lshift.0",
                                     ChannelDataAccessor.countChannelData(heldItem)));
                     ChannelDataAccessor.iterateChannelData(heldItem).map(e -> e.getKey() + ": " + e.getValue())

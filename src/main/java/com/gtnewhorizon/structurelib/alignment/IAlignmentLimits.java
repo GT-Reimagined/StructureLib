@@ -6,17 +6,17 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.Function;
 
-import net.minecraftforge.common.util.ForgeDirection;
 
 import com.gtnewhorizon.structurelib.alignment.enumerable.ExtendedFacing;
 import com.gtnewhorizon.structurelib.alignment.enumerable.Flip;
 import com.gtnewhorizon.structurelib.alignment.enumerable.Rotation;
+import net.minecraft.core.Direction;
 
 public interface IAlignmentLimits {
 
     IAlignmentLimits UNLIMITED = (direction, rotation, flip) -> true;
 
-    boolean isNewExtendedFacingValid(ForgeDirection direction, Rotation rotation, Flip flip);
+    boolean isNewExtendedFacingValid(Direction direction, Rotation rotation, Flip flip);
 
     default boolean isNewExtendedFacingValid(ExtendedFacing alignment) {
         return isNewExtendedFacingValid(alignment.getDirection(), alignment.getRotation(), alignment.getFlip());
@@ -56,13 +56,13 @@ public interface IAlignmentLimits {
             return b;
         }
 
-        public Builder deny(ForgeDirection fd) {
+        public Builder deny(Direction fd) {
             ExtendedFacing.getAllWith(fd).stream().mapToInt(ExtendedFacing::getIndex)
                     .forEach(v -> validStates[v] = false);
             return this;
         }
 
-        public Builder allow(ForgeDirection fd) {
+        public Builder allow(Direction fd) {
             ExtendedFacing.getAllWith(fd).stream().mapToInt(ExtendedFacing::getIndex)
                     .forEach(v -> validStates[v] = true);
             return this;

@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayer;
 import net.minecraft.item.ItemStack;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -52,7 +52,7 @@ public class SetChannelDataMessage implements IMessage {
 
         @Override
         public IMessage onMessage(SetChannelDataMessage message, MessageContext ctx) {
-            EntityPlayerMP player = ctx.getServerHandler().playerEntity;
+            ServerPlayer player = ctx.getServerHandler().playerEntity;
             ItemStack heldItem = player.getHeldItem();
             if (heldItem != null && heldItem.getItem() instanceof ItemConstructableTrigger) {
                 ChannelDataAccessor.wipeChannelData(heldItem);

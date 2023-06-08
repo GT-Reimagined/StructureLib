@@ -1,13 +1,14 @@
 package com.gtnewhorizon.structurelib.structure;
 
-import net.minecraft.entity.player.EntityPlayer;
+
+import net.minecraft.world.entity.player.Player;
 
 class DefaultSurvivalBuildEnvironment implements ISurvivalBuildEnvironment {
 
     private final IItemSource source;
-    private final EntityPlayer actor;
+    private final Player actor;
 
-    public DefaultSurvivalBuildEnvironment(IItemSource source, EntityPlayer actor) {
+    public DefaultSurvivalBuildEnvironment(IItemSource source, Player actor) {
         this.source = source;
         this.actor = actor;
     }
@@ -18,7 +19,7 @@ class DefaultSurvivalBuildEnvironment implements ISurvivalBuildEnvironment {
     }
 
     @Override
-    public EntityPlayer getActor() {
+    public Player getActor() {
         return actor;
     }
 }

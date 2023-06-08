@@ -1,40 +1,30 @@
 package com.gtnewhorizon.structurelib.item;
 
 import static com.gtnewhorizon.structurelib.StructureLibAPI.MOD_ID;
-import static net.minecraft.util.StatCollector.translateToLocal;
 
 import java.util.List;
-
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.world.World;
 
 import com.gtnewhorizon.structurelib.StructureLib;
 import com.gtnewhorizon.structurelib.alignment.AlignmentUtility;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 
 public class ItemFrontRotationTool extends Item {
 
     public ItemFrontRotationTool() {
-        setMaxStackSize(1);
-        setUnlocalizedName("structurelib.frontRotationTool");
-        setTextureName(MOD_ID + ":itemFrontRotationTool");
-        setCreativeTab(StructureLib.creativeTab);
+        super(new Properties().tab(StructureLib.creativeTab).stacksTo(1));
     }
 
-    @Override
-    public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side,
-            float hitX, float hitY, float hitZ) {
+    /*@Override
+    public boolean onItemUseFirst(ItemStack stack, Player player, Level world, int x, int y, int z, int side,
+                                  float hitX, float hitY, float hitZ) {
         return AlignmentUtility.handle(player, world, x, y, z);
     }
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack p_77624_1_, EntityPlayer p_77624_2_, List aList, boolean p_77624_4_) {
+    public void addInformation(ItemStack p_77624_1_, Player p_77624_2_, List aList, boolean p_77624_4_) {
         aList.add(translateToLocal("item.structurelib.frontRotationTool.desc.0")); // Triggers Front Rotation Interface
         aList.add(EnumChatFormatting.BLUE + translateToLocal("item.structurelib.frontRotationTool.desc.1")); // Rotates
                                                                                                              // only the
@@ -44,5 +34,5 @@ public class ItemFrontRotationTool extends Item {
                                                                                                              // allows
                                                                                                              // structure
                                                                                                              // rotation.
-    }
+    }*/
 }

@@ -1,17 +1,18 @@
 package com.gtnewhorizon.structurelib.alignment.constructable;
 
 import static com.gtnewhorizon.structurelib.util.MiscUtils.getTagKeys;
-import static net.minecraftforge.common.util.Constants.NBT.TAG_COMPOUND;
+import static net.minecraft.nbt.Tag.TAG_COMPOUND;
+import static net.minecraft.nbt.Tag.TAG_INT;
 
 import java.util.Locale;
 import java.util.Map.Entry;
 import java.util.stream.Stream;
 
-import net.minecraft.init.Items;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.util.Constants.NBT;
 
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
@@ -47,31 +48,30 @@ public class ChannelDataAccessor {
         if (StringUtils.isEmpty(channel) || masterStack == null) throw new IllegalArgumentException();
         if (StructureLibAPI.isDebugEnabled() && !channel.toLowerCase(Locale.ROOT).equals(channel))
             throw new IllegalArgumentException("Channel name can be lower case ONLY");
-        if (!masterStack.hasTagCompound() || !masterStack.stackTagCompound.hasKey(SECONDARY_HINT_TAG, TAG_COMPOUND)
-                || !masterStack.stackTagCompound.getCompoundTag(SECONDARY_HINT_TAG).hasKey(channel, NBT.TAG_INT))
+        if (!masterStack.hasTag() || !masterStack.getTag().contains(SECONDARY_HINT_TAG, TAG_COMPOUND)
+                || !masterStack.getTag().getCompound(SECONDARY_HINT_TAG).contains(channel, TAG_INT))
             return masterStack;
         ItemStack ret = new ItemStack(
                 masterStack.getItem(),
-                masterStack.stackTagCompound.getCompoundTag(SECONDARY_HINT_TAG).getInteger(channel),
-                Items.feather.getDamage(masterStack));
-        ret.setTagCompound(masterStack.stackTagCompound);
+                masterStack.getTag().getCompound(SECONDARY_HINT_TAG).getInt(channel));
+        ret.setTag(masterStack.getTag());
         return ret;
     }
 
     /**
      * Check if given trigger item contains any subchannel
-     * 
+     *
      * @param masterStack trigger stack to check
      * @return true if contains any subchannel
      */
     public static boolean hasSubChannel(ItemStack masterStack) {
         if (masterStack == null) throw new IllegalArgumentException();
-        return masterStack.hasTagCompound() && masterStack.stackTagCompound.hasKey(SECONDARY_HINT_TAG, TAG_COMPOUND);
+        return masterStack.hasTag() && masterStack.getTag().contains(SECONDARY_HINT_TAG, TAG_COMPOUND);
     }
 
     /**
      * Check if given trigger item contains specified subchannel
-     * 
+     *
      * @param masterStack trigger stack to check
      * @param channel     channel identifier. Note: all channel identifiers are supposed to be lower case and not empty.
      * @return true if contains specified subchannel
@@ -80,14 +80,14 @@ public class ChannelDataAccessor {
         if (StringUtils.isEmpty(channel) || masterStack == null) throw new IllegalArgumentException();
         if (StructureLibAPI.isDebugEnabled() && !channel.toLowerCase(Locale.ROOT).equals(channel))
             throw new IllegalArgumentException("Channel name can be lower case ONLY");
-        return !channel.isEmpty() && masterStack.hasTagCompound()
-                && masterStack.stackTagCompound.hasKey(SECONDARY_HINT_TAG, TAG_COMPOUND)
-                && masterStack.stackTagCompound.getCompoundTag(SECONDARY_HINT_TAG).hasKey(channel, NBT.TAG_INT);
+        return !channel.isEmpty() && masterStack.hasTag()
+                && masterStack.getTag().contains(SECONDARY_HINT_TAG, TAG_COMPOUND)
+                && masterStack.getTag().getCompound(SECONDARY_HINT_TAG).contains(channel, TAG_INT);
     }
 
     /**
      * Get the subchannel data from given trigger item. Will use master channel instead if not present.
-     * 
+     *
      * @param masterStack trigger stack to query from
      * @param channel     channel identifier. Note: all channel identifiers are supposed to be lower case and not empty.
      * @return channel data
@@ -96,15 +96,15 @@ public class ChannelDataAccessor {
         if (StringUtils.isEmpty(channel) || masterStack == null) throw new IllegalArgumentException();
         if (StructureLibAPI.isDebugEnabled() && !channel.toLowerCase(Locale.ROOT).equals(channel))
             throw new IllegalArgumentException("Channel name can be lower case ONLY");
-        if (!masterStack.hasTagCompound() || !masterStack.stackTagCompound.hasKey(SECONDARY_HINT_TAG, TAG_COMPOUND)
-                || !masterStack.stackTagCompound.getCompoundTag(SECONDARY_HINT_TAG).hasKey(channel, NBT.TAG_INT))
-            return masterStack.stackSize;
-        return masterStack.stackTagCompound.getCompoundTag(SECONDARY_HINT_TAG).getInteger(channel);
+        if (!masterStack.hasTag() || !masterStack.getTag().contains(SECONDARY_HINT_TAG, TAG_COMPOUND)
+                || !masterStack.getTag().getCompound(SECONDARY_HINT_TAG).contains(channel, TAG_INT))
+            return masterStack.getCount();
+        return masterStack.getTag().getCompound(SECONDARY_HINT_TAG).getInt(channel);
     }
 
     /**
      * Set the subchannel data on given trigger item
-     * 
+     *
      * @param masterStack trigger stack to check
      * @param channel     channel identifier. Note: all channel identifiers are supposed to be lower case and not empty.
      * @param data        subchannel data. should always be a positive value
@@ -114,15 +114,15 @@ public class ChannelDataAccessor {
         if (StructureLibAPI.isDebugEnabled() && !channel.toLowerCase(Locale.ROOT).equals(channel))
             throw new IllegalArgumentException("Channel name can be lower case ONLY");
         if (data <= 0) throw new IllegalArgumentException();
-        if (masterStack.stackTagCompound == null) masterStack.stackTagCompound = new NBTTagCompound();
-        NBTTagCompound main = masterStack.stackTagCompound;
-        if (!main.hasKey(SECONDARY_HINT_TAG, TAG_COMPOUND)) main.setTag(SECONDARY_HINT_TAG, new NBTTagCompound());
-        main.getCompoundTag(SECONDARY_HINT_TAG).setInteger(channel, data);
+        if (masterStack.getTag() == null) masterStack.setTag(new CompoundTag());
+        CompoundTag main = masterStack.getTag();
+        if (!main.contains(SECONDARY_HINT_TAG, TAG_COMPOUND)) main.put(SECONDARY_HINT_TAG, new CompoundTag());
+        main.getCompound(SECONDARY_HINT_TAG).putInt(channel, data);
     }
 
     /**
      * Clear the given subchannel from given trigger item, if it exists
-     * 
+     *
      * @param masterStack trigger stack to unset
      * @param channel     channel identifier. Note: all channel identifiers are supposed to be lower case and not empty.
      */
@@ -130,28 +130,28 @@ public class ChannelDataAccessor {
         if (StringUtils.isEmpty(channel) || masterStack == null) throw new IllegalArgumentException();
         if (StructureLibAPI.isDebugEnabled() && !channel.toLowerCase(Locale.ROOT).equals(channel))
             throw new IllegalArgumentException("Channel name can be lower case ONLY");
-        if (masterStack.stackTagCompound == null) masterStack.stackTagCompound = new NBTTagCompound();
-        NBTTagCompound main = masterStack.stackTagCompound;
-        if (!main.hasKey(SECONDARY_HINT_TAG, TAG_COMPOUND)) main.setTag(SECONDARY_HINT_TAG, new NBTTagCompound());
-        NBTTagCompound tag = main.getCompoundTag(SECONDARY_HINT_TAG);
-        tag.removeTag(channel);
-        if (tag.hasNoTags()) main.removeTag(SECONDARY_HINT_TAG);
-        if (main.hasNoTags()) masterStack.stackTagCompound = null;
+        if (masterStack.getTag() == null) masterStack.setTag(new CompoundTag());
+        CompoundTag main = masterStack.getTag();
+        if (!main.contains(SECONDARY_HINT_TAG, TAG_COMPOUND)) main.put(SECONDARY_HINT_TAG, new CompoundTag());
+        CompoundTag tag = main.getCompound(SECONDARY_HINT_TAG);
+        tag.remove(channel);
+        if (tag.isEmpty()) main.remove(SECONDARY_HINT_TAG);
+        if (main.isEmpty()) masterStack.setTag(null);
     }
 
     /**
      * Wipe all subchannel data on given trigger item
-     * 
+     *
      * @param masterStack trigger stack to wipe
      */
     public static void wipeChannelData(ItemStack masterStack) {
         if (masterStack == null) throw new IllegalArgumentException();
-        if (masterStack.stackTagCompound != null) masterStack.stackTagCompound.removeTag(SECONDARY_HINT_TAG);
+        if (masterStack.getTag() != null) masterStack.getTag().remove(SECONDARY_HINT_TAG);
     }
 
     /**
      * Iterate over all subchannel data on trigger stack. Does not include master channel!!
-     * 
+     *
      * @param masterStack trigger stack to check
      * @return A java8 stream of pairs. Key is channel identifier and value is channel data. Pairs do not support
      *         mutation nor removal. Can still cause {@link java.util.ConcurrentModificationException} if underlying
@@ -159,19 +159,19 @@ public class ChannelDataAccessor {
      */
     public static Stream<Entry<String, Integer>> iterateChannelData(ItemStack masterStack) {
         if (!hasSubChannel(masterStack)) return Stream.empty();
-        NBTTagCompound tag = masterStack.stackTagCompound.getCompoundTag(SECONDARY_HINT_TAG);
-        return getTagKeys(tag).stream().map(s -> new ImmutablePair<>(s, tag.getInteger(s)));
+        CompoundTag tag = masterStack.getTag().getCompound(SECONDARY_HINT_TAG);
+        return getTagKeys(tag).stream().map(s -> new ImmutablePair<>(s, tag.getInt(s)));
     }
 
     /**
      * Get the number of subchannels present on given trigger item. Does not include master channel.
-     * 
+     *
      * @param masterStack trigger stack to query from
      * @return subchannel count
      */
     public static int countChannelData(ItemStack masterStack) {
         if (!hasSubChannel(masterStack)) return 0;
-        NBTTagCompound tag = masterStack.stackTagCompound.getCompoundTag(SECONDARY_HINT_TAG);
-        return tag.func_150296_c().size();
+        CompoundTag tag = masterStack.getTag().getCompound(SECONDARY_HINT_TAG);
+        return tag.getAllKeys().size();
     }
 }

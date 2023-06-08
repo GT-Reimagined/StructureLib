@@ -1,8 +1,9 @@
 package com.gtnewhorizon.structurelib.structure;
 
-import net.minecraft.world.World;
+
+import net.minecraft.world.level.Level;
 
 public interface IBlockPosConsumer {
 
-    void consume(World world, int x, int y, int z);
+    void consume(Level world, int x, int y, int z);
 }

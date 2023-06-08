@@ -1,15 +1,15 @@
 package com.gtnewhorizon.structurelib.alignment;
 
-import net.minecraftforge.common.util.ForgeDirection;
 
-import com.gtnewhorizon.structurelib.alignment.enumerable.Direction;
+
 import com.gtnewhorizon.structurelib.alignment.enumerable.ExtendedFacing;
 import com.gtnewhorizon.structurelib.alignment.enumerable.Flip;
 import com.gtnewhorizon.structurelib.alignment.enumerable.Rotation;
+import net.minecraft.core.Direction;
 
 public interface IAlignment extends IAlignmentLimits, IAlignmentProvider {
 
-    int DIRECTIONS_COUNT = Direction.VALUES.length;
+    int DIRECTIONS_COUNT = Direction.values().length;
     int ROTATIONS_COUNT = Rotation.VALUES.length;
     int FLIPS_COUNT = Flip.VALUES.length;
     int STATES_COUNT = ExtendedFacing.STATES_COUNT;
@@ -29,15 +29,15 @@ public interface IAlignment extends IAlignmentLimits, IAlignmentProvider {
         return this;
     }
 
-    static int getAlignmentIndex(ForgeDirection direction, Rotation rotation, Flip flip) {
+    static int getAlignmentIndex(Direction direction, Rotation rotation, Flip flip) {
         return (direction.ordinal() * ROTATIONS_COUNT + rotation.getIndex()) * FLIPS_COUNT + flip.getIndex();
     }
 
-    default ForgeDirection getDirection() {
+    default Direction getDirection() {
         return getExtendedFacing().getDirection();
     }
 
-    default void setDirection(ForgeDirection direction) {
+    default void setDirection(Direction direction) {
         setExtendedFacing(getExtendedFacing().with(direction));
     }
 
@@ -57,11 +57,11 @@ public interface IAlignment extends IAlignmentLimits, IAlignmentProvider {
         setExtendedFacing(getExtendedFacing().with(flip));
     }
 
-    default boolean toolSetDirection(ForgeDirection direction) {
-        if (direction == null || direction == ForgeDirection.UNKNOWN) {
-            for (int i = 0, j = getDirection().ordinal() + 1, valuesLength = Direction.VALUES.length; i
+    default boolean toolSetDirection(Direction direction) {
+        if (direction == null || direction == null) {
+            for (int i = 0, j = getDirection().ordinal() + 1, valuesLength = Direction.values().length; i
                     < valuesLength; i++) {
-                if (toolSetDirection(Direction.VALUES[(j + i) % valuesLength].getForgeDirection())) {
+                if (toolSetDirection(Direction.values()[(j + i) % valuesLength])) {
                     return true;
                 }
             }
@@ -75,7 +75,7 @@ public interface IAlignment extends IAlignmentLimits, IAlignmentProvider {
         return false;
     }
 
-    default boolean checkedSetDirection(ForgeDirection direction) {
+    default boolean checkedSetDirection(Direction direction) {
         if (isNewDirectionValid(direction)) {
             setDirection(direction);
             return true;
@@ -83,7 +83,7 @@ public interface IAlignment extends IAlignmentLimits, IAlignmentProvider {
         return false;
     }
 
-    default boolean canSetToDirectionAny(ForgeDirection direction) {
+    default boolean canSetToDirectionAny(Direction direction) {
         for (ExtendedFacing extendedFacing : ExtendedFacing.FOR_FACING.get(direction)) {
             if (isNewExtendedFacingValid(extendedFacing)) {
                 return true;
@@ -164,7 +164,7 @@ public interface IAlignment extends IAlignmentLimits, IAlignmentProvider {
         return false;
     }
 
-    default boolean isNewDirectionValid(ForgeDirection direction) {
+    default boolean isNewDirectionValid(Direction direction) {
         return isNewExtendedFacingValid(direction, getRotation(), getFlip());
     }
 
@@ -181,7 +181,7 @@ public interface IAlignment extends IAlignmentLimits, IAlignmentProvider {
     }
 
     @Override
-    default boolean isNewExtendedFacingValid(ForgeDirection direction, Rotation rotation, Flip flip) {
+    default boolean isNewExtendedFacingValid(Direction direction, Rotation rotation, Flip flip) {
         return getAlignmentLimits().isNewExtendedFacingValid(direction, rotation, flip);
     }
 
