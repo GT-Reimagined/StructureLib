@@ -1,11 +1,12 @@
 package com.gtnewhorizon.structurelib.util;
 
+import net.minecraft.core.Direction;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-import net.minecraft.dispenser.IPosition;
-import net.minecraftforge.common.util.Direction;
+
 
 public class Vec3Impl implements Comparable<Vec3Impl> {
 

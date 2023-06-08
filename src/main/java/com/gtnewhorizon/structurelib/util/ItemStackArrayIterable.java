@@ -1,8 +1,9 @@
 package com.gtnewhorizon.structurelib.util;
 
+import net.minecraft.world.item.ItemStack;
+
 import java.util.Iterator;
 
-import net.minecraft.item.ItemStack;
 
 public class ItemStackArrayIterable implements Iterable<ItemStack> {
 

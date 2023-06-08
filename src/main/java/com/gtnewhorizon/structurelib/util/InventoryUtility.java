@@ -22,16 +22,12 @@ import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import net.minecraft.entity.player.ServerPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.init.Items;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.InventoryEnderChest;
-import net.minecraft.item.ItemStack;
 
 import com.gtnewhorizon.gtnhlib.util.map.ItemStackMap;
 import com.gtnewhorizon.structurelib.util.InventoryUtility.ItemStackExtractor.APIType;
 import com.gtnewhorizon.structurelib.util.ItemStackPredicate.NBTMode;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * This class is part of API, but is not stable. Use at your own risk.

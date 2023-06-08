@@ -2,14 +2,7 @@ package com.gtnewhorizon.structurelib;
 
 import static com.gtnewhorizon.structurelib.StructureLib.proxy;
 
-import net.minecraft.block.Block;
-import net.minecraft.entity.player.Player;
-import net.minecraft.entity.player.ServerPlayer;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.IChatComponent;
-import net.minecraft.util.IIcon;
-import net.minecraft.world.Level;
+
 
 import com.gtnewhorizon.structurelib.alignment.IAlignment;
 import com.gtnewhorizon.structurelib.alignment.IAlignmentProvider;
@@ -17,7 +10,15 @@ import com.gtnewhorizon.structurelib.alignment.enumerable.ExtendedFacing;
 import com.gtnewhorizon.structurelib.net.AlignmentMessage;
 import com.gtnewhorizon.structurelib.structure.AutoPlaceEnvironment;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
-import cpw.mods.fml.common.network.NetworkRegistry;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 
 /**
  * A stable interface into the structure lib's internals. Backwards compatibility is maintained to the maximum extend
@@ -56,7 +57,7 @@ public class StructureLibAPI {
      * <li>Mod Instance or {@link cpw.mods.fml.common.ModContainer}</li>
      * <li>{@link com.gtnewhorizon.structurelib.alignment.constructable.IConstructable} and its friends, if you are
      * triggering structure check via this interface.</li>
-     * <li>{@link net.minecraft.util.ResourceLocation}</li>
+     * <li>{@link ResourceLocation}</li>
      * </ul>
      * <p>
      * It's an API abuse for normal {@link IStructureDefinition} users to depend on this feature. They have full control
@@ -142,8 +143,8 @@ public class StructureLibAPI {
      * @param RGBa  a 4 short array. tint in rgba form. currently alpha channel is ignored, but we might change this
      *              later on.
      */
-    public static void hintParticleTinted(Level w, int x, int y, int z, Block block, int meta, short[] RGBa) {
-        proxy.hintParticleTinted(w, x, y, z, block, meta, RGBa);
+    public static void hintParticleTinted(Level w, int x, int y, int z, Block block, short[] RGBa) {
+        proxy.hintParticleTinted(w, x, y, z, block, RGBa);
     }
 
     /**
@@ -169,8 +170,8 @@ public class StructureLibAPI {
      * @param block block to take texture from
      * @param meta  the meta of block to take texture from
      */
-    public static void hintParticle(Level w, int x, int y, int z, Block block, int meta) {
-        proxy.hintParticle(w, x, y, z, block, meta);
+    public static void hintParticle(Level w, int x, int y, int z, Block block) {
+        proxy.hintParticle(w, x, y, z, block);
     }
 
     /**

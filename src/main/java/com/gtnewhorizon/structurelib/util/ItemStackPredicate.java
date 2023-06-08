@@ -4,12 +4,11 @@ import java.util.Objects;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
-import net.minecraft.block.Block;
-import net.minecraft.init.Items;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
 
 public final class ItemStackPredicate implements Predicate<ItemStack> {
 
@@ -18,36 +17,25 @@ public final class ItemStackPredicate implements Predicate<ItemStack> {
     }
 
     public static ItemStackPredicate from(ItemStack itemStack) {
-        return new ItemStackPredicate(itemStack.getItem()).setMeta(Items.feather.getDamage(itemStack));
+        return new ItemStackPredicate(itemStack.getItem());
     }
 
     public static ItemStackPredicate from(ItemStack itemStack, NBTMode mode) {
-        return new ItemStackPredicate(itemStack.getItem()).setMeta(Items.feather.getDamage(itemStack))
-                .setTag(mode, itemStack.stackTagCompound);
+        return new ItemStackPredicate(itemStack.getItem())
+                .setTag(mode, itemStack.getTag());
     }
 
     public static ItemStackPredicate from(Block block) {
-        return new ItemStackPredicate(Item.getItemFromBlock(block));
+        return new ItemStackPredicate(block.asItem());
     }
 
     private final Item item;
-    private int meta = -1;
 
     private CompoundTag tag;
     private NBTMode mode = NBTMode.IGNORE;
 
     private ItemStackPredicate(Item item) {
         this.item = item;
-    }
-
-    public ItemStackPredicate ignoreMeta() {
-        this.meta = -1;
-        return this;
-    }
-
-    public ItemStackPredicate setMeta(int meta) {
-        this.meta = meta;
-        return this;
     }
 
     public ItemStackPredicate setTag(NBTMode mode, CompoundTag tag) {
@@ -59,8 +47,7 @@ public final class ItemStackPredicate implements Predicate<ItemStack> {
     @Override
     public boolean test(ItemStack itemStack) {
         if (item != null) if (itemStack.getItem() != item) return false;
-        if (meta != -1) if (Items.feather.getDamage(itemStack) != meta) return false;
-        return mode.test(tag, itemStack.stackTagCompound);
+        return mode.test(tag, itemStack.getTag());
     }
 
     public enum NBTMode implements BiPredicate<CompoundTag, CompoundTag> {
@@ -76,15 +63,15 @@ public final class ItemStackPredicate implements Predicate<ItemStack> {
 
             @Override
             public boolean test(CompoundTag lhs, CompoundTag rhs) {
-                if (lhs == null || lhs.hasNoTags()) return true;
-                if (rhs == null || rhs.hasNoTags()) return false;
+                if (lhs == null || lhs.isEmpty()) return true;
+                if (rhs == null || rhs.isEmpty()) return false;
                 for (String key : MiscUtils.getTagKeys(lhs)) {
-                    if (!rhs.hasKey(key, lhs.func_150299_b(key))) return false;
-                    NBTBase tag = lhs.getTag(key);
-                    if (tag instanceof CompoundTag) {
-                        if (!test((CompoundTag) tag, rhs.getCompoundTag(key))) return false;
+                    if (!rhs.contains(key, lhs.getTagType(key))) return false;
+                    Tag tag = lhs.get(key);
+                    if (tag instanceof CompoundTag compoundTag) {
+                        if (!test(compoundTag, rhs.getCompound(key))) return false;
                     } else {
-                        if (!tag.equals(rhs.getTag(key))) return false;
+                        if (!tag.equals(rhs.get(key))) return false;
                     }
                 }
                 return true;
@@ -94,8 +81,8 @@ public final class ItemStackPredicate implements Predicate<ItemStack> {
 
             @Override
             public boolean test(CompoundTag lhs, CompoundTag rhs) {
-                if (lhs != null && lhs.hasNoTags()) lhs = null;
-                if (rhs != null && rhs.hasNoTags()) rhs = null;
+                if (lhs != null && lhs.isEmpty()) lhs = null;
+                if (rhs != null && rhs.isEmpty()) rhs = null;
                 return Objects.equals(lhs, rhs);
             }
         },
@@ -104,10 +91,10 @@ public final class ItemStackPredicate implements Predicate<ItemStack> {
             @Override
             public boolean test(CompoundTag lhs, CompoundTag rhs) {
                 // fast path for empty tags
-                if (rhs == null || rhs.hasNoTags()) return lhs == null || lhs.hasNoTags();
+                if (rhs == null || rhs.isEmpty()) return lhs == null || lhs.isEmpty();
                 // TODO make an implementation without copying a potentially huge tag
                 rhs = (CompoundTag) rhs.copy();
-                for (String s : KNOWN_INSIGNIFICANT_TAGS) rhs.removeTag(s);
+                for (String s : KNOWN_INSIGNIFICANT_TAGS) rhs.remove(s);
                 return EXACT.test(lhs, rhs);
             }
         };

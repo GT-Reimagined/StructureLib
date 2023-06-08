@@ -3,10 +3,10 @@ package com.gtnewhorizon.structurelib.util;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
 
-public class InventoryIterable<Inv extends IInventory> implements Iterable<ItemStack> {
+public class InventoryIterable<Inv extends Inventory> implements Iterable<ItemStack> {
 
     private final Inv inv;
     private final int maxSlot;
@@ -32,18 +32,18 @@ public class InventoryIterable<Inv extends IInventory> implements Iterable<ItemS
 
             @Override
             public boolean hasNext() {
-                return ptr < inv.getSizeInventory() && (maxSlot == -1 || ptr < maxSlot);
+                return ptr < inv.getContainerSize() && (maxSlot == -1 || ptr < maxSlot);
             }
 
             @Override
             public ItemStack next() {
                 if (!hasNext()) throw new NoSuchElementException();
-                return inv.getStackInSlot(ptr++);
+                return inv.getItem(ptr++);
             }
 
             @Override
             public void remove() {
-                inv.setInventorySlotContents(ptr - 1, null);
+                inv.setItem(ptr - 1, ItemStack.EMPTY);
             }
         };
     }

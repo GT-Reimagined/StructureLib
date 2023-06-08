@@ -11,6 +11,7 @@ import javax.annotation.Nullable;
 
 import com.gtnewhorizon.structurelib.Registry;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -24,6 +25,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.collect.ImmutableList;
@@ -97,13 +99,13 @@ import com.gtnewhorizon.structurelib.util.Vec3Impl;
  * </ul>
  * <h3>Complex Block Element</h3> In case your logic on determining which block is accepted is complex, use these.
  * <ul>
- * <li>{@link #ofBlockAdder(IBlockAdder, Block, int)}, {@link #ofBlockAdderHint(IBlockAdder, Block)} and their
+ * <li>{@link #ofBlockAdder(IBlockAdder, Block)}, {@link #ofBlockAdderHint(IBlockAdder, Block)} and their
  * overloads: hands off actual adder logic to an {@link IBlockAdder} you supplied. Save you the boilerplate of querying
  * block type and block meta from {@link Level}</li>
  * <li>{@link #ofBlocksTiered(ITierConverter, Object, BiConsumer, Function)} and its overloads: accept a series of
  * blocks that each may have different tier, but only allow one single tier for anywhere this element is used (e.g.
  * coils).</li>
- * <li>{@link #ofTileAdder(ITileAdder, Block, int)}, {@link #ofSpecificTileAdder(BiPredicate, Class, Block, int)}:
+ * <li>{@link #ofTileAdder(ITileAdder, Block)}, {@link #ofSpecificTileAdder(BiPredicate, Class, Block)}:
  * Similar to block adder, but for tile entities.</li>
  * </ul>
  *
@@ -131,18 +133,18 @@ public class StructureUtility {
 
         @Override
         public boolean check(Object t, Level world, int x, int y, int z) {
-            return world.isAirBlock(x, y, z);
+            return world.getBlockState(new BlockPos(x, y, z)).isAir();
         }
 
         @Override
         public boolean spawnHint(Object o, Level world, int x, int y, int z, ItemStack trigger) {
-            StructureLibAPI.hintParticle(world, x, y, z, StructureLibAPI.getBlockHint(), 13);
+            StructureLibAPI.hintParticle(world, x, y, z, Registry.HINT_AIR);
             return true;
         }
 
         @Override
         public boolean placeBlock(Object o, Level world, int x, int y, int z, ItemStack trigger) {
-            world.setBlock(x, y, z, Blocks.air, 0, 2);
+            world.setBlock(new BlockPos(x, y, z), Blocks.AIR.defaultBlockState(), 2);
             return false;
         }
 
@@ -173,7 +175,7 @@ public class StructureUtility {
 
         @Override
         public boolean placeBlock(Object o, Level world, int x, int y, int z, ItemStack trigger) {
-            world.setBlock(x, y, z, Registry.HINT_NOAIR, 2);
+            world.setBlock(new BlockPos(x, y, z), Registry.HINT_NOAIR.defaultBlockState(), 2);
             return true;
         }
 
@@ -407,7 +409,7 @@ public class StructureUtility {
             return PlaceResult.REJECT;
         if (!s.takeOne(stack, false))
             // this is bad! probably an exploit somehow. Let's nullify the block we just placed instead
-            world.setBlockToAir(x, y, z);
+            world.setBlock(new BlockPos(x, y, z), Blocks.AIR.defaultBlockState(), 2);
         return PlaceResult.ACCEPT;
     }
 
@@ -444,7 +446,7 @@ public class StructureUtility {
 
     /**
      * Spawn a hint with given amount of dots. Check always returns: true. Only useful as a fallback, e.g.
-     * {@link #ofBlockRegistryName(String, String, int, IStructureElement)}
+     * {@link #ofBlockRegistryName(String, String, IStructureElement)}
      */
     public static <T> IStructureElementNoPlacement<T> ofHint(int dots) {
         return new IStructureElementNoPlacement<T>() {
@@ -464,7 +466,7 @@ public class StructureUtility {
 
     /**
      * Spawn a hint with given textures. Check always returns: true. Only useful as a fallback, e.g.
-     * {@link #ofBlockRegistryName(String, String, int, IStructureElement)}
+     * {@link #ofBlockRegistryName(String, String, IStructureElement)}
      */
     public static <T> IStructureElementNoPlacement<T> ofHintDeferred(Supplier<IIcon[]> icons) {
         return new IStructureElementNoPlacement<T>() {
@@ -484,7 +486,7 @@ public class StructureUtility {
 
     /**
      * Spawn a hint with given amount of textures and tint. Check always returns: true. Only useful as a fallback, e.g.
-     * {@link #ofBlockRegistryName(String, String, int, IStructureElement)}
+     * {@link #ofBlockRegistryName(String, String, IStructureElement)}
      */
     public static <T> IStructureElementNoPlacement<T> ofHintDeferred(Supplier<IIcon[]> icons, short[] RGBa) {
         return new IStructureElementNoPlacement<T>() {
@@ -706,7 +708,7 @@ public class StructureUtility {
             private Block block;
 
             private Block getBlock() {
-                if (block == null) block = GameRegistry.findBlock(modid, registryName);
+                if (block == null) block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(modid, registryName));
                 return block;
             }
 
@@ -774,7 +776,7 @@ public class StructureUtility {
 
             private boolean init() {
                 if (!initialized) {
-                    block = GameRegistry.findBlock(modid, registryName);
+                    block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(modid, registryName));
                     initialized = true;
                 }
                 return block != null;
@@ -2302,7 +2304,7 @@ public class StructureUtility {
             int basePositionY, int basePositionZ, int basePositionA, int basePositionB, int basePositionC,
             Function<? super BlockEntity, String> tileEntityClassifier, int sizeA, int sizeB, int sizeC,
             boolean transpose) {
-        Map<Block, Set<Integer>> blocks = new TreeMap<>(Comparator.comparing(Block::getUnlocalizedName));
+        List<Block> blocks = new ArrayList<>();
         Set<Class<? extends BlockEntity>> tiles = new HashSet<>();
         Set<String> specialTiles = new HashSet<>();
         iterate(
@@ -2318,17 +2320,11 @@ public class StructureUtility {
                 sizeB,
                 sizeC,
                 ((w, x, y, z) -> {
-                    BlockEntity tileEntity = w.getBlockEntity(x, y, z);
+                    BlockEntity tileEntity = w.getBlockEntity(new BlockPos(x, y, z));
                     if (tileEntity == null) {
                         Block block = w.getBlockState(new BlockPos(x, y, z)).getBlock();
-                        if (block != null && block != Blocks.air) {
-                            blocks.compute(block, (b, set) -> {
-                                if (set == null) {
-                                    set = new TreeSet<>();
-                                }
-                                set.add(block.getDamageValue(world, x, y, z));
-                                return set;
-                            });
+                        if (block != null && block != Blocks.AIR) {
+                            blocks.add(block);
                         }
                     } else {
                         String classification = tileEntityClassifier.apply(tileEntity);
@@ -2343,18 +2339,13 @@ public class StructureUtility {
             int i = 0;
             char c;
             builder.append("\n\nStructure:\n").append("\nBlocks:\n");
-            for (Map.Entry<Block, Set<Integer>> entry : blocks.entrySet()) {
-                Block block = entry.getKey();
-                Set<Integer> set = entry.getValue();
-                for (Integer meta : set) {
-                    c = NICE_CHARS.charAt(i++);
-                    if (i > NICE_CHARS.length()) {
-                        return "Too complicated for nice chars";
-                    }
-                    map.put(block.getUnlocalizedName() + '\0' + meta, c);
-                    builder.append(c).append(" -> ofBlock...(").append(block.getUnlocalizedName()).append(", ")
-                            .append(meta).append(", ...);\n");
+            for (Block block : blocks) {
+                c = NICE_CHARS.charAt(i++);
+                if (i > NICE_CHARS.length()) {
+                    return "Too complicated for nice chars";
                 }
+                map.put(block.getRegistryName().toString(), c);
+                builder.append(c).append(" -> ofBlock...(").append(block.getRegistryName()).append(", ...);\n");
             }
             builder.append("\nTiles:\n");
             for (Class<? extends BlockEntity> tile : tiles) {
@@ -2394,14 +2385,13 @@ public class StructureUtility {
                     sizeB,
                     sizeC,
                     ((w, x, y, z) -> {
-                        BlockEntity tileEntity = w.getBlockEntity(x, y, z);
+                        BlockEntity tileEntity = w.getBlockEntity(new BlockPos(x, y, z));
                         if (tileEntity == null) {
                             Block block = w.getBlockState(new BlockPos(x, y, z)).getBlock();
-                            if (block != null && block != Blocks.air) {
+                            if (block != null && block != Blocks.AIR) {
                                 builder.append(
                                         map.get(
-                                                block.getUnlocalizedName() + '\0'
-                                                        + block.getDamageValue(world, x, y, z)));
+                                                block.getRegistryName().toString()));
                             } else {
                                 builder.append(' ');
                             }
@@ -2436,14 +2426,13 @@ public class StructureUtility {
                     sizeB,
                     sizeC,
                     ((w, x, y, z) -> {
-                        BlockEntity tileEntity = w.getBlockEntity(x, y, z);
+                        BlockEntity tileEntity = w.getBlockEntity(new BlockPos(x, y, z));
                         if (tileEntity == null) {
                             Block block = w.getBlockState(new BlockPos(x, y, z)).getBlock();
-                            if (block != null && block != Blocks.air) {
+                            if (block != null && block != Blocks.AIR) {
                                 builder.append(
                                         map.get(
-                                                block.getUnlocalizedName() + '\0'
-                                                        + block.getDamageValue(world, x, y, z)));
+                                                block.getRegistryName().toString()));
                             } else {
                                 builder.append(' ');
                             }
@@ -2497,7 +2486,7 @@ public class StructureUtility {
                         Arrays.toString(xyz),
                         Arrays.toString(abc));
 
-                if (world.blockExists(xyz[0], xyz[1], xyz[2])) {
+                if (!world.getBlockState(new BlockPos(xyz[0], xyz[1], xyz[2])).isAir()) {
                     if (StructureLibAPI.isInstrumentEnabled()) {
                         StructureElementVisitedEvent.fireEvent(
                                 world,
