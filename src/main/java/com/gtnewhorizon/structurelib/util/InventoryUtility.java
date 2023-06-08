@@ -23,7 +23,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 
-import com.gtnewhorizon.gtnhlib.util.map.ItemStackMap;
 import com.gtnewhorizon.structurelib.util.InventoryUtility.ItemStackExtractor.APIType;
 import com.gtnewhorizon.structurelib.util.ItemStackPredicate.NBTMode;
 import net.minecraft.server.level.ServerPlayer;
