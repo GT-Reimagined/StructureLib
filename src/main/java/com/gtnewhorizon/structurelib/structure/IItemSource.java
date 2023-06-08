@@ -10,6 +10,7 @@ import com.gtnewhorizon.structurelib.util.InventoryUtility;
 import com.gtnewhorizon.structurelib.util.ItemStackPredicate;
 import com.gtnewhorizon.structurelib.util.ItemStackPredicate.NBTMode;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 
 /**
@@ -138,7 +139,7 @@ public interface IItemSource {
      * <p>
      * This will be backed by {@link InventoryUtility}
      */
-    static IItemSource fromInventory(IInventory inv) {
+    static IItemSource fromInventory(Container inv) {
         return (p, s, c) -> InventoryUtility.takeFromInventory(new InventoryIterable<>(inv), p, s, c, true);
     }
 }

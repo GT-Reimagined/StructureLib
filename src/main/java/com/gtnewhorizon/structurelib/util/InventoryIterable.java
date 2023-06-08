@@ -3,10 +3,10 @@ package com.gtnewhorizon.structurelib.util;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 
-public class InventoryIterable<Inv extends Inventory> implements Iterable<ItemStack> {
+public class InventoryIterable<Inv extends Container> implements Iterable<ItemStack> {
 
     private final Inv inv;
     private final int maxSlot;

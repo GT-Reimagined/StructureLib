@@ -26,6 +26,9 @@ import javax.annotation.Nullable;
 import com.gtnewhorizon.structurelib.util.InventoryUtility.ItemStackExtractor.APIType;
 import com.gtnewhorizon.structurelib.util.ItemStackPredicate.NBTMode;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.Container;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.PlayerEnderChestContainer;
 import net.minecraft.world.item.ItemStack;
 
 /**
@@ -41,32 +44,32 @@ public class InventoryUtility {
     private static final SortedRegistry<InventoryProvider<?>> inventoryProviders = new SortedRegistry<>();
 
     static {
-        inventoryProviders.register("5000-main-inventory", new InventoryProvider<InventoryIterable<InventoryPlayer>>() {
+        inventoryProviders.register("5000-main-inventory", new InventoryProvider<InventoryIterable<Inventory>>() {
 
             @Override
-            public InventoryIterable<InventoryPlayer> getInventory(ServerPlayer player) {
-                return new InventoryIterable<>(player.inventory, player.inventory.mainInventory.length);
+            public InventoryIterable<Inventory> getInventory(ServerPlayer player) {
+                return new InventoryIterable<>(player.getInventory(), player.getInventory().getContainerSize());
             }
 
             @Override
-            public void markDirty(InventoryIterable<InventoryPlayer> inv) {
+            public void markDirty(InventoryIterable<Inventory> inv) {
                 // player save its content using means other than inv.markDirty()
                 // here we only need to sync it to client
-                inv.getInventory().player.inventoryContainer.detectAndSendChanges();
+                inv.getInventory().player.containerMenu.sendAllDataToRemote();
             }
         });
         inventoryProviders
-                .register("7000-ender-inventory", new InventoryProvider<InventoryIterable<InventoryEnderChest>>() {
+                .register("7000-ender-inventory", new InventoryProvider<InventoryIterable<PlayerEnderChestContainer>>() {
 
                     @Override
-                    public InventoryIterable<InventoryEnderChest> getInventory(ServerPlayer player) {
+                    public InventoryIterable<PlayerEnderChestContainer> getInventory(ServerPlayer player) {
                         if (enableEnder.stream().anyMatch(p -> p.test(player)))
-                            return new InventoryIterable<>(player.getInventoryEnderChest());
+                            return new InventoryIterable<>(player.getEnderChestInventory());
                         return null;
                     }
 
                     @Override
-                    public void markDirty(InventoryIterable<InventoryEnderChest> inv) {
+                    public void markDirty(InventoryIterable<PlayerEnderChestContainer> inv) {
                         // inv.getInventory().markDirty();
                         // TODO this seems to be a noop
                     }
@@ -83,8 +86,8 @@ public class InventoryUtility {
         stackExtractors.register(key, val);
     }
 
-    public static <Inv extends IInventory> void registerStackExtractor(String key,
-            Function<ItemStack, ? extends Inv> extractor) {
+    public static <Inv extends Container> void registerStackExtractor(String key,
+                                                                      Function<ItemStack, ? extends Inv> extractor) {
         registerStackExtractor(key, newItemStackProvider(extractor));
     }
 
@@ -92,7 +95,7 @@ public class InventoryUtility {
         inventoryProviders.register(key, val);
     }
 
-    public static <Inv extends IInventory> void registerInventoryProvider(String key,
+    public static <Inv extends Container> void registerInventoryProvider(String key,
             Function<ServerPlayer, ? extends Inv> extractor) {
         registerInventoryProvider(key, newInventoryProvider(extractor));
     }
@@ -101,7 +104,7 @@ public class InventoryUtility {
         return stackExtractors.iterator();
     }
 
-    public static <Inv extends IInventory> InventoryProvider<InventoryIterable<Inv>> newInventoryProvider(
+    public static <Inv extends Container> InventoryProvider<InventoryIterable<Inv>> newInventoryProvider(
             Function<ServerPlayer, ? extends Inv> extractor) {
         return new InventoryProvider<InventoryIterable<Inv>>() {
 
@@ -118,7 +121,7 @@ public class InventoryUtility {
         };
     }
 
-    public static ItemStackExtractor newItemStackProvider(Function<ItemStack, ? extends IInventory> extractor) {
+    public static ItemStackExtractor newItemStackProvider(Function<ItemStack, ? extends Container> extractor) {
         return new ItemStackExtractor() {
 
             @Override
@@ -129,7 +132,7 @@ public class InventoryUtility {
             @Override
             public int takeFromStack(Predicate<ItemStack> predicate, boolean simulate, int count,
                     ItemStackCounter store, ItemStack stack, ItemStack filter, ServerPlayer player) {
-                IInventory inv = extractor.apply(stack);
+                Container inv = extractor.apply(stack);
                 if (inv == null) return 0;
                 int found = takeFromInventory(
                         new InventoryIterable<>(inv),
@@ -223,8 +226,8 @@ public class InventoryUtility {
         int found = 0;
         ItemStack copiedFilter = null;
         if (filter != null) {
-            copiedFilter = new ItemStack(filter.getItem(), filter.getCount(), Items.feather.getDamage(filter));
-            copiedFilter.setTagCompound(filter.stackTagCompound);
+            copiedFilter = new ItemStack(filter.getItem(), filter.getCount());
+            copiedFilter.setTag(filter.getTag());
         }
         for (Iterator<ItemStack> iterator = inv.iterator(); iterator.hasNext();) {
             ItemStack stack = iterator.next();
