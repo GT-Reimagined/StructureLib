@@ -5,21 +5,22 @@ import static com.gtnewhorizon.structurelib.structure.StructureUtility.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import com.gtnewhorizon.structurelib.util.Vec3Impl;
+import com.gtnewhorizon.structurelib.util.Vec3iUtils;
+import net.minecraft.core.Vec3i;
 
 public class StructureDefinition<T> implements IStructureDefinition<T> {
 
     private final Map<Character, IStructureElement<T>> elements;
     private final Map<String, String> shapes;
     private final Map<String, IStructureElement<T>[]> structures;
-    private final Map<String, Set<Vec3Impl>> occupiedSpaces;
+    private final Map<String, Set<Vec3i>> occupiedSpaces;
 
     public static <B> Builder<B> builder() {
         return new Builder<>();
     }
 
     private StructureDefinition(Map<Character, IStructureElement<T>> elements, Map<String, String> shapes,
-            Map<String, IStructureElement<T>[]> structures, Map<String, Set<Vec3Impl>> occupiedSpaces) {
+            Map<String, IStructureElement<T>[]> structures, Map<String, Set<Vec3i>> occupiedSpaces) {
         this.elements = elements;
         this.shapes = shapes;
         this.structures = structures;
@@ -32,10 +33,10 @@ public class StructureDefinition<T> implements IStructureDefinition<T> {
         private static final char B = '\uB000';
         private static final char C = '\uC000';
         private char d = '\uD000';
-        private final Map<Vec3Impl, Character> navigates;
+        private final Map<Vec3i, Character> navigates;
         private final Map<Character, IStructureElement<T>> elements;
         private final Map<String, String> shapes;
-        private final Map<String, Set<Vec3Impl>> occupiedSpaces;
+        private final Map<String, Set<Vec3i>> occupiedSpaces;
 
         private Builder() {
             navigates = new HashMap<>();
@@ -88,7 +89,7 @@ public class StructureDefinition<T> implements IStructureDefinition<T> {
                 }
                 builder.setLength(builder.length() - 1);
             }
-            Set<Vec3Impl> occupiedSpace = new HashSet<>();
+            Set<Vec3i> occupiedSpace = new HashSet<>();
             // these track the global current location
             int aa = 0, bb = 0, cc = 0;
             // these track the vec3 towards next meaningful element
@@ -102,7 +103,7 @@ public class StructureDefinition<T> implements IStructureDefinition<T> {
                 } else if (ch == '~') {
                     builder.setCharAt(i, A);
                     ch = A;
-                    occupiedSpace.add(Vec3Impl.getFromPool(aa, bb, cc));
+                    occupiedSpace.add(Vec3iUtils.getFromPool(aa, bb, cc));
                 }
                 if (ch == A) {
                     aa++;
@@ -120,7 +121,7 @@ public class StructureDefinition<T> implements IStructureDefinition<T> {
                     c++;
                     cc++;
                 } else if (a != 0 || b != 0 || c != 0) {
-                    Vec3Impl vec3 = new Vec3Impl(a, b, c);
+                    Vec3i vec3 = new Vec3i(a, b, c);
                     Character navigate = navigates.get(vec3);
                     if (navigate == null) {
                         navigate = d++;
@@ -128,13 +129,13 @@ public class StructureDefinition<T> implements IStructureDefinition<T> {
                         addElement(navigate, step(vec3));
                     }
                     builder.setCharAt(i - 1, navigate);
-                    occupiedSpace.add(Vec3Impl.getFromPool(aa, bb, cc));
+                    occupiedSpace.add(Vec3iUtils.getFromPool(aa, bb, cc));
                     aa++;
                     a = 0;
                     b = 0;
                     c = 0;
                 } else {
-                    occupiedSpace.add(Vec3Impl.getFromPool(aa, bb, cc));
+                    occupiedSpace.add(Vec3iUtils.getFromPool(aa, bb, cc));
                     aa++;
                 }
             }
@@ -235,8 +236,8 @@ public class StructureDefinition<T> implements IStructureDefinition<T> {
 
     @Override
     public boolean isContainedInStructure(String name, int offsetA, int offsetB, int offsetC) {
-        Set<Vec3Impl> occupiedSpace = occupiedSpaces.get(name);
+        Set<Vec3i> occupiedSpace = occupiedSpaces.get(name);
         if (occupiedSpace == null) throw new NoSuchElementException(name);
-        return occupiedSpace.contains(new Vec3Impl(offsetA, offsetB, offsetC));
+        return occupiedSpace.contains(new Vec3i(offsetA, offsetB, offsetC));
     }
 }

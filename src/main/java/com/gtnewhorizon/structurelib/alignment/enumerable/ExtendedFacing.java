@@ -11,7 +11,6 @@ import java.util.*;
 import com.google.common.collect.ImmutableSet;
 import com.gtnewhorizon.structurelib.alignment.IAlignment;
 import com.gtnewhorizon.structurelib.alignment.IntegerAxisSwap;
-import com.gtnewhorizon.structurelib.util.Vec3Impl;
 import net.minecraft.core.Direction;
 import net.minecraft.world.phys.Vec3;
 
@@ -343,7 +342,7 @@ public enum ExtendedFacing {
         return integerAxisSwap.inverseTranslate(abcOffset);
     }
 
-    public Vec3Impl getLevelOffset(Vec3Impl abcOffset) {
+    public Vec3i getLevelOffset(Vec3i abcOffset) {
         return integerAxisSwap.inverseTranslate(abcOffset);
     }
 
@@ -387,7 +386,7 @@ public enum ExtendedFacing {
         return integerAxisSwap.translate(xyzOffset);
     }
 
-    public Vec3Impl getOffsetABC(Vec3Impl xyzOffset) {
+    public Vec3i getOffsetABC(Vec3i xyzOffset) {
         return integerAxisSwap.translate(xyzOffset);
     }
 

@@ -1,9 +1,6 @@
 package com.gtnewhorizon.structurelib.structure;
 
-import static java.lang.Integer.MIN_VALUE;
-
 import java.util.*;
-import java.util.Map.Entry;
 import java.util.function.*;
 
 import javax.annotation.Nullable;
@@ -12,6 +9,7 @@ import javax.annotation.Nullable;
 import com.gtnewhorizon.structurelib.Registry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -28,7 +26,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.StringUtils;
 
-import com.google.common.collect.ImmutableList;
 import com.gtnewhorizon.structurelib.StructureEvent.StructureElementVisitedEvent;
 import com.gtnewhorizon.structurelib.StructureLib;
 import com.gtnewhorizon.structurelib.StructureLibAPI;
@@ -37,9 +34,7 @@ import com.gtnewhorizon.structurelib.alignment.enumerable.ExtendedFacing;
 import com.gtnewhorizon.structurelib.structure.IStructureElement.PlaceResult;
 import com.gtnewhorizon.structurelib.structure.adders.IBlockAdder;
 import com.gtnewhorizon.structurelib.structure.adders.ITileAdder;
-import com.gtnewhorizon.structurelib.util.ItemStackPredicate;
 import com.gtnewhorizon.structurelib.util.ItemStackPredicate.NBTMode;
-import com.gtnewhorizon.structurelib.util.Vec3Impl;
 
 /**
  * A brief index of everything contained
@@ -126,7 +121,7 @@ public class StructureUtility {
     private static final String NICE_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz=|!@#$%&()[]{};:<>/?_,.*^'`";
 
     @SuppressWarnings("rawtypes")
-    private static final Map<Vec3Impl, IStructureNavigate> STEP = new HashMap<>();
+    private static final Map<Vec3i, IStructureNavigate> STEP = new HashMap<>();
 
     @SuppressWarnings("rawtypes")
     private static final IStructureElement AIR = new StructureElement_Bridge() {
@@ -2195,24 +2190,24 @@ public class StructureUtility {
      * Used internally, to generate skips for structure definitions
      */
     public static <T> IStructureNavigate<T> step(int a, int b, int c) {
-        return step(new Vec3Impl(a, b, c));
+        return step(new Vec3i(a, b, c));
     }
 
     /**
      * Used internally, to generate skips for structure definitions
      */
     @SuppressWarnings("unchecked")
-    public static <T> IStructureNavigate<T> step(Vec3Impl step) {
-        if (step == null || step.get0() < 0 || step.get1() < 0 || step.get2() < 0) {
+    public static <T> IStructureNavigate<T> step(Vec3i step) {
+        if (step == null || step.getX() < 0 || step.getY() < 0 || step.getZ() < 0) {
             throw new IllegalArgumentException();
         }
         return STEP.computeIfAbsent(step, vec3 -> {
-            if (vec3.get2() > 0) {
-                return stepC(vec3.get0(), vec3.get1(), vec3.get2());
-            } else if (vec3.get1() > 0) {
-                return stepB(vec3.get0(), vec3.get1(), vec3.get2());
+            if (vec3.getZ() > 0) {
+                return stepC(vec3.getX(), vec3.getY(), vec3.getZ());
+            } else if (vec3.getY() > 0) {
+                return stepB(vec3.getX(), vec3.getY(), vec3.getZ());
             } else {
-                return stepA(vec3.get0(), vec3.get1(), vec3.get2());
+                return stepA(vec3.getX(), vec3.getY(), vec3.getZ());
             }
         });
     }

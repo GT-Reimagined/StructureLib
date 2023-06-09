@@ -3,23 +3,23 @@ package com.gtnewhorizon.structurelib.alignment;
 import static java.lang.Math.abs;
 
 
-import com.gtnewhorizon.structurelib.util.Vec3Impl;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
 import net.minecraft.world.phys.Vec3;
 
 public class IntegerAxisSwap {
 
-    private final Vec3Impl forFirstAxis;
-    private final Vec3Impl forSecondAxis;
-    private final Vec3Impl forThirdAxis;
+    private final Vec3i forFirstAxis;
+    private final Vec3i forSecondAxis;
+    private final Vec3i forThirdAxis;
 
     public IntegerAxisSwap(Direction forFirstAxis, Direction forSecondAxis, Direction forThirdAxis) {
         this.forFirstAxis = Direction.getAxisVector(forFirstAxis);
         this.forSecondAxis = Direction.getAxisVector(forSecondAxis);
         this.forThirdAxis = Direction.getAxisVector(forThirdAxis);
-        if (abs(this.forFirstAxis.get0()) + abs(this.forSecondAxis.get0()) + abs(this.forThirdAxis.get0()) != 1
-                || abs(this.forFirstAxis.get1()) + abs(this.forSecondAxis.get1()) + abs(this.forThirdAxis.get1()) != 1
-                || abs(this.forFirstAxis.get2()) + abs(this.forSecondAxis.get2()) + abs(this.forThirdAxis.get2())
+        if (abs(this.forFirstAxis.getX()) + abs(this.forSecondAxis.getX()) + abs(this.forThirdAxis.getX()) != 1
+                || abs(this.forFirstAxis.getY()) + abs(this.forSecondAxis.getY()) + abs(this.forThirdAxis.getY()) != 1
+                || abs(this.forFirstAxis.getZ()) + abs(this.forSecondAxis.getZ()) + abs(this.forThirdAxis.getZ())
                         != 1) {
             throw new IllegalArgumentException(
                     "Axis are overlapping/missing! " + forFirstAxis
@@ -27,67 +27,67 @@ public class IntegerAxisSwap {
         }
     }
 
-    public Vec3Impl translate(Vec3Impl point) {
-        return new Vec3Impl(
-                forFirstAxis.get0() * point.get0() + forFirstAxis.get1() * point.get1()
-                        + forFirstAxis.get2() * point.get2(),
-                forSecondAxis.get0() * point.get0() + forSecondAxis.get1() * point.get1()
-                        + forSecondAxis.get2() * point.get2(),
-                forThirdAxis.get0() * point.get0() + forThirdAxis.get1() * point.get1()
-                        + forThirdAxis.get2() * point.get2());
+    public Vec3i translate(Vec3i point) {
+        return new Vec3i(
+                forFirstAxis.getX() * point.getX() + forFirstAxis.getY() * point.getY()
+                        + forFirstAxis.getZ() * point.getZ(),
+                forSecondAxis.getX() * point.getX() + forSecondAxis.getY() * point.getY()
+                        + forSecondAxis.getZ() * point.getZ(),
+                forThirdAxis.getX() * point.getX() + forThirdAxis.getY() * point.getY()
+                        + forThirdAxis.getZ() * point.getZ());
     }
 
-    public Vec3Impl inverseTranslate(Vec3Impl point) {
-        return new Vec3Impl(
-                forFirstAxis.get0() * point.get0() + forSecondAxis.get0() * point.get1()
-                        + forThirdAxis.get0() * point.get2(),
-                forFirstAxis.get1() * point.get0() + forSecondAxis.get1() * point.get1()
-                        + forThirdAxis.get1() * point.get2(),
-                forFirstAxis.get2() * point.get0() + forSecondAxis.get2() * point.get1()
-                        + forThirdAxis.get2() * point.get2());
+    public Vec3i inverseTranslate(Vec3i point) {
+        return new Vec3i(
+                forFirstAxis.getX() * point.getX() + forSecondAxis.getX() * point.getY()
+                        + forThirdAxis.getX() * point.getZ(),
+                forFirstAxis.getY() * point.getX() + forSecondAxis.getY() * point.getY()
+                        + forThirdAxis.getY() * point.getZ(),
+                forFirstAxis.getZ() * point.getX() + forSecondAxis.getZ() * point.getY()
+                        + forThirdAxis.getZ() * point.getZ());
     }
 
     public Vec3 translate(Vec3 point) {
         return Vec3.createVectorHelper(
-                forFirstAxis.get0() * point.xCoord + forFirstAxis.get1() * point.yCoord
-                        + forFirstAxis.get2() * point.zCoord,
-                forSecondAxis.get0() * point.xCoord + forSecondAxis.get1() * point.yCoord
-                        + forSecondAxis.get2() * point.zCoord,
-                forThirdAxis.get0() * point.xCoord + forThirdAxis.get1() * point.yCoord
-                        + forThirdAxis.get2() * point.zCoord);
+                forFirstAxis.getX() * point.xCoord + forFirstAxis.getY() * point.yCoord
+                        + forFirstAxis.getZ() * point.zCoord,
+                forSecondAxis.getX() * point.xCoord + forSecondAxis.getY() * point.yCoord
+                        + forSecondAxis.getZ() * point.zCoord,
+                forThirdAxis.getX() * point.xCoord + forThirdAxis.getY() * point.yCoord
+                        + forThirdAxis.getZ() * point.zCoord);
     }
 
     public Vec3 inverseTranslate(Vec3 point) {
         return Vec3.createVectorHelper(
-                forFirstAxis.get0() * point.xCoord + forSecondAxis.get0() * point.yCoord
-                        + forThirdAxis.get0() * point.zCoord,
-                forFirstAxis.get1() * point.xCoord + forSecondAxis.get1() * point.yCoord
-                        + forThirdAxis.get1() * point.zCoord,
-                forFirstAxis.get2() * point.xCoord + forSecondAxis.get2() * point.yCoord
-                        + forThirdAxis.get2() * point.zCoord);
+                forFirstAxis.getX() * point.xCoord + forSecondAxis.getX() * point.yCoord
+                        + forThirdAxis.getX() * point.zCoord,
+                forFirstAxis.getY() * point.xCoord + forSecondAxis.getY() * point.yCoord
+                        + forThirdAxis.getY() * point.zCoord,
+                forFirstAxis.getZ() * point.xCoord + forSecondAxis.getZ() * point.yCoord
+                        + forThirdAxis.getZ() * point.zCoord);
     }
 
     public void translate(int[] point, int[] out) {
-        out[0] = forFirstAxis.get0() * point[0] + forFirstAxis.get1() * point[1] + forFirstAxis.get2() * point[2];
-        out[1] = forSecondAxis.get0() * point[0] + forSecondAxis.get1() * point[1] + forSecondAxis.get2() * point[2];
-        out[2] = forThirdAxis.get0() * point[0] + forThirdAxis.get1() * point[1] + forThirdAxis.get2() * point[2];
+        out[0] = forFirstAxis.getX() * point[0] + forFirstAxis.getY() * point[1] + forFirstAxis.getZ() * point[2];
+        out[1] = forSecondAxis.getX() * point[0] + forSecondAxis.getY() * point[1] + forSecondAxis.getZ() * point[2];
+        out[2] = forThirdAxis.getX() * point[0] + forThirdAxis.getY() * point[1] + forThirdAxis.getZ() * point[2];
     }
 
     public void inverseTranslate(int[] point, int[] out) {
-        out[0] = forFirstAxis.get0() * point[0] + forSecondAxis.get0() * point[1] + forThirdAxis.get0() * point[2];
-        out[1] = forFirstAxis.get1() * point[0] + forSecondAxis.get1() * point[1] + forThirdAxis.get1() * point[2];
-        out[2] = forFirstAxis.get2() * point[0] + forSecondAxis.get2() * point[1] + forThirdAxis.get2() * point[2];
+        out[0] = forFirstAxis.getX() * point[0] + forSecondAxis.getX() * point[1] + forThirdAxis.getX() * point[2];
+        out[1] = forFirstAxis.getY() * point[0] + forSecondAxis.getY() * point[1] + forThirdAxis.getY() * point[2];
+        out[2] = forFirstAxis.getZ() * point[0] + forSecondAxis.getZ() * point[1] + forThirdAxis.getZ() * point[2];
     }
 
     public void translate(double[] point, double[] out) {
-        out[0] = forFirstAxis.get0() * point[0] + forFirstAxis.get1() * point[1] + forFirstAxis.get2() * point[2];
-        out[1] = forSecondAxis.get0() * point[0] + forSecondAxis.get1() * point[1] + forSecondAxis.get2() * point[2];
-        out[2] = forThirdAxis.get0() * point[0] + forThirdAxis.get1() * point[1] + forThirdAxis.get2() * point[2];
+        out[0] = forFirstAxis.getX() * point[0] + forFirstAxis.getY() * point[1] + forFirstAxis.getZ() * point[2];
+        out[1] = forSecondAxis.getX() * point[0] + forSecondAxis.getY() * point[1] + forSecondAxis.getZ() * point[2];
+        out[2] = forThirdAxis.getX() * point[0] + forThirdAxis.getY() * point[1] + forThirdAxis.getZ() * point[2];
     }
 
     public void inverseTranslate(double[] point, double[] out) {
-        out[0] = forFirstAxis.get0() * point[0] + forSecondAxis.get0() * point[1] + forThirdAxis.get0() * point[2];
-        out[1] = forFirstAxis.get1() * point[0] + forSecondAxis.get1() * point[1] + forThirdAxis.get1() * point[2];
-        out[2] = forFirstAxis.get2() * point[0] + forSecondAxis.get2() * point[1] + forThirdAxis.get2() * point[2];
+        out[0] = forFirstAxis.getX() * point[0] + forSecondAxis.getX() * point[1] + forThirdAxis.getX() * point[2];
+        out[1] = forFirstAxis.getY() * point[0] + forSecondAxis.getY() * point[1] + forThirdAxis.getY() * point[2];
+        out[2] = forFirstAxis.getZ() * point[0] + forSecondAxis.getZ() * point[1] + forThirdAxis.getZ() * point[2];
     }
 }
