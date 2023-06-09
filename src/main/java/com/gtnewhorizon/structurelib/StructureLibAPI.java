@@ -10,6 +10,7 @@ import com.gtnewhorizon.structurelib.alignment.enumerable.ExtendedFacing;
 import com.gtnewhorizon.structurelib.net.AlignmentMessage;
 import com.gtnewhorizon.structurelib.structure.AutoPlaceEnvironment;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -111,7 +112,7 @@ public class StructureLibAPI {
      * @param RGBa  a 4 short array. tint in rgba form. currently alpha channel is ignored, but we might change this
      *              later on.
      */
-    public static void hintParticleTinted(Level w, int x, int y, int z, IIcon[] icons, short[] RGBa) {
+    public static void hintParticleTinted(Level w, int x, int y, int z, TextureAtlasSprite[] icons, short[] RGBa) {
         proxy.hintParticleTinted(w, x, y, z, icons, RGBa);
     }
 
@@ -123,7 +124,6 @@ public class StructureLibAPI {
      * @param y     y coord
      * @param z     z coord
      * @param block block to take texture from
-     * @param meta  the meta of block to take texture from
      * @param RGBa  a 4 short array. tint in rgba form. currently alpha channel is ignored, but we might change this
      *              later on.
      */
@@ -140,7 +140,7 @@ public class StructureLibAPI {
      * @param z     z coord
      * @param icons 6 texture. in forge direction order.
      */
-    public static void hintParticle(Level w, int x, int y, int z, IIcon[] icons) {
+    public static void hintParticle(Level w, int x, int y, int z, TextureAtlasSprite[] icons) {
         proxy.hintParticle(w, x, y, z, icons);
     }
 

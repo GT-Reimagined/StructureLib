@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.WeakHashMap;
 
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 
@@ -14,14 +15,18 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class CommonProxy {
 
-    public void hintParticleTinted(Level w, int x, int y, int z, IIcon[] icons, short[] RGBa) {}
+    @OnlyIn(Dist.CLIENT)
+    public void hintParticleTinted(Level w, int x, int y, int z, TextureAtlasSprite[] icons, short[] RGBa) {}
 
     public void hintParticleTinted(Level w, int x, int y, int z, Block block, short[] RGBa) {}
 
-    public void hintParticle(Level w, int x, int y, int z, IIcon[] icons) {}
+    @OnlyIn(Dist.CLIENT)
+    public void hintParticle(Level w, int x, int y, int z, TextureAtlasSprite[] icons) {}
 
     public void hintParticle(Level w, int x, int y, int z, Block block) {}
 

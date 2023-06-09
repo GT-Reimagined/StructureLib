@@ -65,7 +65,7 @@ public class ClientProxy extends CommonProxy {
     private static final Map<Object, Long> localThrottleMap = new HashMap<>();
 
     @Override
-    public void hintParticleTinted(Level w, int x, int y, int z, IIcon[] icons, short[] RGBa) {
+    public void hintParticleTinted(Level w, int x, int y, int z, TextureAtlasSprite[] icons, short[] RGBa) {
         ensureHinting();
         HintParticleInfo info = new HintParticleInfo(w, x, y, z, icons, RGBa);
 
@@ -95,17 +95,17 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     public void hintParticleTinted(Level w, int x, int y, int z, Block block, short[] RGBa) {
-        hintParticleTinted(w, x, y, z, createIIconFromBlock(block), RGBa);
+        hintParticleTinted(w, x, y, z, createTextureAtlasSpriteFromBlock(block), RGBa);
     }
 
     @Override
-    public void hintParticle(Level w, int x, int y, int z, IIcon[] icons) {
+    public void hintParticle(Level w, int x, int y, int z, TextureAtlasSprite[] icons) {
         hintParticleTinted(w, x, y, z, icons, RGBA_NO_TINT);
     }
 
     @Override
     public void hintParticle(Level w, int x, int y, int z, Block block) {
-        hintParticleTinted(w, x, y, z, createIIconFromBlock(block), RGBA_NO_TINT);
+        hintParticleTinted(w, x, y, z, createTextureAtlasSpriteFromBlock(block), RGBA_NO_TINT);
     }
 
     @Override
@@ -163,8 +163,8 @@ public class ClientProxy extends CommonProxy {
         allHintsDirty = true;
     }
 
-    private static IIcon[] createIIconFromBlock(Block block, int meta) {
-        IIcon[] ret = new IIcon[6];
+    private static TextureAtlasSprite[] createTextureAtlasSpriteFromBlock(Block block, int meta) {
+        TextureAtlasSprite[] ret = new TextureAtlasSprite[6];
         for (int i = 0; i < 6; i++) {
             ret[i] = block.getIcon(i, meta);
         }
@@ -229,7 +229,7 @@ public class ClientProxy extends CommonProxy {
         MinecraftForge.EVENT_BUS.register(new ForgeEventHandler());
     }
 
-    static void markTextureUsed(IIcon icon) {
+    static void markTextureUsed(TextureAtlasSprite icon) {
         if (StructureLib.COMPAT instanceof IStructureCompat)
             ((IStructureCompat) StructureLib.COMPAT).markTextureUsed(icon);
     }
@@ -257,13 +257,13 @@ public class ClientProxy extends CommonProxy {
         private final Level w;
         // these are the block coordinate for e.g. w.getBlock()
         private final int x, y, z;
-        private final IIcon[] icons;
+        private final TextureAtlasSprite[] icons;
         private short[] tint;
         private boolean renderThrough;
 
         private final long creationTime = System.currentTimeMillis(); // use tick time instead maybe
 
-        public HintParticleInfo(Level w, int x, int y, int z, IIcon[] icons, short[] tint) {
+        public HintParticleInfo(Level w, int x, int y, int z, TextureAtlasSprite[] icons, short[] tint) {
             this.w = w;
             this.x = x;
             this.y = y;

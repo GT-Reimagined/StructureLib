@@ -1,8 +1,9 @@
 package com.gtnewhorizon.structurelib;
 
-import net.minecraft.util.IIcon;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+
 
 public interface IStructureCompat {
 
-    void markTextureUsed(IIcon o);
+    void markTextureUsed(TextureAtlasSprite o);
 }

@@ -7,6 +7,7 @@ import javax.annotation.Nullable;
 
 
 import com.gtnewhorizon.structurelib.Registry;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
@@ -463,7 +464,7 @@ public class StructureUtility {
      * Spawn a hint with given textures. Check always returns: true. Only useful as a fallback, e.g.
      * {@link #ofBlockRegistryName(String, String, IStructureElement)}
      */
-    public static <T> IStructureElementNoPlacement<T> ofHintDeferred(Supplier<IIcon[]> icons) {
+    public static <T> IStructureElementNoPlacement<T> ofHintDeferred(Supplier<TextureAtlasSprite[]> icons) {
         return new IStructureElementNoPlacement<T>() {
 
             @Override
@@ -483,7 +484,7 @@ public class StructureUtility {
      * Spawn a hint with given amount of textures and tint. Check always returns: true. Only useful as a fallback, e.g.
      * {@link #ofBlockRegistryName(String, String, IStructureElement)}
      */
-    public static <T> IStructureElementNoPlacement<T> ofHintDeferred(Supplier<IIcon[]> icons, short[] RGBa) {
+    public static <T> IStructureElementNoPlacement<T> ofHintDeferred(Supplier<TextureAtlasSprite[]> icons, short[] RGBa) {
         return new IStructureElementNoPlacement<T>() {
 
             @Override
