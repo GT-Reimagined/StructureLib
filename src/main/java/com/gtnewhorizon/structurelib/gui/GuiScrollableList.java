@@ -4,11 +4,8 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.client.renderer.Tessellator;
 
-import org.lwjgl.input.Mouse;
+import net.minecraft.client.gui.components.Button;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -31,7 +28,7 @@ import org.lwjgl.opengl.GL11;
 public abstract class GuiScrollableList<T> {
 
     protected final int slotHeight;
-    private final Minecraft mc = Minecraft.getMinecraft();
+    private final Minecraft mc = Minecraft.getInstance();
     protected final int originX;
     protected final int originY;
     protected final int width;
@@ -431,13 +428,13 @@ public abstract class GuiScrollableList<T> {
 
         int getYSize();
 
-        void addButton(GuiButton button);
+        void addButton(Button button);
 
-        void removeButton(GuiButton button);
+        void removeButton(Button button);
 
         int getOverlayOffsetX();
 
-        void doActionPerformed(GuiButton but);
+        void doActionPerformed(Button but);
     }
 
     public interface ListSelectionListener<T> {

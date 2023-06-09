@@ -55,7 +55,7 @@ public class InventoryUtility {
             public void markDirty(InventoryIterable<Inventory> inv) {
                 // player save its content using means other than inv.markDirty()
                 // here we only need to sync it to client
-                inv.getInventory().player.containerMenu.sendAllDataToRemote();
+                inv.getInventory().player.containerMenu.broadcastChanges();
             }
         });
         inventoryProviders

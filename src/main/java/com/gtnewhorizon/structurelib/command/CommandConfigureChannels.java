@@ -60,7 +60,7 @@ public class CommandConfigureChannels {
                 String channel = context.getArgument("channel_name", String.class);
                 int value = context.getArgument("value", Integer.class);
                 ChannelDataAccessor.setChannelData(heldStack, channel, value);
-                player.containerMenu.sendAllDataToRemote();
+                player.containerMenu.broadcastChanges();
                 player.sendMessage(new TextComponent(channel + " value: " + value), player.getUUID());
                 yield 1;
             }

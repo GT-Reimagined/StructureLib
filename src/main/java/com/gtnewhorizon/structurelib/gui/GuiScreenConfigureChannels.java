@@ -1,156 +1,155 @@
 package com.gtnewhorizon.structurelib.gui;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.ResourceLocation;
 
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
 import org.apache.commons.lang3.StringUtils;
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 import com.gtnewhorizon.structurelib.StructureLib;
 import com.gtnewhorizon.structurelib.alignment.constructable.ChannelDataAccessor;
 import com.gtnewhorizon.structurelib.gui.GuiScrollableList.IGuiScreen;
 
-public class GuiScreenConfigureChannels extends GuiScreen implements IGuiScreen {
+public class GuiScreenConfigureChannels extends AbstractContainerScreen<ContainerConfigureChannels> implements IGuiScreen {
 
     private static final int KEY_MAX_WIDTH = 50;
     private final ItemStack trigger;
     private final GuiChannelsList list;
-    private GuiTextField key, value;
+    private EditBox key, value;
     protected int guiTop, guiLeft;
+    private List<Button> buttonList = new ArrayList<>();
 
-    public GuiScreenConfigureChannels(ItemStack trigger) {
+    public GuiScreenConfigureChannels(ContainerConfigureChannels container, Inventory invPlayer, Component title, ItemStack trigger) {
+        super(container, invPlayer, title);
         this.trigger = trigger;
         list = new GuiChannelsList(152, 100, 12, 12, 14);
         list.addSelectionListener((list, selectedIndex) -> {
             Entry<String, Integer> e = list.getElementAt(selectedIndex);
-            key.setText(e.getKey());
-            value.setText(e.getValue().toString());
+            key.setValue(e.getKey());
+            value.setValue(e.getValue().toString());
             updateButtons();
         });
     }
 
     @Override
-    public void initGui() {
-        super.initGui();
-        // so you can keep holding backspace to delete a long sequence of chars
-        Keyboard.enableRepeatEvents(true);
-
+    protected void init() {
+        super.init();
         guiLeft = (this.width - this.getXSize()) / 2;
         guiTop = (this.height - this.getYSize()) / 2;
-
-        key = new GuiTextField(fontRendererObj, guiLeft + 45, guiTop + 119, 151 + 12 - 45, 12) {
-
+        key = new EditBox(this.font, guiLeft + 45, guiTop + 119, 151 + 12 - 45, 12, new TextComponent("")){
             @Override
-            public void writeText(String text) {
-                // force lower case
-                super.writeText(text.toLowerCase(Locale.ROOT));
+            public void insertText(String textToWrite) {
+                super.insertText(textToWrite.toLowerCase(Locale.ROOT));
                 updateButtons();
             }
 
             @Override
-            public void mouseClicked(int p_146192_1_, int p_146192_2_, int p_146192_3_) {
-                super.mouseClicked(p_146192_1_, p_146192_2_, p_146192_3_);
-                boolean flag = p_146192_1_ >= this.xPosition && p_146192_1_ < this.xPosition + this.width
-                        && p_146192_2_ >= this.yPosition
-                        && p_146192_2_ < this.yPosition + this.height;
-                if (flag && p_146192_3_ == 1) {
-                    key.setText("");
-                    value.setText("");
+            public void setValue(String text) {
+                super.setValue(text);
+                updateButtons();
+            }
+
+            @Override
+            public boolean mouseClicked(double mouseX, double mouseY, int button) {
+                boolean flag = mouseX >= this.x && mouseX < this.x + this.width
+                    && mouseY >= this.y
+                    && mouseY < this.y + this.height;
+                if (flag && button == 1) {
+                    key.setValue("");
+                    value.setValue("");
                 }
-            }
-
-            @Override
-            public void setText(String p_146180_1_) {
-                super.setText(p_146180_1_);
-                updateButtons();
+                return super.mouseClicked(mouseX, mouseY, button);
             }
         };
-        value = new GuiTextField(fontRendererObj, guiLeft + 45, guiTop + 139, 151 + 12 - 45, 12) {
-
+        value = new EditBox(this.font, guiLeft + 45, guiTop + 139, 151 + 12 - 45, 12, new TextComponent("")){
             @Override
-            public void writeText(String text) {
-                // ignore write requests containing non digit characters.
-                // we don't accept decimals or negative numbers, so we can safely use isDigit instead of something more
-                // advanced
-                // use codePoints() in case someone pasted an emoji by mistake
+            public void insertText(String text) {
                 if (text != null && text.codePoints().allMatch(Character::isDigit)) {
-                    super.writeText(text);
+                    super.insertText(text);
                     updateButtons();
                 }
             }
 
             @Override
-            public void setFocused(boolean p_146195_1_) {
-                if (!p_146195_1_ && isFocused() && !StringUtils.isBlank(getText())) {
+            public void setFocused(boolean focused) {
+                if (!focused && isFocused() && !StringUtils.isBlank(getValue())) {
                     int result;
                     try {
-                        result = Math.max(Integer.parseInt(getText()), 1);
+                        result = Math.max(Integer.parseInt(getValue()), 1);
                     } catch (NumberFormatException e) {
                         result = 1;
                     }
-                    setText(String.valueOf(result));
+                    setValue(String.valueOf(result));
                 }
-                super.setFocused(p_146195_1_);
+                super.setFocused(focused);
             }
 
             @Override
-            public void mouseClicked(int p_146192_1_, int p_146192_2_, int p_146192_3_) {
-                super.mouseClicked(p_146192_1_, p_146192_2_, p_146192_3_);
-                boolean flag = p_146192_1_ >= this.xPosition && p_146192_1_ < this.xPosition + this.width
-                        && p_146192_2_ >= this.yPosition
-                        && p_146192_2_ < this.yPosition + this.height;
-                if (flag && p_146192_3_ == 1) {
-                    setText("");
+            public boolean mouseClicked(double mouseX, double mouseY, int button) {
+                boolean flag = mouseX >= this.x && mouseX < this.x + this.width
+                    && mouseY >= this.y
+                    && mouseY < this.y + this.height;
+                if (flag && button == 1) {
+                    setValue("");
                 }
+                return super.mouseClicked(mouseX, mouseY, button);
             }
 
             @Override
-            public void setText(String p_146180_1_) {
-                super.setText(p_146180_1_);
+            public void setValue(String text) {
+                super.setValue(text);
                 updateButtons();
             }
         };
-
+        this.addRenderableOnly(key);
+        this.addRenderableOnly(value);
         list.onGuiInit(this);
-
-        addButton(
-                new GuiButton(
-                        0,
-                        guiLeft + 12,
-                        guiTop + 157,
-                        47,
-                        20,
-                        I18n.format("item.structurelib.constructableTrigger.gui.add")));
-        addButton(
-                new GuiButton(
-                        1,
-                        guiLeft + 65,
-                        guiTop + 157,
-                        47,
-                        20,
-                        I18n.format("item.structurelib.constructableTrigger.gui.unset")));
-        addButton(
-                new GuiButton(
-                        2,
-                        guiLeft + 118,
-                        guiTop + 157,
-                        47,
-                        20,
-                        I18n.format("item.structurelib.constructableTrigger.gui.wipe")));
-
+        addButton(new Button(
+            guiLeft + 12,
+            guiTop + 157,
+            47,
+            20,
+            new TranslatableComponent("item.structurelib.constructableTrigger.gui.add"),
+            b -> {
+                int value = getValue();
+                if (value <= 0) return;
+                ChannelDataAccessor.setChannelData(trigger, key.getValue(), value);
+            }
+        ));
+        addButton(new Button(
+            guiLeft + 65,
+            guiTop + 157,
+            47,
+            20,
+            new TranslatableComponent("item.structurelib.constructableTrigger.gui.unset"),
+            b -> {
+                ChannelDataAccessor.unsetChannelData(trigger, key.getValue());
+            }
+        ));
+        addButton(new Button(
+            guiLeft + 118,
+            guiTop + 157,
+            47,
+            20,
+            new TranslatableComponent("item.structurelib.constructableTrigger.gui.wipe"),
+            b -> {
+                ChannelDataAccessor.wipeChannelData(trigger);
+            }
+        ));
         updateButtons();
     }
 
@@ -175,13 +174,15 @@ public class GuiScreenConfigureChannels extends GuiScreen implements IGuiScreen 
     }
 
     @Override
-    public void addButton(GuiButton button) {
+    public void addButton(Button button) {
         getButtonList().add(button);
+        addWidget(button);
     }
 
     @Override
-    public void removeButton(GuiButton button) {
+    public void removeButton(Button button) {
         getButtonList().remove(button);
+        removeWidget(button);
     }
 
     @Override
@@ -190,12 +191,12 @@ public class GuiScreenConfigureChannels extends GuiScreen implements IGuiScreen 
     }
 
     @Override
-    public void doActionPerformed(GuiButton but) {
+    public void doActionPerformed(Button but) {
         actionPerformed(but);
     }
 
     @SuppressWarnings("unchecked")
-    private List<GuiButton> getButtonList() {
+    private List<Button> getButtonList() {
         return buttonList;
     }
 
@@ -265,28 +266,8 @@ public class GuiScreenConfigureChannels extends GuiScreen implements IGuiScreen 
     }
 
     @Override
-    protected void actionPerformed(GuiButton btn) {
-        if (btn == null) return;
-        switch (btn.id) {
-            case 0:
-                int value = getValue();
-                if (value <= 0) return;
-                ChannelDataAccessor.setChannelData(trigger, key.getText(), value);
-                break;
-            case 1:
-                ChannelDataAccessor.unsetChannelData(trigger, key.getText());
-                break;
-            case 2:
-                ChannelDataAccessor.wipeChannelData(trigger);
-                break;
-        }
-        super.actionPerformed(btn);
-    }
-
-    @Override
-    public void onGuiClosed() {
-        super.onGuiClosed();
-        Keyboard.enableRepeatEvents(false);
+    public void onClose() {
+        super.onClose();
         StructureLib.instance().proxy().uploadChannels(trigger);
     }
 
