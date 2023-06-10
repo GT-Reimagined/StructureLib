@@ -5,6 +5,7 @@ import static com.gtnewhorizon.structurelib.StructureLib.RANDOM;
 import java.util.*;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -163,10 +164,10 @@ public class ClientProxy extends CommonProxy {
         allHintsDirty = true;
     }
 
-    private static TextureAtlasSprite[] createTextureAtlasSpriteFromBlock(Block block, int meta) {
+    private static TextureAtlasSprite[] createTextureAtlasSpriteFromBlock(Block block) {
         TextureAtlasSprite[] ret = new TextureAtlasSprite[6];
         for (int i = 0; i < 6; i++) {
-            ret[i] = block.getIcon(i, meta);
+            ret[i] = block.asItem();
         }
         return ret;
     }
@@ -191,7 +192,7 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     public void startHinting(Level w) {
-        if (!w.isRemote) return;
+        if (!w.isClientSide) return;
         if (currentHints != null) endHinting(w);
         currentHints = new HintGroup();
     }
@@ -224,7 +225,7 @@ public class ClientProxy extends CommonProxy {
     }
 
     @Override
-    public void preInit(FMLPreInitializationEvent e) {
+    public void preInit() {
         FMLCommonHandler.instance().bus().register(new FMLEventHandler());
         MinecraftForge.EVENT_BUS.register(new ForgeEventHandler());
     }

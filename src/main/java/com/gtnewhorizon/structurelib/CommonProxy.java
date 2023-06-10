@@ -55,7 +55,7 @@ public class CommonProxy {
 
     public void endHinting(Level w) {}
 
-    public void preInit(FMLPreInitializationEvent e) {}
+    public void preInit() {}
 
     public long getOverworldTime() {
         return MinecraftServer.getServer().getEntityLevel().getTotalLevelTime();
