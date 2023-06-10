@@ -5,18 +5,21 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 
 import com.gtnewhorizon.structurelib.net.ErrorHintParticleMessage;
 import com.gtnewhorizon.structurelib.net.UpdateHintParticleMessage;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import trinsdar.networkapi.api.INetwork;
 
 public class CommonProxy {
 
@@ -61,11 +64,11 @@ public class CommonProxy {
         return MinecraftServer.getServer().getEntityLevel().getTotalLevelTime();
     }
 
-    public void uploadChannels(ItemStack trigger) {}
+    public void uploadChannels(ItemStack trigger, InteractionHand hand) {}
 
     public boolean markHintParticleError(Player player, Level w, int x, int y, int z) {
-        if (player instanceof ServerPlayer) { // just in case
-            StructureLib.net.sendTo(new ErrorHintParticleMessage(x, (short) y, z), (ServerPlayer) player);
+        if (player instanceof ServerPlayer serverPlayer) { // just in case
+            INetwork.getInstance().sendToClient(StructureLib.ERROR_HINT_PARTICLE, new ErrorHintParticleMessage(new BlockPos(x, y, z)), serverPlayer);
             return true;
         } else {
             return false;

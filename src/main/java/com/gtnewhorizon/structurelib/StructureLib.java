@@ -1,6 +1,7 @@
 package com.gtnewhorizon.structurelib;
 
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
@@ -14,6 +15,7 @@ import com.gtnewhorizon.structurelib.net.ErrorHintParticleMessage;
 import com.gtnewhorizon.structurelib.net.SetChannelDataMessage;
 import com.gtnewhorizon.structurelib.net.UpdateHintParticleMessage;
 import com.gtnewhorizon.structurelib.util.XSTR;
+import trinsdar.networkapi.api.PacketRegistration;
 
 
 /**
@@ -27,36 +29,31 @@ public class StructureLib {
     public static boolean PANIC_MODE = Boolean.getBoolean("structurelib.panic");
     public static final Logger LOGGER = LogManager.getLogger("StructureLib");
 
-    @SidedProxy(
-            serverSide = "com.gtnewhorizon.structurelib.CommonProxy",
-            clientSide = "com.gtnewhorizon.structurelib.ClientProxy")
+    public static final ResourceLocation ALIGNMENT_QUERY = new ResourceLocation(StructureLibAPI.MOD_ID, "alignment_query");
+    public static final ResourceLocation ALIGNMENT_DATA = new ResourceLocation(StructureLibAPI.MOD_ID, "alignment_data");
+    public static final ResourceLocation UPDATE_HINT_PARTICLE = new ResourceLocation(StructureLibAPI.MOD_ID, "update_hint_particle");
+    public static final ResourceLocation ERROR_HINT_PARTICLE = new ResourceLocation(StructureLibAPI.MOD_ID, "error_hint_particle");
+    public static final ResourceLocation SET_CHANNEL_DATA = new ResourceLocation(StructureLibAPI.MOD_ID, "set_channel_data");
+
     static CommonProxy proxy;
 
-    static final SimpleNetworkWrapper net = NetworkRegistry.INSTANCE.newSimpleChannel(StructureLibAPI.MOD_ID);
-
-    static {
-        net.registerMessage(
-                AlignmentMessage.ServerHandler.class,
-                AlignmentMessage.AlignmentQuery.class,
-                0,
-                Side.SERVER);
-        net.registerMessage(AlignmentMessage.ClientHandler.class, AlignmentMessage.AlignmentData.class, 1, Side.CLIENT);
-        net.registerMessage(UpdateHintParticleMessage.Handler.class, UpdateHintParticleMessage.class, 2, Side.CLIENT);
-        net.registerMessage(SetChannelDataMessage.Handler.class, SetChannelDataMessage.class, 3, Side.SERVER);
-        net.registerMessage(ErrorHintParticleMessage.Handler.class, ErrorHintParticleMessage.class, 4, Side.CLIENT);
+    public static void init() {
+        PacketRegistration.registerPacket(AlignmentMessage.AlignmentQuery.class, ALIGNMENT_QUERY, AlignmentMessage.AlignmentQuery::decode, PacketRegistration.NetworkDirection.PLAY_TO_SERVER);
+        PacketRegistration.registerPacket(AlignmentMessage.AlignmentData.class, ALIGNMENT_DATA, AlignmentMessage.AlignmentData::decode, PacketRegistration.NetworkDirection.PLAY_TO_CLIENT);
+        PacketRegistration.registerPacket(UpdateHintParticleMessage.class, UPDATE_HINT_PARTICLE, UpdateHintParticleMessage::decode, PacketRegistration.NetworkDirection.PLAY_TO_CLIENT);
+        PacketRegistration.registerPacket(ErrorHintParticleMessage.class, ERROR_HINT_PARTICLE, ErrorHintParticleMessage::decode, PacketRegistration.NetworkDirection.PLAY_TO_CLIENT);
+        PacketRegistration.registerPacket(SetChannelDataMessage.class, SET_CHANNEL_DATA, SetChannelDataMessage::decode, PacketRegistration.NetworkDirection.PLAY_TO_SERVER);
 
         try {
             DEBUG_MODE = Boolean.parseBoolean(System.getProperty("structurelib.debug"));
         } catch (IllegalArgumentException | NullPointerException e) {
             // turn on debug by default in dev mode
             // this will be overridden if above property is present and set to false
-            DEBUG_MODE = (Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment");
+            //DEBUG_MODE = (Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment");
         }
     }
 
     public static final XSTR RANDOM = new XSTR();
-
-    @Mod.Instance
     static StructureLib INSTANCE;
 
     static Object COMPAT;
@@ -67,15 +64,14 @@ public class StructureLib {
         }
     };
 
-    @Mod.EventHandler
-    public void preInit(FMLPreInitializationEvent e) {
-        ConfigurationHandler.INSTANCE.init(e.getSuggestedConfigurationFile());
-        proxy.preInit(e);
-        NetworkRegistry.INSTANCE.registerGuiHandler(instance(), new GuiHandler());
+    public void preInit() {
+        //ConfigurationHandler.INSTANCE.init(e.getSuggestedConfigurationFile());
+        proxy.preInit();
+        //NetworkRegistry.INSTANCE.registerGuiHandler(instance(), new GuiHandler());
 
-        if (Loader.isModLoaded(STRUCTURECOMPAT_MODID)) {
+        /*if (Loader.isModLoaded(STRUCTURECOMPAT_MODID)) {
             COMPAT = Loader.instance().getIndexedModList().get(STRUCTURECOMPAT_MODID).getMod();
-        }
+        }*/
     }
 
     public static void addClientSideChatMessages(String... messages) {

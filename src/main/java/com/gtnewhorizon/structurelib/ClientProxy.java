@@ -8,6 +8,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -21,7 +22,7 @@ import org.lwjgl.opengl.GL11;
 
 import com.gtnewhorizon.structurelib.entity.fx.WeightlessParticleFX;
 import com.gtnewhorizon.structurelib.net.SetChannelDataMessage;
-
+import trinsdar.networkapi.api.INetwork;
 
 
 public class ClientProxy extends CommonProxy {
@@ -220,8 +221,8 @@ public class ClientProxy extends CommonProxy {
     }
 
     @Override
-    public void uploadChannels(ItemStack trigger) {
-        StructureLib.net.sendToServer(new SetChannelDataMessage(trigger));
+    public void uploadChannels(ItemStack trigger, InteractionHand hand) {
+        INetwork.getInstance().sendToServer(StructureLib.SET_CHANNEL_DATA, new SetChannelDataMessage(trigger, hand));
     }
 
     @Override

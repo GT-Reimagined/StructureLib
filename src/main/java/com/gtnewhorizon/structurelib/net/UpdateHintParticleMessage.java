@@ -5,16 +5,15 @@ import static com.gtnewhorizon.structurelib.StructureLib.LOGGER;
 import com.gtnewhorizon.structurelib.StructureLib;
 import com.gtnewhorizon.structurelib.StructureLibAPI;
 
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
-import io.netty.buffer.ByteBuf;
 
-public class UpdateHintParticleMessage implements IMessage {
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
+import trinsdar.networkapi.api.IPacket;
 
-    private int x;
-    private short y;
-    private int z;
+public class UpdateHintParticleMessage implements IPacket {
+
+    private BlockPos pos;
     private short r;
     private short g;
     private short b;
@@ -22,56 +21,46 @@ public class UpdateHintParticleMessage implements IMessage {
 
     public UpdateHintParticleMessage() {}
 
-    public UpdateHintParticleMessage(int x, short y, int z, short r, short g, short b, short a) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
+    public UpdateHintParticleMessage(BlockPos pos, short r, short g, short b, short a) {
+        this.pos = pos;
         this.r = r;
         this.g = g;
         this.b = b;
         this.a = a;
     }
 
-    @Override
-    public void fromBytes(ByteBuf buf) {
-        x = buf.readInt();
-        y = buf.readShort();
-        z = buf.readInt();
-        r = buf.readUnsignedByte();
-        g = buf.readUnsignedByte();
-        b = buf.readUnsignedByte();
-        a = buf.readUnsignedByte();
+    public static UpdateHintParticleMessage decode(FriendlyByteBuf buf) {
+        return new UpdateHintParticleMessage(buf.readBlockPos(), buf.readUnsignedByte(), buf.readUnsignedByte(), buf.readUnsignedByte(), buf.readUnsignedByte());
     }
 
     @Override
-    public void toBytes(ByteBuf buf) {
-        buf.writeInt(x);
-        buf.writeShort(y);
-        buf.writeInt(z);
+    public void encode(FriendlyByteBuf buf) {
+        buf.writeBlockPos(pos);
         buf.writeByte(r);
         buf.writeByte(g);
         buf.writeByte(b);
         buf.writeByte(a);
     }
 
-    public static class Handler implements IMessageHandler<UpdateHintParticleMessage, IMessage> {
+    @Override
+    public void handleClient(ServerPlayer sender) {
 
-        @Override
-        public IMessage onMessage(UpdateHintParticleMessage msg, MessageContext ctx) {
-            boolean updateResult = StructureLibAPI.updateHintParticleTint(
-                    StructureLib.getCurrentPlayer(),
-                    StructureLib.getCurrentPlayer().worldObj,
-                    msg.x,
-                    msg.y,
-                    msg.z,
-                    new short[] { msg.r, msg.g, msg.b, msg.a, });
-            if (StructureLibAPI.isDebugEnabled()) LOGGER.debug(
-                    "Server instructed to update hint particle at ({}, {}, {}), result {}!",
-                    msg.x,
-                    msg.y,
-                    msg.z,
-                    updateResult);
-            return null;
-        }
+    }
+
+    @Override
+    public void handleServer() {
+        boolean updateResult = StructureLibAPI.updateHintParticleTint(
+            StructureLib.getCurrentPlayer(),
+            StructureLib.getCurrentPlayer().level,
+            pos.getX(),
+            pos.getY(),
+            pos.getZ(),
+            new short[] { r, g, b, a, });
+        if (StructureLibAPI.isDebugEnabled()) LOGGER.debug(
+            "Server instructed to update hint particle at ({}, {}, {}), result {}!",
+            pos.getX(),
+            pos.getY(),
+            pos.getZ(),
+            updateResult);
     }
 }

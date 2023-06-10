@@ -14,12 +14,17 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraftforge.fml.ModContainer;
+import trinsdar.networkapi.api.INetwork;
 
 /**
  * A stable interface into the structure lib's internals. Backwards compatibility is maintained to the maximum extend
@@ -39,7 +44,7 @@ public class StructureLibAPI {
      * Identifiers are required to be value-comparable, i.e. overrides {@link Object#equals(Object)}. Suggested
      * identifier includes
      * <ul>
-     * <li>Mod Instance or {@link cpw.mods.fml.common.ModContainer}</li>
+     * <li>Mod Instance or {@link ModContainer}</li>
      * <li>{@link com.gtnewhorizon.structurelib.alignment.constructable.IConstructable} and its friends, if you are
      * triggering structure check via this interface.</li>
      * <li>{@link ResourceLocation}</li>
@@ -152,7 +157,6 @@ public class StructureLibAPI {
      * @param y     y coord
      * @param z     z coord
      * @param block block to take texture from
-     * @param meta  the meta of block to take texture from
      */
     public static void hintParticle(Level w, int x, int y, int z, Block block) {
         proxy.hintParticle(w, x, y, z, block);
@@ -191,7 +195,7 @@ public class StructureLibAPI {
      * @throws IllegalArgumentException if is not tile entity or provided a null alignment
      */
     public static void queryAlignment(IAlignmentProvider provider) {
-        StructureLib.net.sendToServer(new AlignmentMessage.AlignmentQuery(provider));
+        INetwork.getInstance().sendToServer(StructureLib.ALIGNMENT_QUERY, new AlignmentMessage.AlignmentQuery(provider));
     }
 
     /**
@@ -203,7 +207,7 @@ public class StructureLibAPI {
      * @throws IllegalArgumentException if is not tile entity or provided a null alignment
      */
     public static void sendAlignment(IAlignmentProvider provider) {
-        StructureLib.net.sendToAll(new AlignmentMessage.AlignmentData(provider));
+        INetwork.getInstance().sendToAll(StructureLib.ALIGNMENT_DATA, new AlignmentMessage.AlignmentData(provider));
     }
 
     /**
@@ -215,7 +219,7 @@ public class StructureLibAPI {
      * @throws IllegalArgumentException if is not tile entity or provided a null alignment
      */
     public static void sendAlignment(IAlignmentProvider provider, ServerPlayer player) {
-        StructureLib.net.sendTo(new AlignmentMessage.AlignmentData(provider), player);
+        INetwork.getInstance().sendToClient(StructureLib.ALIGNMENT_DATA, new AlignmentMessage.AlignmentData(provider), player);
     }
 
     /**
@@ -227,8 +231,8 @@ public class StructureLibAPI {
      *
      * @throws IllegalArgumentException if is not tile entity or provided a null alignment
      */
-    public static void sendAlignment(IAlignmentProvider provider, NetworkRegistry.TargetPoint targetPoint) {
-        StructureLib.net.sendToAllAround(new AlignmentMessage.AlignmentData(provider), targetPoint);
+    public static void sendAlignment(IAlignmentProvider provider, AABB targetPoint, ServerLevel level) {
+        INetwork.getInstance().sendToAllAround(StructureLib.ALIGNMENT_DATA, new AlignmentMessage.AlignmentData(provider), level, targetPoint);
     }
 
     /**
@@ -240,7 +244,7 @@ public class StructureLibAPI {
      * @throws IllegalArgumentException if is not tile entity or provided a null alignment
      */
     public static void sendAlignment(IAlignmentProvider provider, Level dimension) {
-        StructureLib.net.sendToDimension(new AlignmentMessage.AlignmentData(provider), dimension.provider.dimensionId);
+        //INetwork.getInstance().sendToAll(StructureLib.ALIGNMENT_DATA, new AlignmentMessage.AlignmentData(provider));
     }
 
     /**
@@ -277,8 +281,8 @@ public class StructureLibAPI {
      */
     public static boolean isBlockTriviallyReplaceable(Level w, int x, int y, int z, Player actor) {
         // TODO extend this function a bit
-        Block block = w.getBlockState(new BlockPos(x, y, z)).getBlock();
-        return block.isAir(w, x, y, z) || block.isReplaceable(w, x, y, z);
+        BlockState block = w.getBlockState(new BlockPos(x, y, z));
+        return block.isAir() || block.getMaterial().isReplaceable();
     }
 
     /**

@@ -15,6 +15,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import org.apache.commons.lang3.StringUtils;
@@ -29,6 +30,7 @@ public class GuiScreenConfigureChannels extends AbstractContainerScreen<Containe
     private static final int KEY_MAX_WIDTH = 50;
     private final ItemStack trigger;
     private final GuiChannelsList list;
+    private final InteractionHand hand;
     private EditBox key, value;
     protected int guiTop, guiLeft;
     private List<Button> buttonList = new ArrayList<>();
@@ -36,6 +38,7 @@ public class GuiScreenConfigureChannels extends AbstractContainerScreen<Containe
     public GuiScreenConfigureChannels(ContainerConfigureChannels container, Inventory invPlayer, Component title, ItemStack trigger) {
         super(container, invPlayer, title);
         this.trigger = trigger;
+        this.hand = container.hand;
         list = new GuiChannelsList(152, 100, 12, 12, 14);
         list.addSelectionListener((list, selectedIndex) -> {
             Entry<String, Integer> e = list.getElementAt(selectedIndex);
@@ -268,7 +271,7 @@ public class GuiScreenConfigureChannels extends AbstractContainerScreen<Containe
     @Override
     public void onClose() {
         super.onClose();
-        StructureLib.instance().proxy().uploadChannels(trigger);
+        StructureLib.instance().proxy().uploadChannels(trigger, hand);
     }
 
     @Override

@@ -17,6 +17,10 @@ group = project.maven_group
 
 
 
+repositories {
+    maven { url 'https://jitpack.io' }
+}
+
 dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings loom.layered() {
@@ -24,6 +28,7 @@ dependencies {
         parchment("org.parchmentmc.data:parchment-${rootProject.minecraft_version}:${rootProject.mappings_version}@zip")
     }
     forge "net.minecraftforge:forge:${project.minecraft_version}-${project.forge_version}"
+    modImplementation("com.github.Trinsdar.NetworkApi:networkapi-forge:bf5f6e0175")
 }
 
 processResources {
