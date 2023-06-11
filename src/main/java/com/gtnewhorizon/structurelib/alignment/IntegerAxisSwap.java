@@ -9,14 +9,14 @@ import net.minecraft.world.phys.Vec3;
 
 public class IntegerAxisSwap {
 
-    private Vec3i forFirstAxis;
-    private Vec3i forSecondAxis;
-    private Vec3i forThirdAxis;
+    private final Vec3i forFirstAxis;
+    private final Vec3i forSecondAxis;
+    private final Vec3i forThirdAxis;
 
     public IntegerAxisSwap(Direction forFirstAxis, Direction forSecondAxis, Direction forThirdAxis) {
-        /*this.forFirstAxis = Direction.getAxisVector(forFirstAxis);
-        this.forSecondAxis = Direction.getAxisVector(forSecondAxis);
-        this.forThirdAxis = Direction.getAxisVector(forThirdAxis);
+        this.forFirstAxis = forFirstAxis.getNormal();
+        this.forSecondAxis = forSecondAxis.getNormal();
+        this.forThirdAxis = forThirdAxis.getNormal();
         if (abs(this.forFirstAxis.getX()) + abs(this.forSecondAxis.getX()) + abs(this.forThirdAxis.getX()) != 1
                 || abs(this.forFirstAxis.getY()) + abs(this.forSecondAxis.getY()) + abs(this.forThirdAxis.getY()) != 1
                 || abs(this.forFirstAxis.getZ()) + abs(this.forSecondAxis.getZ()) + abs(this.forThirdAxis.getZ())
@@ -24,7 +24,7 @@ public class IntegerAxisSwap {
             throw new IllegalArgumentException(
                     "Axis are overlapping/missing! " + forFirstAxis
                             .name() + " " + forSecondAxis.name() + " " + forThirdAxis.name());
-        }*/
+        }
     }
 
     public Vec3i translate(Vec3i point) {
@@ -48,25 +48,23 @@ public class IntegerAxisSwap {
     }
 
     public Vec3 translate(Vec3 point) {
-        return point;
-        /*return Vec3.createVectorHelper(
-                forFirstAxis.getX() * point.xCoord + forFirstAxis.getY() * point.yCoord
-                        + forFirstAxis.getZ() * point.zCoord,
-                forSecondAxis.getX() * point.xCoord + forSecondAxis.getY() * point.yCoord
-                        + forSecondAxis.getZ() * point.zCoord,
-                forThirdAxis.getX() * point.xCoord + forThirdAxis.getY() * point.yCoord
-                        + forThirdAxis.getZ() * point.zCoord);*/
+        return new Vec3(
+                forFirstAxis.getX() * point.x + forFirstAxis.getY() * point.y
+                        + forFirstAxis.getZ() * point.z,
+                forSecondAxis.getX() * point.x + forSecondAxis.getY() * point.y
+                        + forSecondAxis.getZ() * point.z,
+                forThirdAxis.getX() * point.x + forThirdAxis.getY() * point.y
+                        + forThirdAxis.getZ() * point.z);
     }
 
     public Vec3 inverseTranslate(Vec3 point) {
-        return point;
-        /*return Vec3.createVectorHelper(
-                forFirstAxis.getX() * point.xCoord + forSecondAxis.getX() * point.yCoord
-                        + forThirdAxis.getX() * point.zCoord,
-                forFirstAxis.getY() * point.xCoord + forSecondAxis.getY() * point.yCoord
-                        + forThirdAxis.getY() * point.zCoord,
-                forFirstAxis.getZ() * point.xCoord + forSecondAxis.getZ() * point.yCoord
-                        + forThirdAxis.getZ() * point.zCoord);*/
+        return new Vec3(
+                forFirstAxis.getX() * point.x + forSecondAxis.getX() * point.y
+                        + forThirdAxis.getX() * point.z,
+                forFirstAxis.getY() * point.x + forSecondAxis.getY() * point.y
+                        + forThirdAxis.getY() * point.z,
+                forFirstAxis.getZ() * point.x + forSecondAxis.getZ() * point.y
+                        + forThirdAxis.getZ() * point.z);
     }
 
     public void translate(int[] point, int[] out) {
