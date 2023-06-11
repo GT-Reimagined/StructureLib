@@ -34,7 +34,7 @@ public class GuiScreenConfigureChannels extends AbstractContainerScreen<Containe
 
     private static final int KEY_MAX_WIDTH = 50;
     private final ItemStack trigger;
-    private final GuiChannelsList list;
+    //private final GuiChannelsList list;
     private final InteractionHand hand;
     private EditBox key, value;
     protected int guiTop, guiLeft;
@@ -44,13 +44,13 @@ public class GuiScreenConfigureChannels extends AbstractContainerScreen<Containe
         super(container, invPlayer, title);
         this.trigger = trigger;
         this.hand = container.hand;
-        list = new GuiChannelsList(152, 100, 12, 12, 14);
+        /*list = new GuiChannelsList(152, 100, 12, 12, 14);
         list.addSelectionListener((list, selectedIndex) -> {
             Entry<String, Integer> e = list.getElementAt(selectedIndex);
             key.setValue(e.getKey());
             value.setValue(e.getValue().toString());
             updateButtons();
-        });
+        });*/
     }
 
     @Override
@@ -127,7 +127,7 @@ public class GuiScreenConfigureChannels extends AbstractContainerScreen<Containe
         this.value.setMaxLength(32500);
         this.addRenderableOnly(key);
         this.addRenderableOnly(value);
-        list.onGuiInit(this);
+        //list.onGuiInit(this);
         addButton(new Button(
             guiLeft + 12,
             guiTop + 157,
@@ -292,7 +292,7 @@ public class GuiScreenConfigureChannels extends AbstractContainerScreen<Containe
     @Override
     protected void renderBg(PoseStack poseStack, float partialTick, int mouseX, int mouseY) {
         drawTexture(poseStack, new ResourceLocation("structurelib", "textures/gui/channels.png"), guiLeft, guiTop, 0, 0, 176, 188);
-        list.drawScreen(poseStack, mouseX, mouseY, partialTick);
+        //list.drawScreen(poseStack, mouseX, mouseY, partialTick);
     }
 
     @Override
@@ -320,7 +320,7 @@ public class GuiScreenConfigureChannels extends AbstractContainerScreen<Containe
         return this;
     }
 
-    private class GuiChannelsList extends GuiScrollableList<Entry<String, Integer>> {
+    /*private class GuiChannelsList extends GuiScrollableList<Entry<String, Integer>> {
 
         private List<Entry<String, Integer>> cache;
 
@@ -403,5 +403,5 @@ public class GuiScreenConfigureChannels extends AbstractContainerScreen<Containe
             }
             return s;
         }
-    }
+    }*/
 }

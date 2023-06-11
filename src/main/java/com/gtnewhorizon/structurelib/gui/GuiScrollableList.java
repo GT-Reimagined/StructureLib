@@ -3,9 +3,14 @@ package com.gtnewhorizon.structurelib.gui;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.resources.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -27,7 +32,7 @@ import org.lwjgl.opengl.GL11;
  */
 public abstract class GuiScrollableList<T> {
 
-    protected final int slotHeight;
+    /*protected final int slotHeight;
     private final Minecraft mc = Minecraft.getInstance();
     protected final int originX;
     protected final int originY;
@@ -51,6 +56,8 @@ public abstract class GuiScrollableList<T> {
 
     private boolean showSelectionBox = true;
 
+    private IGuiScreen gui;
+
     public GuiScrollableList(int width, int height, int originX, int originY, int slotHeight) {
         this.width = width;
         this.height = height;
@@ -69,6 +76,7 @@ public abstract class GuiScrollableList<T> {
         maxY = minY + height;
         minX = originX + gui.getGuiLeft();
         maxX = minX + width;
+        this.gui = gui;
     }
 
     public void addSelectionListener(ListSelectionListener<T> listener) {
@@ -164,10 +172,10 @@ public abstract class GuiScrollableList<T> {
         }
     }
 
-    /**
+    *//**
      * draws the slot to the screen, pass in mouse's current x and y and partial ticks
-     */
-    public void drawScreen(int mX, int mY, float partialTick) {
+     *//*
+    public void drawScreen(PoseStack poseStackm, int mX, int mY, float partialTick) {
         this.mouseX = mX;
         this.mouseY = mY;
 
@@ -325,7 +333,7 @@ public abstract class GuiScrollableList<T> {
         if (!Mouse.isButtonDown(0)) {
             if (mouseWheelDelta > 0) {
                 amountScrolled -= slotHeight / 2f;
-            } else /* if (mouseWheelDelta < 0) */ {
+            } else *//* if (mouseWheelDelta < 0) *//* {
                 amountScrolled += slotHeight / 2f;
             }
         }
@@ -416,7 +424,7 @@ public abstract class GuiScrollableList<T> {
         tess.addVertex(minX, minY, 0.0D);
         tess.draw();
         GL11.glEnable(GL11.GL_TEXTURE_2D);
-    }
+    }*/
 
     public interface IGuiScreen {
 
@@ -435,6 +443,12 @@ public abstract class GuiScrollableList<T> {
         int getOverlayOffsetX();
 
         void doActionPerformed(Button but);
+
+        void drawTexture(PoseStack stack, ResourceLocation loc, int left, int top, int x, int y, int sizeX, int sizeY);
+
+        Font getFont();
+
+        Screen getGui();
     }
 
     public interface ListSelectionListener<T> {
