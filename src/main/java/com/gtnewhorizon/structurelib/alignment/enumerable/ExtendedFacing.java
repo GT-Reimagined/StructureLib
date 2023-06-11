@@ -12,6 +12,8 @@ import com.google.common.collect.ImmutableSet;
 import com.gtnewhorizon.structurelib.alignment.IAlignment;
 import com.gtnewhorizon.structurelib.alignment.IntegerAxisSwap;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.phys.Vec3;
 
 public enum ExtendedFacing {
@@ -120,7 +122,7 @@ public enum ExtendedFacing {
 
     static {
         stream(values()).forEach(
-                extendedFacing -> FOR_FACING.compute(extendedFacing.direction, ((forgeDirection, extendedFacings) -> {
+                extendedFacing -> FOR_FACING.compute(extendedFacing.direction, ((direction, extendedFacings) -> {
                     if (extendedFacings == null) {
                         extendedFacings = new ArrayList<>();
                     }
@@ -305,7 +307,7 @@ public enum ExtendedFacing {
     }
 
     public String getLocalizedName() {
-        return StatCollector.translateToLocal("structurelib.facing." + getIndex());
+        return new TranslatableComponent("structurelib.facing." + getIndex()).getString();
     }
 
     public static ExtendedFacing byName(String name) {

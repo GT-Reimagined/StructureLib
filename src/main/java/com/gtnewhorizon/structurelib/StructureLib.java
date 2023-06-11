@@ -65,7 +65,6 @@ public class StructureLib {
     };
 
     public void preInit() {
-        //ConfigurationHandler.INSTANCE.init(e.getSuggestedConfigurationFile());
         proxy.preInit();
         //NetworkRegistry.INSTANCE.registerGuiHandler(instance(), new GuiHandler());
 

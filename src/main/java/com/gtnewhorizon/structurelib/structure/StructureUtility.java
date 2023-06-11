@@ -24,7 +24,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.StringUtils;
 
 import com.gtnewhorizon.structurelib.StructureEvent.StructureElementVisitedEvent;
@@ -704,7 +703,7 @@ public class StructureUtility {
             private Block block;
 
             private Block getBlock() {
-                if (block == null) block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(modid, registryName));
+                if (block == null) block = net.minecraft.core.Registry.BLOCK.get(new ResourceLocation(modid, registryName));
                 return block;
             }
 
@@ -772,7 +771,7 @@ public class StructureUtility {
 
             private boolean init() {
                 if (!initialized) {
-                    block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(modid, registryName));
+                    block = net.minecraft.core.Registry.BLOCK.get(new ResourceLocation(modid, registryName));
                     initialized = true;
                 }
                 return block != null;

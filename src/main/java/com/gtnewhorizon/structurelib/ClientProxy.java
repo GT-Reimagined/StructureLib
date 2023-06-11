@@ -72,7 +72,7 @@ public class ClientProxy extends CommonProxy {
         HintParticleInfo info = new HintParticleInfo(w, x, y, z, icons, RGBa);
 
         // check and remove colliding holograms
-        if (ConfigurationHandler.INSTANCE.isRemoveCollidingHologram()) {
+        if (StructureLibConfig.CLIENT.REMOVE_COLLIDING) {
             HintGroup dupe = allHints.get(info);
             if (dupe != null && dupe != currentHints) {
                 allGroups.remove(dupe);
@@ -205,7 +205,7 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void endHinting(Level w) {
         if (!w.isClientSide || currentHints == null) return;
-        while (!allGroups.isEmpty() && allGroups.size() >= ConfigurationHandler.INSTANCE.getMaxCoexistingHologram()) {
+        while (!allGroups.isEmpty() && allGroups.size() >= StructureLibConfig.CLIENT.MAX_COEXISTING) {
             allGroups.remove(0);
         }
         if (!currentHints.getHints().isEmpty()) allGroups.add(currentHints);
@@ -319,7 +319,7 @@ public class ClientProxy extends CommonProxy {
                     (int) (tint[0] * .9F),
                     (int) (tint[1] * .95F),
                     (int) (tint[2] * 1F),
-                    ConfigurationHandler.INSTANCE.getHintTransparency());
+                    StructureLibConfig.CLIENT.HINT_TRANSPARENCY);
 
             double X = (x - eyeXint) + 0.25;
             double Y = (y - eyeYint) + 0.25;
@@ -432,7 +432,7 @@ public class ClientProxy extends CommonProxy {
                 // The allGroups is implicitly sorted by creationTime
                 // here we exploit this ordering to reduce iteration size
                 int deadline = Minecraft.getMinecraft().thePlayer.ticksExisted
-                        - ConfigurationHandler.INSTANCE.getHintLifespan();
+                        - StructureLibConfig.CLIENT.HINT_LIFESPAN;
                 int i;
                 for (i = 0; i < allGroups.size(); i++) {
                     if (allGroups.get(i).getCreationTime() > deadline) {

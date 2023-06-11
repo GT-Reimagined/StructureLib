@@ -1,13 +1,5 @@
 package com.gtnewhorizon.structurelib.block;
 
-import java.util.List;
-
-import com.gtnewhorizon.structurelib.StructureLib;
-import com.gtnewhorizon.structurelib.StructureLibAPI;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Material;

@@ -3,6 +3,8 @@ package com.gtnewhorizon.structurelib.alignment.constructable;
 import java.util.WeakHashMap;
 
 
+import com.gtnewhorizon.structurelib.StructureLibConfig;
+import com.gtnewhorizon.structurelib.util.PlatformUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -11,9 +13,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.common.util.FakePlayer;
 
-import com.gtnewhorizon.structurelib.ConfigurationHandler;
 import com.gtnewhorizon.structurelib.StructureLib;
 import com.gtnewhorizon.structurelib.StructureLibAPI;
 import com.gtnewhorizon.structurelib.alignment.IAlignment;
@@ -39,7 +39,7 @@ public class ConstructableUtility {
     private static boolean handle0(ItemStack aStack, Player aPlayer, Level aLevel, int aX, int aY, int aZ,
             int aSide) {
         BlockEntity tBlockEntity = aLevel.getBlockEntity(new BlockPos(aX, aY, aZ));
-        if (tBlockEntity == null || aPlayer instanceof FakePlayer) {
+        if (tBlockEntity == null || PlatformUtils.isFakePlayer(aPlayer)) {
             return aPlayer instanceof ServerPlayer;
         }
         if (aPlayer instanceof ServerPlayer) {
@@ -47,11 +47,11 @@ public class ConstructableUtility {
             if (!aPlayer.isShiftKeyDown()) return true;
 
             long timePast = System.currentTimeMillis() - getLastUseMilis(aPlayer);
-            if (timePast < ConfigurationHandler.INSTANCE.getAutoPlaceInterval()) {
+            if (timePast < StructureLibConfig.COMMON.AUTO_PLACE_INTERVAL) {
                 aPlayer.sendMessage(
                         new TranslatableComponent(
                                 "item.structurelib.constructableTrigger.too_fast",
-                                ConfigurationHandler.INSTANCE.getAutoPlaceInterval() - timePast), aPlayer.getUUID());
+                                StructureLibConfig.COMMON.AUTO_PLACE_INTERVAL - timePast), aPlayer.getUUID());
                 return true;
             }
         } else if (!StructureLib.isCurrentPlayer(aPlayer)) {
@@ -81,7 +81,7 @@ public class ConstructableUtility {
             } else if (constructable instanceof ISurvivalConstructable) {
                 int built = ((ISurvivalConstructable) constructable).survivalConstruct(
                         aStack,
-                        ConfigurationHandler.INSTANCE.getAutoPlaceBudget(),
+                    StructureLibConfig.COMMON.AUTO_PLACE_BUDGET,
                         ISurvivalBuildEnvironment.create(IItemSource.fromPlayer(playerMP), playerMP));
                 if (built > 0) {
                     playerMP.sendMessage(new TranslatableComponent("structurelib.autoplace.built_stat", built), playerMP.getUUID());

@@ -1,9 +1,5 @@
 package com.gtnewhorizon.structurelib;
 
-import static com.gtnewhorizon.structurelib.StructureLib.proxy;
-
-
-
 import com.gtnewhorizon.structurelib.alignment.IAlignment;
 import com.gtnewhorizon.structurelib.alignment.IAlignmentProvider;
 import com.gtnewhorizon.structurelib.alignment.enumerable.ExtendedFacing;
@@ -17,14 +13,14 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.fml.ModContainer;
 import trinsdar.networkapi.api.INetwork;
+
+import static com.gtnewhorizon.structurelib.StructureLib.proxy;
 
 /**
  * A stable interface into the structure lib's internals. Backwards compatibility is maintained to the maximum extend
@@ -44,7 +40,7 @@ public class StructureLibAPI {
      * Identifiers are required to be value-comparable, i.e. overrides {@link Object#equals(Object)}. Suggested
      * identifier includes
      * <ul>
-     * <li>Mod Instance or {@link ModContainer}</li>
+     * <li>Mod Instance or ModContainer</li>
      * <li>{@link com.gtnewhorizon.structurelib.alignment.constructable.IConstructable} and its friends, if you are
      * triggering structure check via this interface.</li>
      * <li>{@link ResourceLocation}</li>
@@ -113,7 +109,7 @@ public class StructureLibAPI {
      * @param x     x coord
      * @param y     y coord
      * @param z     z coord
-     * @param icons 6 texture. in forge direction order.
+     * @param icons 6 texture. in direction order.
      * @param RGBa  a 4 short array. tint in rgba form. currently alpha channel is ignored, but we might change this
      *              later on.
      */
@@ -143,7 +139,7 @@ public class StructureLibAPI {
      * @param x     x coord
      * @param y     y coord
      * @param z     z coord
-     * @param icons 6 texture. in forge direction order.
+     * @param icons 6 texture. in direction order.
      */
     public static void hintParticle(Level w, int x, int y, int z, TextureAtlasSprite[] icons) {
         proxy.hintParticle(w, x, y, z, icons);

@@ -34,10 +34,10 @@ public class CommonProxy {
     public void hintParticle(Level w, int x, int y, int z, Block block) {}
 
     public boolean updateHintParticleTint(Player player, Level w, int x, int y, int z, short[] rgBa) {
-        if (player instanceof ServerPlayer) { // just in case
-            StructureLib.net.sendTo(
-                    new UpdateHintParticleMessage(x, (short) y, z, rgBa[0], rgBa[1], rgBa[2], rgBa[3]),
-                    (ServerPlayer) player);
+        if (player instanceof ServerPlayer serverPlayer) { // just in case
+            INetwork.getInstance().sendToClient(StructureLib.UPDATE_HINT_PARTICLE,
+                    new UpdateHintParticleMessage(new BlockPos(x, y, z), rgBa[0], rgBa[1], rgBa[2], rgBa[3]),
+                    serverPlayer);
             return true;
         } else {
             return false;
@@ -61,7 +61,7 @@ public class CommonProxy {
     public void preInit() {}
 
     public long getOverworldTime() {
-        return MinecraftServer.getServer().getEntityLevel().getTotalLevelTime();
+        return INetwork.getInstance().getCurrentServer().overworld().getGameTime();
     }
 
     public void uploadChannels(ItemStack trigger, InteractionHand hand) {}
