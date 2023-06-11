@@ -116,7 +116,8 @@ public class InventoryUtility {
 
             @Override
             public void markDirty(InventoryIterable<Inv> inv) {
-                inv.getInventory().markDirty();
+                //TODO figure out
+                //inv.getInventory().markDirty();
             }
         };
     }
@@ -143,7 +144,8 @@ public class InventoryUtility {
                         filter,
                         player,
                         false);
-                if (found > 0) inv.markDirty();
+                //TODO figure out
+                if (found > 0); //inv.markDirty();
                 return found;
             }
         };

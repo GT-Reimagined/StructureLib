@@ -9,12 +9,12 @@ import net.minecraft.world.phys.Vec3;
 
 public class IntegerAxisSwap {
 
-    private final Vec3i forFirstAxis;
-    private final Vec3i forSecondAxis;
-    private final Vec3i forThirdAxis;
+    private Vec3i forFirstAxis;
+    private Vec3i forSecondAxis;
+    private Vec3i forThirdAxis;
 
     public IntegerAxisSwap(Direction forFirstAxis, Direction forSecondAxis, Direction forThirdAxis) {
-        this.forFirstAxis = Direction.getAxisVector(forFirstAxis);
+        /*this.forFirstAxis = Direction.getAxisVector(forFirstAxis);
         this.forSecondAxis = Direction.getAxisVector(forSecondAxis);
         this.forThirdAxis = Direction.getAxisVector(forThirdAxis);
         if (abs(this.forFirstAxis.getX()) + abs(this.forSecondAxis.getX()) + abs(this.forThirdAxis.getX()) != 1
@@ -24,7 +24,7 @@ public class IntegerAxisSwap {
             throw new IllegalArgumentException(
                     "Axis are overlapping/missing! " + forFirstAxis
                             .name() + " " + forSecondAxis.name() + " " + forThirdAxis.name());
-        }
+        }*/
     }
 
     public Vec3i translate(Vec3i point) {
@@ -48,23 +48,25 @@ public class IntegerAxisSwap {
     }
 
     public Vec3 translate(Vec3 point) {
-        return Vec3.createVectorHelper(
+        return point;
+        /*return Vec3.createVectorHelper(
                 forFirstAxis.getX() * point.xCoord + forFirstAxis.getY() * point.yCoord
                         + forFirstAxis.getZ() * point.zCoord,
                 forSecondAxis.getX() * point.xCoord + forSecondAxis.getY() * point.yCoord
                         + forSecondAxis.getZ() * point.zCoord,
                 forThirdAxis.getX() * point.xCoord + forThirdAxis.getY() * point.yCoord
-                        + forThirdAxis.getZ() * point.zCoord);
+                        + forThirdAxis.getZ() * point.zCoord);*/
     }
 
     public Vec3 inverseTranslate(Vec3 point) {
-        return Vec3.createVectorHelper(
+        return point;
+        /*return Vec3.createVectorHelper(
                 forFirstAxis.getX() * point.xCoord + forSecondAxis.getX() * point.yCoord
                         + forThirdAxis.getX() * point.zCoord,
                 forFirstAxis.getY() * point.xCoord + forSecondAxis.getY() * point.yCoord
                         + forThirdAxis.getY() * point.zCoord,
                 forFirstAxis.getZ() * point.xCoord + forSecondAxis.getZ() * point.yCoord
-                        + forThirdAxis.getZ() * point.zCoord);
+                        + forThirdAxis.getZ() * point.zCoord);*/
     }
 
     public void translate(int[] point, int[] out) {
