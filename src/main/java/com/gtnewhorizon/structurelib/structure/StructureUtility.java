@@ -16,14 +16,18 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import org.apache.commons.lang3.StringUtils;
 
 import com.gtnewhorizon.structurelib.StructureEvent.StructureElementVisitedEvent;
@@ -393,14 +397,15 @@ public class StructureUtility {
             @Nullable Consumer<Component> chatter) {
         if (stack.isEmpty()) throw new NullPointerException();
         if (stack.getCount() != 1) throw new IllegalArgumentException();
-        if (!(stack.getItem() instanceof BlockItem)) throw new IllegalArgumentException();
+        if (!(stack.getItem() instanceof BlockItem blockItem)) throw new IllegalArgumentException();
         if (!StructureLibAPI.isBlockTriviallyReplaceable(world, x, y, z, actor)) return PlaceResult.REJECT;
         if (!assumeStackPresent && !s.takeOne(stack, true)) {
             if (chatter != null) chatter.accept(
                     new TranslatableComponent("structurelib.autoplace.error.no_item_stack", stack.getDisplayName()));
             return PlaceResult.REJECT;
         }
-        if (!stack.copy().tryPlaceItemIntoLevel(actor, world, x, y, z, Direction.UP.ordinal(), 0.5f, 0.5f, 0.5f))
+        BlockPos pos = new BlockPos(x, y, z);
+        if (!blockItem.place(new BlockPlaceContext(actor, InteractionHand.MAIN_HAND, stack, new BlockHitResult(Vec3.atCenterOf(pos), Direction.UP, pos, false))).consumesAction())
             return PlaceResult.REJECT;
         if (!s.takeOne(stack, false))
             // this is bad! probably an exploit somehow. Let's nullify the block we just placed instead
