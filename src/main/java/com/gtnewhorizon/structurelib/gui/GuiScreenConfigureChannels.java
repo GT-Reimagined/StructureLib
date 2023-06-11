@@ -7,10 +7,15 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -118,6 +123,8 @@ public class GuiScreenConfigureChannels extends AbstractContainerScreen<Containe
                 updateButtons();
             }
         };
+        this.key.setMaxLength(32500);
+        this.value.setMaxLength(32500);
         this.addRenderableOnly(key);
         this.addRenderableOnly(value);
         list.onGuiInit(this);
@@ -195,7 +202,7 @@ public class GuiScreenConfigureChannels extends AbstractContainerScreen<Containe
 
     @Override
     public void doActionPerformed(Button but) {
-        actionPerformed(but);
+
     }
 
     @SuppressWarnings("unchecked")
@@ -203,7 +210,7 @@ public class GuiScreenConfigureChannels extends AbstractContainerScreen<Containe
         return buttonList;
     }
 
-    @Override
+    /*@Override
     public void handleMouseInput() {
         int delta = Mouse.getEventDWheel();
         if (delta != 0) list.handleDWheel(delta);
@@ -247,22 +254,22 @@ public class GuiScreenConfigureChannels extends AbstractContainerScreen<Containe
         }
         if (value.textboxKeyTyped(aChar, aKey)) return;
         super.keyTyped(aChar, aKey);
-    }
+    }*/
 
     private void updateButtons() {
         // this will be called from setText of key and value. NEVER UPDATE THE VALUE OF THESE HERE OR GET A
         // STACKOVERFLOW!
-        String keyText = key.getText();
+        String keyText = key.getValue();
         boolean existing = !StringUtils.isEmpty(keyText) && ChannelDataAccessor.hasSubChannel(trigger, keyText);
-        getButtonList().get(0).displayString = existing ? I18n.format("item.structurelib.constructableTrigger.gui.set")
-                : I18n.format("item.structurelib.constructableTrigger.gui.add");
-        getButtonList().get(0).enabled = !StringUtils.isBlank(value.getText());
-        getButtonList().get(1).enabled = existing && !StringUtils.isBlank(value.getText());
+        String translation = existing ? "item.structurelib.constructableTrigger.gui.set" : "item.structurelib.constructableTrigger.gui.add";
+        getButtonList().get(0).setMessage(new TranslatableComponent(translation));
+        getButtonList().get(0).active = !StringUtils.isBlank(value.getValue());
+        getButtonList().get(1).active = existing && !StringUtils.isBlank(value.getValue());
     }
 
     private int getValue() {
         try {
-            return Integer.parseInt(value.getText());
+            return Integer.parseInt(value.getValue());
         } catch (NumberFormatException e) {
             return -1;
         }
@@ -274,38 +281,43 @@ public class GuiScreenConfigureChannels extends AbstractContainerScreen<Containe
         StructureLib.instance().proxy().uploadChannels(trigger, hand);
     }
 
-    @Override
+    /*@Override
     public void updateScreen() {
         super.updateScreen();
         key.updateCursorCounter();
         value.updateCursorCounter();
+    }*/
+
+
+    @Override
+    protected void renderBg(PoseStack poseStack, float partialTick, int mouseX, int mouseY) {
+        drawTexture(poseStack, new ResourceLocation("structurelib", "textures/gui/channels.png"), guiLeft, guiTop, 0, 0, 176, 188);
+        list.drawScreen(poseStack, mouseX, mouseY, partialTick);
     }
 
     @Override
-    public boolean doesGuiPauseGame() {
-        return false;
+    protected void renderLabels(PoseStack poseStack, int mouseX, int mouseY) {
+        super.renderLabels(poseStack, mouseX, mouseY);
+        this.font.draw(poseStack, new TranslatableComponent("item.structurelib.constructableTrigger.gui.key"), 12, 122, 4210752);
+        this.font.draw(poseStack, new TranslatableComponent("item.structurelib.constructableTrigger.gui.value"), 12, 142, 4210752);
+    }
+
+    public void drawTexture(PoseStack stack, ResourceLocation loc, int left, int top, int x, int y, int sizeX, int sizeY) {
+        RenderSystem.setShaderColor(1, 1, 1, 1);
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderTexture(0, loc);
+        //AbstractGui.blit(stack, left, top, x, y, sizeX, sizeY);
+        GuiComponent.blit(stack, left, top, x, y, sizeX, sizeY, this.getXSize(), this.getYSize());
     }
 
     @Override
-    public void drawScreen(int mX, int mY, float partialTick) {
-        mc.renderEngine.bindTexture(new ResourceLocation("structurelib", "textures/gui/channels.png"));
-        int topLeftX = (this.width - this.getXSize()) / 2;
-        int topLeftY = (this.height - this.getYSize()) / 2;
-        drawTexturedModalRect(topLeftX, topLeftY, 0, 0, getXSize(), getYSize());
-        super.drawScreen(mX, mY, partialTick);
-        list.drawScreen(mX, mY, partialTick);
-        fontRendererObj.drawString(
-                I18n.format("item.structurelib.constructableTrigger.gui.key"),
-                guiLeft + 12,
-                guiTop + 122,
-                0);
-        key.drawTextBox();
-        fontRendererObj.drawString(
-                I18n.format("item.structurelib.constructableTrigger.gui.value"),
-                guiLeft + 12,
-                guiTop + 142,
-                0);
-        value.drawTextBox();
+    public Font getFont() {
+        return font;
+    }
+
+    @Override
+    public Screen getGui() {
+        return this;
     }
 
     private class GuiChannelsList extends GuiScrollableList<Entry<String, Integer>> {
@@ -369,8 +381,8 @@ public class GuiScreenConfigureChannels extends AbstractContainerScreen<Containe
         }
 
         @Override
-        public void drawScreen(int mX, int mY, float partialTick) {
-            super.drawScreen(mX, mY, partialTick);
+        public void drawScreen(PoseStack poseStack, int mX, int mY, float partialTick) {
+            super.drawScreen(poseStack, mX, mY, partialTick);
             // args x1, y1, y2, color
             drawVerticalLine(minX + margin + margin / 2 + KEY_MAX_WIDTH * 2, minY + 1, maxY - 1, 0xffaaaaaa);
         }
