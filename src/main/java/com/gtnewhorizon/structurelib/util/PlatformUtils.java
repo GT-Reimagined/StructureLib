@@ -1,15 +1,25 @@
 package com.gtnewhorizon.structurelib.util;
 
 import com.gtnewhorizon.structurelib.StructureLib;
-import com.gtnewhorizon.structurelib.StructureLibAPI;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.apache.commons.lang3.function.TriFunction;
+
+import java.util.function.Consumer;
 
 public class PlatformUtils {
     public static boolean isFakePlayer(Player player){
@@ -35,5 +45,13 @@ public class PlatformUtils {
     public static void registerItem(ResourceLocation id, Item item){
         item.setRegistryName(id);
         ForgeRegistries.ITEMS.register(item);
+    }
+
+    public static void openGui(ServerPlayer player, MenuProvider containerSupplier, Consumer<FriendlyByteBuf> extraDataWriter){
+        NetworkHooks.openGui(player, containerSupplier, extraDataWriter);
+    }
+
+    public static <T extends AbstractContainerMenu> MenuType<T> create(TriFunction<Integer, Inventory, FriendlyByteBuf, T> factory) {
+        return IForgeMenuType.create(factory::apply);
     }
 }

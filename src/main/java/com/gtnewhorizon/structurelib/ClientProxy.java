@@ -4,9 +4,14 @@ import static com.gtnewhorizon.structurelib.StructureLib.RANDOM;
 
 import java.util.*;
 
+import com.gtnewhorizon.structurelib.gui.ContainerConfigureChannels;
+import com.gtnewhorizon.structurelib.gui.GuiScreenConfigureChannels;
+import com.gtnewhorizon.structurelib.util.PlatformUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -175,9 +180,8 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     public void addClientSideChatMessages(String... messages) {
-        GuiNewChat chat = Minecraft.getMinecraft().ingameGUI.getChatGUI();
         for (String s : messages) {
-            chat.printChatMessage(new ChatComponentText(s));
+            getCurrentPlayer().sendMessage(new TextComponent(s), getCurrentPlayer().getUUID());
         }
     }
 
@@ -217,7 +221,7 @@ public class ClientProxy extends CommonProxy {
     @Override
     public long getOverworldTime() {
         // there is no overworld, better just hope current world time is ok...
-        return Minecraft.getMinecraft().theLevel.getTotalLevelTime();
+        return Minecraft.getInstance().level.getGameTime();
     }
 
     @Override
@@ -227,8 +231,9 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     public void preInit() {
-        FMLCommonHandler.instance().bus().register(new FMLEventHandler());
-        MinecraftForge.EVENT_BUS.register(new ForgeEventHandler());
+        MenuScreens.register(ContainerConfigureChannels.getMenuType(), GuiScreenConfigureChannels::new);
+        //FMLCommonHandler.instance().bus().register(new FMLEventHandler());
+        //MinecraftForge.EVENT_BUS.register(new ForgeEventHandler());
     }
 
     static void markTextureUsed(TextureAtlasSprite icon) {

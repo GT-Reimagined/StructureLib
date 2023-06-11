@@ -40,9 +40,9 @@ public class GuiScreenConfigureChannels extends AbstractContainerScreen<Containe
     protected int guiTop, guiLeft;
     private List<Button> buttonList = new ArrayList<>();
 
-    public GuiScreenConfigureChannels(ContainerConfigureChannels container, Inventory invPlayer, Component title, ItemStack trigger) {
+    public GuiScreenConfigureChannels(ContainerConfigureChannels container, Inventory invPlayer, Component title) {
         super(container, invPlayer, title);
-        this.trigger = trigger;
+        this.trigger = invPlayer.player.getItemInHand(container.hand);
         this.hand = container.hand;
         /*list = new GuiChannelsList(152, 100, 12, 12, 14);
         list.addSelectionListener((list, selectedIndex) -> {

@@ -66,7 +66,6 @@ public class StructureLib {
 
     public void preInit() {
         proxy.preInit();
-        //NetworkRegistry.INSTANCE.registerGuiHandler(instance(), new GuiHandler());
 
         /*if (Loader.isModLoaded(STRUCTURECOMPAT_MODID)) {
             COMPAT = Loader.instance().getIndexedModList().get(STRUCTURECOMPAT_MODID).getMod();
