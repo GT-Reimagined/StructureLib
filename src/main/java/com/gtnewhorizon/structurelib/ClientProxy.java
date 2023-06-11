@@ -1,17 +1,12 @@
 package com.gtnewhorizon.structurelib;
 
-import static com.gtnewhorizon.structurelib.StructureLib.RANDOM;
-
-import java.util.*;
-
 import com.gtnewhorizon.structurelib.gui.ContainerConfigureChannels;
 import com.gtnewhorizon.structurelib.gui.GuiScreenConfigureChannels;
-import com.gtnewhorizon.structurelib.util.PlatformUtils;
+import com.gtnewhorizon.structurelib.net.SetChannelDataMessage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Vec3i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
@@ -21,13 +16,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.Vec3;
-
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import org.lwjgl.opengl.GL11;
-
-import com.gtnewhorizon.structurelib.entity.fx.WeightlessParticleFX;
-import com.gtnewhorizon.structurelib.net.SetChannelDataMessage;
 import trinsdar.networkapi.api.INetwork;
+
+import java.util.*;
 
 
 public class ClientProxy extends CommonProxy {

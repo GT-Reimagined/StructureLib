@@ -1,3 +1,4 @@
+/*
 package com.gtnewhorizon.structurelib.entity.fx;
 
 import net.minecraft.client.particle.EntityFX;
@@ -21,9 +22,11 @@ public class WeightlessParticleFX extends EntityFX {
         this.noClip = true;
     }
 
-    /**
+    */
+/**
      * Called to update the entity's position/logic.
-     */
+     *//*
+
     public void onUpdate() {
         this.prevPosX = this.posX;
         this.prevPosY = this.posY;
@@ -41,3 +44,4 @@ public class WeightlessParticleFX extends EntityFX {
         this.motionZ *= 0.8999999761581421D;
     }
 }
+*/
