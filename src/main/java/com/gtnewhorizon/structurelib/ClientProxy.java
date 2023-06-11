@@ -10,6 +10,8 @@ import com.gtnewhorizon.structurelib.util.PlatformUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
@@ -19,8 +21,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.event.RenderLevelLastEvent;
-import net.minecraftforge.common.MinecraftForge;
 
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.lwjgl.opengl.GL11;
@@ -57,7 +57,7 @@ public class ClientProxy extends CommonProxy {
      * <p>
      * We are using this supposedly immutable object as a mutable object here. So be aware.
      */
-    private static final Vec3 lastPlayerPos = Vec3.createVectorHelper(0, -1e30, 0);
+    private static final BlockPos.MutableBlockPos lastPlayerPos = new BlockPos.MutableBlockPos(0, Integer.MIN_VALUE, 0);
     /**
      * if true rebuild the allHints list from all hintOwners (and sort it)
      */
@@ -88,7 +88,7 @@ public class ClientProxy extends CommonProxy {
         currentHints.getHints().add(info);
         allHintsDirty = true;
 
-        EntityFX particle = new WeightlessParticleFX(
+        /*EntityFX particle = new WeightlessParticleFX(
                 w,
                 x + RANDOM.nextFloat() * 0.5F,
                 y + RANDOM.nextFloat() * 0.5F,
@@ -97,7 +97,7 @@ public class ClientProxy extends CommonProxy {
                 0,
                 0);
         particle.setRBGColorF(0, 0.6F * RANDOM.nextFloat(), 0.8f);
-        Minecraft.getMinecraft().effectRenderer.addEffect(particle);
+        Minecraft.getMinecraft().effectRenderer.addEffect(particle);*/
     }
 
     @Override
@@ -173,7 +173,7 @@ public class ClientProxy extends CommonProxy {
     private static TextureAtlasSprite[] createTextureAtlasSpriteFromBlock(Block block) {
         TextureAtlasSprite[] ret = new TextureAtlasSprite[6];
         for (int i = 0; i < 6; i++) {
-            ret[i] = block.asItem();
+            //ret[i] = block.asItem();
         }
         return ret;
     }
@@ -239,6 +239,18 @@ public class ClientProxy extends CommonProxy {
     static void markTextureUsed(TextureAtlasSprite icon) {
         if (StructureLib.COMPAT instanceof IStructureCompat)
             ((IStructureCompat) StructureLib.COMPAT).markTextureUsed(icon);
+    }
+
+    public static void onLevelLoad(Level level) {
+        if (level.isClientSide) {
+            // flush hints. we are in a different world now.
+            allHintsForRender.clear();
+            allGroups.clear();
+            lastPlayerPos.setY(Integer.MIN_VALUE);
+            renderThrough = 0;
+            // clear throttles. hopefully a world switch is enough long as a cool down.
+            localThrottleMap.clear();
+        }
     }
 
     private static class HintGroup {
@@ -309,7 +321,7 @@ public class ClientProxy extends CommonProxy {
             return result;
         }
 
-        public boolean isInFrustrum(Frustrum frustrum) {
+        /*public boolean isInFrustrum(Frustrum frustrum) {
             return frustrum.isBoxInFrustum(x + 0.25, y + 0.25, z + 0.25, x + 0.75, y + 0.75, z + 0.75);
         }
 
@@ -410,26 +422,24 @@ public class ClientProxy extends CommonProxy {
                     }
                 }
             }
-        }
+        }*/
 
         public long getCreationTime() {
             return creationTime;
         }
 
         public double getSquareDistanceTo(Vec3 point) {
-            return point.squareDistanceTo(x + 0.5, y + 0.5, z + 0.5);
+            return point.distanceToSqr(x + 0.5, y + 0.5, z + 0.5);
         }
     }
 
     public static class FMLEventHandler {
 
         private void resetPlayerLocation() {
-            lastPlayerPos.xCoord = Minecraft.getMinecraft().thePlayer.posX;
-            lastPlayerPos.yCoord = Minecraft.getMinecraft().thePlayer.posY;
-            lastPlayerPos.zCoord = Minecraft.getMinecraft().thePlayer.posZ;
+            lastPlayerPos.set(Minecraft.getInstance().player.getX(), Minecraft.getInstance().player.getY(), Minecraft.getInstance().player.getZ());
         }
 
-        @SubscribeEvent
+        /*@SubscribeEvent
         public void onClientTick(ClientTickEvent e) {
             if (e.phase == Phase.END && Minecraft.getMinecraft().thePlayer != null) {
                 Vec3 playerPos = Minecraft.getMinecraft().thePlayer.getPosition(1);
@@ -467,25 +477,12 @@ public class ClientProxy extends CommonProxy {
                     resetPlayerLocation();
                 }
             }
-        }
+        }*/
     }
 
     public static class ForgeEventHandler {
 
-        @SubscribeEvent
-        public void onLevelLoad(LevelEvent.Load e) {
-            if (e.world.isRemote) {
-                // flush hints. we are in a different world now.
-                allHintsForRender.clear();
-                allGroups.clear();
-                lastPlayerPos.yCoord = -1e30;
-                renderThrough = 0;
-                // clear throttles. hopefully a world switch is enough long as a cool down.
-                localThrottleMap.clear();
-            }
-        }
-
-        @SubscribeEvent
+        /*@SubscribeEvent
         public void onRenderLevelLast(RenderLevelLastEvent e) {
             if (allHintsForRender.isEmpty()) return;
 
@@ -554,6 +551,6 @@ public class ClientProxy extends CommonProxy {
             GL11.glPopAttrib();
             GL11.glPopMatrix();
             p.endSection();
-        }
+        }*/
     }
 }
