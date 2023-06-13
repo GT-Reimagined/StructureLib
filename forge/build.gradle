@@ -1,0 +1,84 @@
+archivesBaseName = "${rootProject.archive_base_name}-forge"
+version = "${project.mod_version}-${rootProject.minecraft_version}"
+
+architectury {
+    platformSetupLoomIde()
+    forge()
+}
+
+sourceSets {
+    test {
+        compileClasspath += main.compileClasspath
+        runtimeClasspath += main.runtimeClasspath
+    }
+}
+
+loom {
+    runs {
+        testClient {
+            client()
+            ideConfigGenerated project.rootProject == project
+            name = "Testmod Client"
+            source sourceSets.test
+        }
+        testServer {
+            server()
+            ideConfigGenerated project.rootProject == project
+            name = "Testmod Server"
+            source sourceSets.test
+        }
+    }
+}
+
+dependencies {
+    forge "net.minecraftforge:forge:${rootProject.minecraft_version}-${rootProject.forge_version}"
+    common(project(path: ":common", configuration: "namedElements")) { transitive false }
+    shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive = false }
+    testImplementation('junit:junit:4.11')
+
+    modImplementation("com.github.Trinsdar.NetworkApi:networkapi-forge:bf5f6e0175")
+}
+
+processResources {
+    inputs.property "version", project.mod_version
+
+    filesMatching("META-INF/mods.toml") {
+        expand "version": project.mod_version
+    }
+}
+
+sourcesJar {
+    def commonSources = project(":common").sourcesJar
+    dependsOn commonSources
+    from commonSources.archiveFile.map { zipTree(it) }
+}
+
+publishing {
+    publications {
+        mavenJava(org.gradle.api.publish.maven.MavenPublication) {
+            artifact(sourcesJar) {
+                builtBy remapSourcesJar
+            }
+
+            afterEvaluate {
+                artifact remapJar
+            }
+        }
+    }
+
+    repositories {
+        def isCI = System.getenv("GITHUB_ACTION")
+        def isRELEASE = System.getenv("GITHUB_RELEASE")
+        if (isCI && isRELEASE) {
+            maven {
+                url = "https://repo.repsy.io/mvn/trinsdar/gregtech-intergalactical/"
+                credentials {
+                    username = System.getenv("MAVEN_USERNAME")
+                    password = System.getenv("MAVEN_PASSWORD")
+                }
+            }
+        } else {
+            maven { url "file:///${project.projectDir}/mcmodsrepo"}
+        }
+    }
+}

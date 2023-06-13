@@ -25,5 +25,5 @@ whitelist.json
 *.iml
 *.ipr
 *.iws
-src/main/resources/mixins.*.json
+common/src/main/resources/mixins.*.json
 *.bat

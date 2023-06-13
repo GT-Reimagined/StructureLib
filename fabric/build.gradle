@@ -1,0 +1,98 @@
+architectury {
+    platformSetupLoomIde()
+    fabric()
+}
+
+archivesBaseName = "${rootProject.archive_base_name}-fabric"
+version = "${project.mod_version}-${rootProject.minecraft_version}"
+
+sourceSets {
+    test {
+        compileClasspath += main.compileClasspath
+        runtimeClasspath += main.runtimeClasspath
+    }
+}
+
+loom {
+    silentMojangMappingsLicense()
+    runs {
+        testClient {
+            client()
+            ideConfigGenerated project.rootProject == project
+            name = "Testmod Client"
+            source sourceSets.test
+        }
+        testServer {
+            server()
+            ideConfigGenerated project.rootProject == project
+            name = "Testmod Server"
+            source sourceSets.test
+        }
+    }
+}
+
+repositories {
+    maven { url = "https://mvn.devos.one/snapshots/" }
+    maven {
+        url "https://cursemaven.com"
+    }
+}
+
+dependencies {
+    modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
+    modApi "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
+
+    common(project(path: ":common", configuration: "namedElements")) { transitive false }
+    shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
+    //todo figure this out
+    //testcommon(project(path: ":tesseract-common", configuration: "namedElements").sourceSets.test.output) { transitive false }
+    //testshadowCommon(project(path: ":tesseract-common", configuration: "transformProductionFabric").sourceSets.test.output) { transitive false }
+    implementation("com.electronwill.night-config:toml:${rootProject.nightconfig_version}")
+    implementation("com.electronwill.night-config:core:${rootProject.nightconfig_version}")
+    modImplementation(include("net.minecraftforge:forgeconfigapiport-fabric:3.2.4"))
+    modImplementation("com.github.Trinsdar.NetworkApi:networkapi-fabric:bf5f6e0175")
+}
+
+processResources {
+    inputs.property "version", project.mod_version
+
+    filesMatching("fabric.mod.json") {
+        expand "version": project.mod_version
+    }
+}
+
+sourcesJar {
+    def commonSources = project(":common").sourcesJar
+    dependsOn commonSources
+    from commonSources.archiveFile.map { zipTree(it) }
+}
+
+publishing {
+    publications {
+        mavenJava(org.gradle.api.publish.maven.MavenPublication) {
+            artifact(sourcesJar) {
+                builtBy remapSourcesJar
+            }
+
+            afterEvaluate {
+                artifact remapJar
+            }
+        }
+    }
+
+    repositories {
+        def isCI = System.getenv("GITHUB_ACTION")
+        def isRELEASE = System.getenv("GITHUB_RELEASE")
+        if (isCI && isRELEASE) {
+            maven {
+                url = "https://repo.repsy.io/mvn/trinsdar/gregtech-intergalactical/"
+                credentials {
+                    username = System.getenv("MAVEN_USERNAME")
+                    password = System.getenv("MAVEN_PASSWORD")
+                }
+            }
+        } else {
+            maven { url "file:///${project.projectDir}/mcmodsrepo"}
+        }
+    }
+}
