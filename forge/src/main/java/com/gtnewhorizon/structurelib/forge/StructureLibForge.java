@@ -1,5 +1,6 @@
 package com.gtnewhorizon.structurelib.forge;
 
+import com.gtnewhorizon.structurelib.ClientProxy;
 import com.gtnewhorizon.structurelib.Registry;
 import com.gtnewhorizon.structurelib.StructureLib;
 import com.gtnewhorizon.structurelib.StructureLibAPI;
@@ -10,6 +11,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -34,5 +36,9 @@ public class StructureLibForge extends StructureLib {
 
     private void onCommandRegistration(RegisterCommandsEvent event){
         CommandConfigureChannels.registerCommands(event.getDispatcher(), event.getEnvironment());
+    }
+
+    private void onWorldLoad(WorldEvent.Load event){
+        ClientProxy.onLevelLoad(event.getWorld());
     }
 }

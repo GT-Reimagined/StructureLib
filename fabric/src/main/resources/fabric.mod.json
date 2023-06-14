@@ -11,6 +11,10 @@
   "license": "LGPL-3.0-or-later",
   "icon": "assets/structurelib/textures/item/constructable_trigger.png",
   "environment": "*",
+  "entrypoints": {
+    "main": ["com.gtnewhorizons.structurelib.fabric.StructureLibFabric"],
+    "client": ["com.gtnewhorizons.structurelib.fabric.StructureLibClient"]
+  },
   "depends": {
     "minecraft" : ">=1.18.2",
     "fabricloader": ">= 0.13.0",

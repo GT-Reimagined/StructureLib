@@ -14,6 +14,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.Vec3;
 import trinsdar.networkapi.api.INetwork;
@@ -232,8 +233,8 @@ public class ClientProxy extends CommonProxy {
             ((IStructureCompat) StructureLib.COMPAT).markTextureUsed(icon);
     }
 
-    public static void onLevelLoad(Level level) {
-        if (level.isClientSide) {
+    public static void onLevelLoad(LevelAccessor level) {
+        if (level.isClientSide()) {
             // flush hints. we are in a different world now.
             allHintsForRender.clear();
             allGroups.clear();
