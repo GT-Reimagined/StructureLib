@@ -1,7 +1,12 @@
-package com.gtnewhorizon.structurelib.util;
+package com.gtnewhorizons.structurelib.util.fabric;
 
 import com.gtnewhorizon.structurelib.StructureLib;
-import dev.architectury.injectables.annotations.ExpectPlatform;
+import dev.cafeteria.fakeplayerapi.server.FakeServerPlayer;
+import io.github.fabricators_of_create.porting_lib.util.NetworkUtil;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType;
+import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.core.Registry;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -17,38 +22,31 @@ import org.apache.commons.lang3.function.TriFunction;
 
 import java.util.function.Consumer;
 
-public class PlatformUtils {
-    @ExpectPlatform
+public class PlatformUtilsImpl {
     public static boolean isFakePlayer(Player player){
-        throw new AssertionError();
+        if (!FabricLoader.getInstance().isModLoaded("fake-player-api")) return false;
+        return !(player instanceof FakeServerPlayer);
     }
 
-    @ExpectPlatform
     public static boolean isServer(){
-        throw new AssertionError();
+        return FabricLoader.getInstance().getEnvironmentType() == EnvType.SERVER;
     }
 
-    public static boolean isClient(){
-        return !isServer();
-    }
-
-    @ExpectPlatform
     public static void registerBlock(ResourceLocation id, Block block){
-        throw new AssertionError();
+        BlockItem blockItem = new BlockItem(block, new Item.Properties().tab(StructureLib.getCreativeTab()));
+        Registry.register(Registry.BLOCK, id, block);
+        Registry.register(Registry.ITEM, id, blockItem);
     }
 
-    @ExpectPlatform
     public static void registerItem(ResourceLocation id, Item item){
-        throw new AssertionError();
+        Registry.register(Registry.ITEM, id, item);
     }
 
-    @ExpectPlatform
     public static void openGui(ServerPlayer player, MenuProvider containerSupplier, Consumer<FriendlyByteBuf> extraDataWriter){
-        throw new AssertionError();
+        NetworkUtil.openGui(player, containerSupplier, extraDataWriter);
     }
 
-    @ExpectPlatform
     public static <T extends AbstractContainerMenu> MenuType<T> create(TriFunction<Integer, Inventory, FriendlyByteBuf, T> factory) {
-        throw new AssertionError();
+        return new ExtendedScreenHandlerType<>(factory::apply);
     }
 }

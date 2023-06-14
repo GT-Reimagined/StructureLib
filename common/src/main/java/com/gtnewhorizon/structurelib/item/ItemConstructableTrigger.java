@@ -26,7 +26,7 @@ import org.jetbrains.annotations.Nullable;
 public class ItemConstructableTrigger extends Item implements MenuProvider {
 
     public ItemConstructableTrigger() {
-        super(new Properties().tab(StructureLib.creativeTab));
+        super(new Properties().tab(StructureLib.getCreativeTab()));
     }
 
     @Override

@@ -1,11 +1,10 @@
 package com.gtnewhorizon.structurelib;
 
 
+import com.gtnewhorizon.structurelib.util.PlatformUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fml.common.Mod;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -21,7 +20,6 @@ import trinsdar.networkapi.api.PacketRegistration;
 /**
  * This class does not contain a stable API. Refrain from using this class.
  */
-@Mod(StructureLibAPI.MOD_ID)
 public class StructureLib {
 
     private static final String STRUCTURECOMPAT_MODID = "structurecompat";
@@ -57,19 +55,19 @@ public class StructureLib {
     static StructureLib INSTANCE;
 
     static Object COMPAT;
-    public static final CreativeModeTab creativeTab = new CreativeModeTab("structurelib") {
-        @Override
-        public ItemStack makeIcon() {
-            return new ItemStack(Registry.HINT_0);
-        }
-    };
+    protected static CreativeModeTab creativeTab;
 
     public void preInit() {
+        proxy = PlatformUtils.isServer() ? new CommonProxy() : new ClientProxy();
         proxy.preInit();
-
+        init();
         /*if (Loader.isModLoaded(STRUCTURECOMPAT_MODID)) {
             COMPAT = Loader.instance().getIndexedModList().get(STRUCTURECOMPAT_MODID).getMod();
         }*/
+    }
+
+    public static CreativeModeTab getCreativeTab() {
+        return creativeTab;
     }
 
     public static void addClientSideChatMessages(String... messages) {

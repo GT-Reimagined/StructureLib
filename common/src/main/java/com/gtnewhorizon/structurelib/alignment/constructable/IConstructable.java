@@ -3,9 +3,9 @@ package com.gtnewhorizon.structurelib.alignment.constructable;
 
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
  * Created by Tec on 24.03.2017.
@@ -21,6 +21,6 @@ public interface IConstructable {
         return null;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     String[] getStructureDescription(ItemStack stackSize);
 }
