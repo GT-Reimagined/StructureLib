@@ -1,22 +1,20 @@
 package com.gtnewhorizon.structurelib;
 
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.MinecraftForge;
 
 import com.gtnewhorizon.structurelib.structure.IStructureElement;
-import net.minecraftforge.eventbus.api.Event;
 
 /**
  * Subscribers are <b>required</b> to not keep reference to these events, nor to depend on values of these events after
  * the method call returns.
  * <p>
- * All of these events will be fired on the {@link net.minecraftforge.common.MinecraftForge#EVENT_BUS}, if they are
+ * All of these events will be fired, if they are
  * enabled by {@link StructureLibAPI#enableInstrument(Object)}.
  * <p>
  * All public stuff in this class and its enclosed classes are considered part of the public API. Backwards
  * compatibility is maintained to the maximum extend possible.
  */
-public abstract class StructureEvent extends Event {
+public abstract class StructureEvent {
 
     /*
      * In case the event is passed to another thread for processing.
@@ -43,8 +41,9 @@ public abstract class StructureEvent extends Event {
         private final int a, b, c;
         private final IStructureElement<?> element;
 
+        //TODO abstract
         /**
-         * Fire this event on {@link MinecraftForge#EVENT_BUS} by populating it with given arguments. Do nothing if
+         * Fire this event by populating it with given arguments. Do nothing if
          * instrumenting isn't enabled for current thread.
          * <p>
          * Any {@link Exception} thrown by event listeners will be logged and ignored. {@link Error} will be propagated
@@ -54,7 +53,7 @@ public abstract class StructureEvent extends Event {
                 IStructureElement<?> element) {
             if (StructureLibAPI.isInstrumentEnabled()) {
                 try {
-                    MinecraftForge.EVENT_BUS.post(new StructureElementVisitedEvent(world, x, y, z, a, b, c, element));
+                    //MinecraftForge.EVENT_BUS.post(new StructureElementVisitedEvent(world, x, y, z, a, b, c, element));
                 } catch (Exception e) {
                     // logging is done by event bus, we just ignore the consequence here
                 }

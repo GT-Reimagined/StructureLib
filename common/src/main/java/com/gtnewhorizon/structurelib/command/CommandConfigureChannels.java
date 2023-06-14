@@ -15,11 +15,7 @@ import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.event.RegisterCommandsEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 
-@Mod.EventBusSubscriber(modid = StructureLibAPI.MOD_ID)
 public class CommandConfigureChannels {
 
     private static DynamicCommandExceptionType INVALID_ITEM = new DynamicCommandExceptionType(s -> new TextComponent("must hold a hologram"));
@@ -97,8 +93,5 @@ public class CommandConfigureChannels {
         GET, SET, UNSET, WIPE, GETALL;
     }
 
-    @SubscribeEvent
-    public static void onCommandRegistration(RegisterCommandsEvent event){
-        registerCommands(event.getDispatcher(), event.getEnvironment());
-    }
+
 }

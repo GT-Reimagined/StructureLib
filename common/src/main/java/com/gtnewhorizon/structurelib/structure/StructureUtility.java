@@ -2344,8 +2344,8 @@ public class StructureUtility {
                 if (i > NICE_CHARS.length()) {
                     return "Too complicated for nice chars";
                 }
-                map.put(block.getRegistryName().toString(), c);
-                builder.append(c).append(" -> ofBlock...(").append(block.getRegistryName()).append(", ...);\n");
+                map.put(net.minecraft.core.Registry.BLOCK.getKey(block).toString(), c);
+                builder.append(c).append(" -> ofBlock...(").append(net.minecraft.core.Registry.BLOCK.getKey(block)).append(", ...);\n");
             }
             builder.append("\nTiles:\n");
             for (Class<? extends BlockEntity> tile : tiles) {
@@ -2391,7 +2391,7 @@ public class StructureUtility {
                             if (block != null && block != Blocks.AIR) {
                                 builder.append(
                                         map.get(
-                                                block.getRegistryName().toString()));
+                                            net.minecraft.core.Registry.BLOCK.getKey(block).toString()));
                             } else {
                                 builder.append(' ');
                             }
@@ -2432,7 +2432,7 @@ public class StructureUtility {
                             if (block != null && block != Blocks.AIR) {
                                 builder.append(
                                         map.get(
-                                                block.getRegistryName().toString()));
+                                            net.minecraft.core.Registry.BLOCK.getKey(block).toString()));
                             } else {
                                 builder.append(' ');
                             }
