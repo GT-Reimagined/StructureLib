@@ -38,9 +38,6 @@ repositories {
     }
     maven {
         url = 'https://maven.cafeteria.dev/releases'
-        content {
-            includeGroup 'dev.cafeteria'
-        }
     }
 }
 
