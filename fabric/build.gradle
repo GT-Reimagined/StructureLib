@@ -38,6 +38,10 @@ repositories {
     }
     maven {
         url = 'https://maven.cafeteria.dev/releases'
+        allowInsecureProtocol = true
+        content {
+            includeGroup 'dev.cafeteria'
+        }
     }
 }
 
