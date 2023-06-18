@@ -36,13 +36,6 @@ repositories {
     maven {
         url "https://cursemaven.com"
     }
-    maven {
-        url = 'https://maven.cafeteria.dev/releases'
-        allowInsecureProtocol = true
-        content {
-            includeGroup 'dev.cafeteria'
-        }
-    }
 }
 
 dependencies {
@@ -51,7 +44,6 @@ dependencies {
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
-    modCompileOnly "dev.cafeteria:fake-player-api:0.3.0"
     include("io.github.fabricators_of_create:Porting-Lib:${rootProject.port_lib_version}-beta+1.18.2-stable"){ transitive(false) }
     modImplementation("io.github.fabricators_of_create:Porting-Lib:${rootProject.port_lib_version}-beta+1.18.2-stable"){
         exclude(group: "net.fabricmc.fabric-api")

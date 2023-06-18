@@ -1,7 +1,6 @@
 package com.gtnewhorizons.structurelib.util.fabric;
 
 import com.gtnewhorizon.structurelib.StructureLib;
-import dev.cafeteria.fakeplayerapi.server.FakeServerPlayer;
 import io.github.fabricators_of_create.porting_lib.util.NetworkUtil;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType;
@@ -24,8 +23,8 @@ import java.util.function.Consumer;
 
 public class PlatformUtilsImpl {
     public static boolean isFakePlayer(Player player){
-        if (!FabricLoader.getInstance().isModLoaded("fake-player-api")) return false;
-        return !(player instanceof FakeServerPlayer);
+        if (!(player instanceof ServerPlayer serverPlayer)) return false;
+        return serverPlayer.getClass() != ServerPlayer.class;
     }
 
     public static boolean isServer(){
