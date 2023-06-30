@@ -6,13 +6,18 @@ import com.gtnewhorizon.structurelib.StructureLib;
 import com.gtnewhorizon.structurelib.StructureLibAPI;
 
 
+import com.teamresourceful.resourcefullib.common.networking.base.Packet;
+import com.teamresourceful.resourcefullib.common.networking.base.PacketContext;
+import com.teamresourceful.resourcefullib.common.networking.base.PacketHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import trinsdar.networkapi.api.IPacket;
 
-public class UpdateHintParticleMessage implements IPacket {
+public class UpdateHintParticleMessage implements Packet<UpdateHintParticleMessage> {
 
+    public static final Handler HANDLER = new Handler();
     private BlockPos pos;
     private short r;
     private short g;
@@ -29,38 +34,48 @@ public class UpdateHintParticleMessage implements IPacket {
         this.a = a;
     }
 
-    public static UpdateHintParticleMessage decode(FriendlyByteBuf buf) {
-        return new UpdateHintParticleMessage(buf.readBlockPos(), buf.readUnsignedByte(), buf.readUnsignedByte(), buf.readUnsignedByte(), buf.readUnsignedByte());
+    @Override
+    public PacketHandler<UpdateHintParticleMessage> getHandler() {
+        return HANDLER;
     }
 
     @Override
-    public void encode(FriendlyByteBuf buf) {
-        buf.writeBlockPos(pos);
-        buf.writeByte(r);
-        buf.writeByte(g);
-        buf.writeByte(b);
-        buf.writeByte(a);
+    public ResourceLocation getID() {
+        return StructureLib.UPDATE_HINT_PARTICLE;
     }
 
-    @Override
-    public void handleClient(ServerPlayer sender) {
+    private static class Handler implements PacketHandler<UpdateHintParticleMessage> {
+        @Override
+        public void encode(UpdateHintParticleMessage msg, FriendlyByteBuf buf) {
+            buf.writeBlockPos(msg.pos);
+            buf.writeByte(msg.r);
+            buf.writeByte(msg.g);
+            buf.writeByte(msg.b);
+            buf.writeByte(msg.a);
+        }
 
-    }
+        @Override
+        public UpdateHintParticleMessage decode(FriendlyByteBuf buf) {
+            return new UpdateHintParticleMessage(buf.readBlockPos(), buf.readUnsignedByte(), buf.readUnsignedByte(), buf.readUnsignedByte(), buf.readUnsignedByte());
+        }
 
-    @Override
-    public void handleServer() {
-        boolean updateResult = StructureLibAPI.updateHintParticleTint(
-            StructureLib.getCurrentPlayer(),
-            StructureLib.getCurrentPlayer().level,
-            pos.getX(),
-            pos.getY(),
-            pos.getZ(),
-            new short[] { r, g, b, a, });
-        if (StructureLibAPI.isDebugEnabled()) LOGGER.debug(
-            "Server instructed to update hint particle at ({}, {}, {}), result {}!",
-            pos.getX(),
-            pos.getY(),
-            pos.getZ(),
-            updateResult);
+        @Override
+        public PacketContext handle(UpdateHintParticleMessage msg) {
+            return ((player, level) -> {
+                boolean updateResult = StructureLibAPI.updateHintParticleTint(
+                    StructureLib.getCurrentPlayer(),
+                    StructureLib.getCurrentPlayer().level,
+                    msg.pos.getX(),
+                    msg.pos.getY(),
+                    msg.pos.getZ(),
+                    new short[] { msg.r, msg.g, msg.b, msg.a, });
+                if (StructureLibAPI.isDebugEnabled()) LOGGER.debug(
+                    "Server instructed to update hint particle at ({}, {}, {}), result {}!",
+                    msg.pos.getX(),
+                    msg.pos.getY(),
+                    msg.pos.getZ(),
+                    updateResult);
+            });
+        }
     }
 }

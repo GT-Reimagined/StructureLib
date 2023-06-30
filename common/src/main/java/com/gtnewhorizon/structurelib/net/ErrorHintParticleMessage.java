@@ -1,18 +1,18 @@
 package com.gtnewhorizon.structurelib.net;
 
-import static com.gtnewhorizon.structurelib.StructureLib.LOGGER;
-
 import com.gtnewhorizon.structurelib.StructureLib;
 import com.gtnewhorizon.structurelib.StructureLibAPI;
-
-
-import io.netty.buffer.ByteBuf;
+import com.teamresourceful.resourcefullib.common.networking.base.Packet;
+import com.teamresourceful.resourcefullib.common.networking.base.PacketContext;
+import com.teamresourceful.resourcefullib.common.networking.base.PacketHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.level.ServerPlayer;
-import trinsdar.networkapi.api.IPacket;
+import net.minecraft.resources.ResourceLocation;
 
-public class ErrorHintParticleMessage implements IPacket {
+import static com.gtnewhorizon.structurelib.StructureLib.LOGGER;
+
+public class ErrorHintParticleMessage implements Packet<ErrorHintParticleMessage> {
+    public static final Handler HANDLER = new Handler();
 
     private BlockPos pos;
 
@@ -20,34 +20,45 @@ public class ErrorHintParticleMessage implements IPacket {
         this.pos = pos;
     }
 
-    public static ErrorHintParticleMessage decode(FriendlyByteBuf buf) {
-        return new ErrorHintParticleMessage(buf.readBlockPos());
+
+    @Override
+    public ResourceLocation getID() {
+        return StructureLib.ERROR_HINT_PARTICLE;
     }
 
     @Override
-    public void encode(FriendlyByteBuf buf) {
-        buf.writeBlockPos(pos);
+    public PacketHandler<ErrorHintParticleMessage> getHandler() {
+        return HANDLER;
     }
 
-    @Override
-    public void handleClient(ServerPlayer sender) {
+    private static class Handler implements PacketHandler<ErrorHintParticleMessage> {
+        @Override
+        public void encode(ErrorHintParticleMessage msg, FriendlyByteBuf buf) {
+            buf.writeBlockPos(msg.pos);
+        }
 
-    }
+        @Override
+        public ErrorHintParticleMessage decode(FriendlyByteBuf buf) {
+            return new ErrorHintParticleMessage(buf.readBlockPos());
+        }
 
-    @Override
-    public void handleServer() {
-        boolean updateResult = StructureLibAPI.markHintParticleError(
-            StructureLib.getCurrentPlayer(),
-            StructureLib.getCurrentPlayer().level,
-            pos.getX(),
-            pos.getY(),
-            pos.getZ());
-        if (StructureLibAPI.isDebugEnabled()) LOGGER.debug(
-            "Server instructed to mark hint particle at ({}, {}, {}) error, result {}!",
-            pos.getX(),
-            pos.getY(),
-            pos.getZ(),
-            updateResult);
+        @Override
+        public PacketContext handle(ErrorHintParticleMessage msg) {
+            return (player, level) -> {
+                boolean updateResult = StructureLibAPI.markHintParticleError(
+                    StructureLib.getCurrentPlayer(),
+                    StructureLib.getCurrentPlayer().level,
+                    msg.pos.getX(),
+                    msg.pos.getY(),
+                    msg.pos.getZ());
+                if (StructureLibAPI.isDebugEnabled()) LOGGER.debug(
+                    "Server instructed to mark hint particle at ({}, {}, {}) error, result {}!",
+                    msg.pos.getX(),
+                    msg.pos.getY(),
+                    msg.pos.getZ(),
+                    updateResult);
+            };
+        }
     }
 
 }

@@ -2,6 +2,8 @@ package com.gtnewhorizon.structurelib;
 
 
 import com.gtnewhorizon.structurelib.util.PlatformUtils;
+import com.teamresourceful.resourcefullib.common.networking.NetworkChannel;
+import com.teamresourceful.resourcefullib.common.networking.base.NetworkDirection;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
@@ -27,6 +29,8 @@ public class StructureLib {
     public static boolean PANIC_MODE = Boolean.getBoolean("structurelib.panic");
     public static final Logger LOGGER = LogManager.getLogger("StructureLib");
 
+    public static final NetworkChannel CHANNEL = new NetworkChannel(StructureLibAPI.MOD_ID, 0,"main");
+
     public static final ResourceLocation ALIGNMENT_QUERY = new ResourceLocation(StructureLibAPI.MOD_ID, "alignment_query");
     public static final ResourceLocation ALIGNMENT_DATA = new ResourceLocation(StructureLibAPI.MOD_ID, "alignment_data");
     public static final ResourceLocation UPDATE_HINT_PARTICLE = new ResourceLocation(StructureLibAPI.MOD_ID, "update_hint_particle");
@@ -38,9 +42,9 @@ public class StructureLib {
     public static void init() {
         PacketRegistration.registerPacket(AlignmentMessage.AlignmentQuery.class, ALIGNMENT_QUERY, AlignmentMessage.AlignmentQuery::decode, PacketRegistration.NetworkDirection.PLAY_TO_SERVER);
         PacketRegistration.registerPacket(AlignmentMessage.AlignmentData.class, ALIGNMENT_DATA, AlignmentMessage.AlignmentData::decode, PacketRegistration.NetworkDirection.PLAY_TO_CLIENT);
-        PacketRegistration.registerPacket(UpdateHintParticleMessage.class, UPDATE_HINT_PARTICLE, UpdateHintParticleMessage::decode, PacketRegistration.NetworkDirection.PLAY_TO_CLIENT);
-        PacketRegistration.registerPacket(ErrorHintParticleMessage.class, ERROR_HINT_PARTICLE, ErrorHintParticleMessage::decode, PacketRegistration.NetworkDirection.PLAY_TO_CLIENT);
-        PacketRegistration.registerPacket(SetChannelDataMessage.class, SET_CHANNEL_DATA, SetChannelDataMessage::decode, PacketRegistration.NetworkDirection.PLAY_TO_SERVER);
+        CHANNEL.registerPacket(NetworkDirection.SERVER_TO_CLIENT, UPDATE_HINT_PARTICLE, UpdateHintParticleMessage.HANDLER, UpdateHintParticleMessage.class);
+        CHANNEL.registerPacket(NetworkDirection.SERVER_TO_CLIENT, ERROR_HINT_PARTICLE, ErrorHintParticleMessage.HANDLER, ErrorHintParticleMessage.class);
+        CHANNEL.registerPacket(NetworkDirection.CLIENT_TO_SERVER, SET_CHANNEL_DATA, SetChannelDataMessage.HANDLER, SetChannelDataMessage.class);
 
         try {
             DEBUG_MODE = Boolean.parseBoolean(System.getProperty("structurelib.debug"));
