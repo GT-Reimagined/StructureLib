@@ -6,6 +6,7 @@ import com.gtnewhorizon.structurelib.alignment.enumerable.ExtendedFacing;
 import com.gtnewhorizon.structurelib.net.AlignmentMessage;
 import com.gtnewhorizon.structurelib.structure.AutoPlaceEnvironment;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
+import com.gtnewhorizon.structurelib.util.PlatformUtils;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -18,7 +19,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import trinsdar.networkapi.api.INetwork;
 
 import static com.gtnewhorizon.structurelib.StructureLib.proxy;
 
@@ -191,7 +191,7 @@ public class StructureLibAPI {
      * @throws IllegalArgumentException if is not tile entity or provided a null alignment
      */
     public static void queryAlignment(IAlignmentProvider provider) {
-        INetwork.getInstance().sendToServer(StructureLib.ALIGNMENT_QUERY, new AlignmentMessage.AlignmentQuery(provider));
+        StructureLib.CHANNEL.sendToServer(new AlignmentMessage.AlignmentQuery(provider));
     }
 
     /**
@@ -203,7 +203,7 @@ public class StructureLibAPI {
      * @throws IllegalArgumentException if is not tile entity or provided a null alignment
      */
     public static void sendAlignment(IAlignmentProvider provider) {
-        INetwork.getInstance().sendToAll(StructureLib.ALIGNMENT_DATA, new AlignmentMessage.AlignmentData(provider));
+        StructureLib.CHANNEL.sendToAllPlayers(new AlignmentMessage.AlignmentData(provider), PlatformUtils.getCurrentServer());
     }
 
     /**
@@ -215,7 +215,7 @@ public class StructureLibAPI {
      * @throws IllegalArgumentException if is not tile entity or provided a null alignment
      */
     public static void sendAlignment(IAlignmentProvider provider, ServerPlayer player) {
-        INetwork.getInstance().sendToClient(StructureLib.ALIGNMENT_DATA, new AlignmentMessage.AlignmentData(provider), player);
+        StructureLib.CHANNEL.sendToPlayer(new AlignmentMessage.AlignmentData(provider), player);
     }
 
     /**
@@ -227,8 +227,8 @@ public class StructureLibAPI {
      *
      * @throws IllegalArgumentException if is not tile entity or provided a null alignment
      */
-    public static void sendAlignment(IAlignmentProvider provider, AABB targetPoint, ServerLevel level) {
-        INetwork.getInstance().sendToAllAround(StructureLib.ALIGNMENT_DATA, new AlignmentMessage.AlignmentData(provider), level, targetPoint);
+    public static void sendAlignment(IAlignmentProvider provider, BlockPos target, double range, ServerLevel level) {
+        StructureLib.CHANNEL.sendToPlayersInRange(new AlignmentMessage.AlignmentData(provider), level, target, range);
     }
 
     /**
@@ -240,7 +240,7 @@ public class StructureLibAPI {
      * @throws IllegalArgumentException if is not tile entity or provided a null alignment
      */
     public static void sendAlignment(IAlignmentProvider provider, Level dimension) {
-        //INetwork.getInstance().sendToAll(StructureLib.ALIGNMENT_DATA, new AlignmentMessage.AlignmentData(provider));
+        StructureLib.CHANNEL.sendToPlayersInLevel(new AlignmentMessage.AlignmentData(provider), dimension);
     }
 
     /**

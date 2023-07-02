@@ -2,12 +2,14 @@ package com.gtnewhorizons.structurelib.util.fabric;
 
 import com.gtnewhorizon.structurelib.StructureLib;
 import io.github.fabricators_of_create.porting_lib.util.NetworkUtil;
+import io.github.fabricators_of_create.porting_lib.util.ServerLifecycleHooks;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.Registry;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
@@ -25,6 +27,10 @@ public class PlatformUtilsImpl {
     public static boolean isFakePlayer(Player player){
         if (!(player instanceof ServerPlayer serverPlayer)) return false;
         return serverPlayer.getClass() != ServerPlayer.class;
+    }
+
+    public static MinecraftServer getCurrentServer(){
+        return ServerLifecycleHooks.getCurrentServer();
     }
 
     public static boolean isServer(){

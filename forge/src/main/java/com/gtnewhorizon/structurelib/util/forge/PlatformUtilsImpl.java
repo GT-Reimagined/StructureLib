@@ -3,6 +3,7 @@ package com.gtnewhorizon.structurelib.util.forge;
 import com.gtnewhorizon.structurelib.StructureLib;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
@@ -17,6 +18,7 @@ import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.server.ServerLifecycleHooks;
 import org.apache.commons.lang3.function.TriFunction;
 
 import java.util.function.Consumer;
@@ -28,6 +30,10 @@ public class PlatformUtilsImpl {
 
     public static boolean isServer(){
         return FMLEnvironment.dist.isDedicatedServer();
+    }
+
+    public static MinecraftServer getCurrentServer(){
+        return ServerLifecycleHooks.getCurrentServer();
     }
 
     public static void registerBlock(ResourceLocation id, Block block){

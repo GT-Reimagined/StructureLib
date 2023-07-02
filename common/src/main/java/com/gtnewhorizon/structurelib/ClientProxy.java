@@ -17,7 +17,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.Vec3;
-import trinsdar.networkapi.api.INetwork;
 
 import java.util.*;
 
@@ -218,7 +217,7 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     public void uploadChannels(ItemStack trigger, InteractionHand hand) {
-        INetwork.getInstance().sendToServer(StructureLib.SET_CHANNEL_DATA, new SetChannelDataMessage(trigger, hand));
+        StructureLib.CHANNEL.sendToServer(new SetChannelDataMessage(trigger, hand));
     }
 
     @Override

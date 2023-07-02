@@ -16,7 +16,6 @@ import com.gtnewhorizon.structurelib.net.ErrorHintParticleMessage;
 import com.gtnewhorizon.structurelib.net.SetChannelDataMessage;
 import com.gtnewhorizon.structurelib.net.UpdateHintParticleMessage;
 import com.gtnewhorizon.structurelib.util.XSTR;
-import trinsdar.networkapi.api.PacketRegistration;
 
 
 /**
@@ -40,8 +39,8 @@ public class StructureLib {
     static CommonProxy proxy;
 
     public static void init() {
-        PacketRegistration.registerPacket(AlignmentMessage.AlignmentQuery.class, ALIGNMENT_QUERY, AlignmentMessage.AlignmentQuery::decode, PacketRegistration.NetworkDirection.PLAY_TO_SERVER);
-        PacketRegistration.registerPacket(AlignmentMessage.AlignmentData.class, ALIGNMENT_DATA, AlignmentMessage.AlignmentData::decode, PacketRegistration.NetworkDirection.PLAY_TO_CLIENT);
+        CHANNEL.registerPacket(NetworkDirection.CLIENT_TO_SERVER, ALIGNMENT_QUERY, AlignmentMessage.AlignmentQuery.HANDLER, AlignmentMessage.AlignmentQuery.class);
+        CHANNEL.registerPacket(NetworkDirection.SERVER_TO_CLIENT, ALIGNMENT_DATA, AlignmentMessage.AlignmentData.HANDLER, AlignmentMessage.AlignmentData.class);
         CHANNEL.registerPacket(NetworkDirection.SERVER_TO_CLIENT, UPDATE_HINT_PARTICLE, UpdateHintParticleMessage.HANDLER, UpdateHintParticleMessage.class);
         CHANNEL.registerPacket(NetworkDirection.SERVER_TO_CLIENT, ERROR_HINT_PARTICLE, ErrorHintParticleMessage.HANDLER, ErrorHintParticleMessage.class);
         CHANNEL.registerPacket(NetworkDirection.CLIENT_TO_SERVER, SET_CHANNEL_DATA, SetChannelDataMessage.HANDLER, SetChannelDataMessage.class);

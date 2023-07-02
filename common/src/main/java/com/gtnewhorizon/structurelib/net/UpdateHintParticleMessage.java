@@ -12,8 +12,6 @@ import com.teamresourceful.resourcefullib.common.networking.base.PacketHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
-import trinsdar.networkapi.api.IPacket;
 
 public class UpdateHintParticleMessage implements Packet<UpdateHintParticleMessage> {
 

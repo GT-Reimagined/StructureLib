@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.WeakHashMap;
 
+import com.gtnewhorizon.structurelib.util.PlatformUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -19,7 +20,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import trinsdar.networkapi.api.INetwork;
 
 public class CommonProxy {
 
@@ -35,8 +35,7 @@ public class CommonProxy {
 
     public boolean updateHintParticleTint(Player player, Level w, int x, int y, int z, short[] rgBa) {
         if (player instanceof ServerPlayer serverPlayer) { // just in case
-            INetwork.getInstance().sendToClient(StructureLib.UPDATE_HINT_PARTICLE,
-                    new UpdateHintParticleMessage(new BlockPos(x, y, z), rgBa[0], rgBa[1], rgBa[2], rgBa[3]),
+            StructureLib.CHANNEL.sendToPlayer(new UpdateHintParticleMessage(new BlockPos(x, y, z), rgBa[0], rgBa[1], rgBa[2], rgBa[3]),
                     serverPlayer);
             return true;
         } else {
@@ -61,14 +60,14 @@ public class CommonProxy {
     public void preInit() {}
 
     public long getOverworldTime() {
-        return INetwork.getInstance().getCurrentServer().overworld().getGameTime();
+        return PlatformUtils.getCurrentServer().overworld().getGameTime();
     }
 
     public void uploadChannels(ItemStack trigger, InteractionHand hand) {}
 
     public boolean markHintParticleError(Player player, Level w, int x, int y, int z) {
         if (player instanceof ServerPlayer serverPlayer) { // just in case
-            INetwork.getInstance().sendToClient(StructureLib.ERROR_HINT_PARTICLE, new ErrorHintParticleMessage(new BlockPos(x, y, z)), serverPlayer);
+            StructureLib.CHANNEL.sendToPlayer(new ErrorHintParticleMessage(new BlockPos(x, y, z)), serverPlayer);
             return true;
         } else {
             return false;
