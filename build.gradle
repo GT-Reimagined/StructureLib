@@ -36,36 +36,6 @@ subprojects {
         // The following line declares the yarn mappings you may select this one as well.
         // mappings "net.fabricmc:yarn:1.17.1+build.32:v2"
     }
-
-    publishing {
-        publications {
-            mavenJava(org.gradle.api.publish.maven.MavenPublication) {
-                artifactId = "structurelib-" + project.name
-                artifact(sourcesJar) {
-                    builtBy remapSourcesJar
-                }
-
-                afterEvaluate {
-                    artifact remapJar
-                }
-            }
-        }
-
-        repositories {
-            if (isCI && isRELEASE) {
-                maven {
-                    url = "https://repo.repsy.io/mvn/trinsdar/gregtech-intergalactical/"
-                    credentials {
-                        username = System.getenv("MAVEN_USERNAME")
-                        password = System.getenv("MAVEN_PASSWORD")
-                    }
-                }
-            } else {
-                maven { url "file:///${project.projectDir}/mcmodsrepo"}
-            }
-        }
-    }
-
 }
 
 allprojects {
@@ -126,6 +96,34 @@ subprojects{
         components.java {
             withVariantsFromConfiguration(project.configurations.shadowRuntimeElements) {
                 skip()
+            }
+        }
+    }
+    publishing {
+        publications {
+            mavenJava(org.gradle.api.publish.maven.MavenPublication) {
+                artifactId = "structurelib-" + project.name
+                artifact(sourcesJar) {
+                    builtBy remapSourcesJar
+                }
+
+                afterEvaluate {
+                    artifact remapJar
+                }
+            }
+        }
+
+        repositories {
+            if (isCI && isRELEASE) {
+                maven {
+                    url = "https://repo.repsy.io/mvn/trinsdar/gregtech-intergalactical/"
+                    credentials {
+                        username = System.getenv("MAVEN_USERNAME")
+                        password = System.getenv("MAVEN_PASSWORD")
+                    }
+                }
+            } else {
+                maven { url "file:///${project.projectDir}/mcmodsrepo"}
             }
         }
     }
