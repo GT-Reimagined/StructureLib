@@ -1223,6 +1223,60 @@ public class StructureUtility {
             }
         };
     }
+    /**
+     * Call different callbacks depending on whether a downstream element returned false or true in check.
+     *
+     * @param onFail  side effect if check fails
+     * @param onPass side ffect if check passes
+     * @param element downstream
+     */
+    public static <B extends IStructureElement<T>, T> IStructureElement<T> onElementFailAndPass(Consumer<T> onFail, Consumer<T> onPass,
+                                                                                         B element) {
+        return new IStructureElement<T>() {
+
+            @Override
+            public boolean check(T t, Level world, int x, int y, int z) {
+                boolean check = element.check(t, world, x, y, z);
+                if (!check) {
+                    onFail.accept(t);
+                } else {
+                    onPass.accept(t);
+                }
+                return check;
+            }
+
+            @Override
+            public boolean placeBlock(T t, Level world, int x, int y, int z, ItemStack trigger) {
+                return element.placeBlock(t, world, x, y, z, trigger);
+            }
+
+            @Override
+            public boolean spawnHint(T t, Level world, int x, int y, int z, ItemStack trigger) {
+                return element.spawnHint(t, world, x, y, z, trigger);
+            }
+
+            @Nullable
+            @Override
+            public BlocksToPlace getBlocksToPlace(T t, Level world, int x, int y, int z, ItemStack trigger,
+                                                  AutoPlaceEnvironment env) {
+                return element.getBlocksToPlace(t, world, x, y, z, trigger, env);
+            }
+
+            @Override
+            @Deprecated
+            public PlaceResult survivalPlaceBlock(T t, Level world, int x, int y, int z, ItemStack trigger,
+                                                  IItemSource s, ServerPlayer actor, Consumer<Component> chatter) {
+                return element.survivalPlaceBlock(t, world, x, y, z, trigger, s, actor, chatter);
+            }
+
+            @Override
+            public PlaceResult survivalPlaceBlock(T t, Level world, int x, int y, int z, ItemStack trigger,
+                                                  AutoPlaceEnvironment env) {
+                return element.survivalPlaceBlock(t, world, x, y, z, trigger, env);
+            }
+        };
+    }
+
 
     // endregion
 
