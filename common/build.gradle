@@ -1,4 +1,4 @@
-archivesBaseName = "${rootProject.archive_base_name}-fabric"
+archivesBaseName = "${rootProject.archive_base_name}-common"
 version = "${project.mod_version}-${rootProject.minecraft_version}"
 
 sourceSets {
