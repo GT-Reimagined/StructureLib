@@ -3,6 +3,7 @@ package com.gtnewhorizon.structurelib.structure;
 import static com.gtnewhorizon.structurelib.structure.IStructureWalker.ignoreBlockUnloaded;
 import static com.gtnewhorizon.structurelib.structure.IStructureWalker.skipBlockUnloaded;
 
+import java.util.Map;
 import java.util.function.Function;
 
 
@@ -10,6 +11,8 @@ import com.gtnewhorizon.structurelib.StructureLib;
 import com.gtnewhorizon.structurelib.StructureLibAPI;
 import com.gtnewhorizon.structurelib.alignment.constructable.ISurvivalConstructable;
 import com.gtnewhorizon.structurelib.alignment.enumerable.ExtendedFacing;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -347,37 +350,37 @@ public interface IStructureDefinition<T> {
         }
 
         if (checkBlocksIfNotNullForceCheckAllIfTrue != null) {
-            boolean success;
-            if (checkBlocksIfNotNullForceCheckAllIfTrue) {
-                success = StructureUtility.iterateV2(
-                        elements,
-                        world,
-                        extendedFacing,
-                        basePositionX,
-                        basePositionY,
-                        basePositionZ,
-                        basePositionA,
-                        basePositionB,
-                        basePositionC,
-                        (e, w, x, y, z, a, b, c) -> e.check(object, w, x, y, z),
-                        "check");
+            Map<BlockPos, IStructureElement<T>> structurePositions = new Object2ObjectOpenHashMap<>();
+            Function<IStructureWalker<T>, IStructureWalker<T>> walkerFunction = pred -> checkBlocksIfNotNullForceCheckAllIfTrue ? pred : skipBlockUnloaded(pred);
+            String typeAddition = checkBlocksIfNotNullForceCheckAllIfTrue ? "" : " force";
+            boolean success = StructureUtility.iterateV2(
+                elements,
+                world,
+                extendedFacing,
+                basePositionX,
+                basePositionY,
+                basePositionZ,
+                basePositionA,
+                basePositionB,
+                basePositionC,
+                walkerFunction.apply((e, w, x, y, z, a, b, c) -> {
+                    boolean check = e.check(object, w, x, y, z);
+                    structurePositions.put(new BlockPos(x, y, z), e);
+                    return check;
+                }),
+                "check" + typeAddition);
+            if (success) {
+                structurePositions.forEach((b, e) -> {
+                    e.onStructureSuccess(object, world, b.getX(), b.getY(), b.getZ());
+                });
+                if (StructureLibAPI.isDebugEnabled()) {
+                    StructureLib.LOGGER
+                            .info("Multi [" + basePositionX + ", " + basePositionY + ", " + basePositionZ + "] pass");
+                }
             } else {
-                success = StructureUtility.iterateV2(
-                        elements,
-                        world,
-                        extendedFacing,
-                        basePositionX,
-                        basePositionY,
-                        basePositionZ,
-                        basePositionA,
-                        basePositionB,
-                        basePositionC,
-                        skipBlockUnloaded((e, w, x, y, z, a, b, c) -> e.check(object, w, x, y, z)),
-                        "check force");
-            }
-            if (StructureLibAPI.isDebugEnabled() && success) {
-                StructureLib.LOGGER
-                        .info("Multi [" + basePositionX + ", " + basePositionY + ", " + basePositionZ + "] pass");
+                structurePositions.forEach((b, e) -> {
+                    e.onStructureFail(object, world, b.getX(), b.getY(), b.getZ());
+                });
             }
             return success;
         } else {

@@ -2520,6 +2520,7 @@ public class StructureUtility {
         int[] abc = new int[] { basePositionA, basePositionB, basePositionC };
         int[] xyz = new int[3];
 
+        boolean failed = false;
         for (IStructureElement<T> element : elements) {
             if (element.isNavigating()) {
                 abc[0] = (element.resetA() ? basePositionA : abc[0]) + element.getStepA();
@@ -2563,7 +2564,7 @@ public class StructureUtility {
                                     Arrays.toString(xyz),
                                     Arrays.toString(abc));
                         }
-                        return false;
+                        failed = true;
                     }
                 } else {
                     if (StructureLibAPI.isDebugEnabled()) {
@@ -2577,12 +2578,12 @@ public class StructureUtility {
                                 Arrays.toString(abc));
                     }
                     if (!predicate.blockNotLoaded(element, world, xyz[0], xyz[1], xyz[2], abc[0], abc[1], abc[2]))
-                        return false;
+                       failed = true;
                 }
                 abc[0] += 1;
             }
         }
-        return true;
+        return !failed;
     }
 
     public static void iterate(Level world, ExtendedFacing extendedFacing, int basePositionX, int basePositionY,

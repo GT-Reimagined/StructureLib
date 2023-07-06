@@ -36,6 +36,13 @@ public interface IStructureElement<T> {
 
     boolean placeBlock(T t, Level world, int x, int y, int z, ItemStack trigger);
 
+    default void onStructureSuccess(T t, Level world, int x, int y, int z){
+
+    }
+
+    default void onStructureFail(T t, Level world, int x, int y, int z){
+    }
+
     /**
      * Try place the block by taking resource from given IItemSource.
      * <p>
