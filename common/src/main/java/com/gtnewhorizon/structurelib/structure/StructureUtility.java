@@ -16,6 +16,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
@@ -967,6 +968,35 @@ public class StructureUtility {
      */
     public static <T> IStructureElement<T> ofBlock(Block block) {
         return ofBlock(block, block);
+    }
+
+    public static <T> IStructureElement<T> ofBlock(TagKey<Block> blockTag){
+        return new IStructureElementNoPlacement<T>() {
+            @Override
+            public boolean check(T t, Level world, int x, int y, int z) {
+                return world.getBlockState(new BlockPos(x, y, z)).is(blockTag);
+            }
+
+            @Override
+            public boolean spawnHint(T t, Level world, int x, int y, int z, ItemStack trigger) {
+                return false;
+            }
+        };
+    }
+
+    public static <T> IStructureElement<T> ofBlock(TagKey<Block> blockTag, Block hint){
+        return new IStructureElementNoPlacement<T>() {
+            @Override
+            public boolean check(T t, Level world, int x, int y, int z) {
+                return world.getBlockState(new BlockPos(x, y, z)).is(blockTag);
+            }
+
+            @Override
+            public boolean spawnHint(T t, Level world, int x, int y, int z, ItemStack trigger) {
+                StructureLibAPI.hintParticle(world, x, y, z, hint);
+                return true;
+            }
+        };
     }
 
     // endregion
