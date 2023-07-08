@@ -1158,7 +1158,7 @@ public class StructureUtility {
      * @param onCheckPass side effect
      * @param element     downstream
      */
-    public static <B extends IStructureElement<T>, T> IStructureElement<T> onElementPass(IStructureCallback<T> onCheckPass,
+    public static <B extends IStructureElement<T>, T> IStructureElement<T> onElementPass(IStructureCallback<T, B> onCheckPass,
             B element) {
         return new IStructureElement<T>() {
 
@@ -1219,7 +1219,7 @@ public class StructureUtility {
      * @param onFail  side effect
      * @param element downstream
      */
-    public static <B extends IStructureElement<T>, T> IStructureElement<T> onElementFail(IStructureCallback<T> onFail,
+    public static <B extends IStructureElement<T>, T> IStructureElement<T> onElementFail(IStructureCallback<T, B> onFail,
             B element) {
         return new IStructureElement<T>() {
 
@@ -1280,7 +1280,7 @@ public class StructureUtility {
      * @param onPass side ffect if check passes
      * @param element downstream
      */
-    public static <B extends IStructureElement<T>, T> IStructureElement<T> onElementFailAndPass(IStructureCallback<T> onFail, IStructureCallback<T> onPass,
+    public static <B extends IStructureElement<T>, T> IStructureElement<T> onElementFailAndPass(IStructureCallback<T, B> onFail, IStructureCallback<T, B> onPass,
                                                                                          B element) {
         return new IStructureElement<T>() {
 
