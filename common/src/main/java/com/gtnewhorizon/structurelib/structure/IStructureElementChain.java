@@ -114,4 +114,18 @@ public interface IStructureElementChain<T> extends IStructureElement<T> {
         // TODO need reconsider to ensure this is the right course of action
         return haveSkip ? PlaceResult.SKIP : PlaceResult.REJECT;
     }
+
+    @Override
+    default void onStructureSuccess(T t, Level world, int x, int y, int z) {
+        for (IStructureElement<T> fallback : fallbacks()) {
+            fallback.onStructureSuccess(t, world, x, y, z);
+        }
+    }
+
+    @Override
+    default void onStructureFail(T t, Level world, int x, int y, int z) {
+        for (IStructureElement<T> fallback : fallbacks()) {
+            fallback.onStructureFail(t, world, x, y, z);
+        }
+    }
 }

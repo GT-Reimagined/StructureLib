@@ -1158,7 +1158,7 @@ public class StructureUtility {
      * @param onCheckPass side effect
      * @param element     downstream
      */
-    public static <B extends IStructureElement<T>, T> IStructureElement<T> onElementPass(Consumer<T> onCheckPass,
+    public static <B extends IStructureElement<T>, T> IStructureElement<T> onElementPass(IStructureCallback onCheckPass,
             B element) {
         return new IStructureElement<T>() {
 
@@ -1166,7 +1166,7 @@ public class StructureUtility {
             public boolean check(T t, Level world, int x, int y, int z) {
                 boolean check = element.check(t, world, x, y, z);
                 if (check) {
-                    onCheckPass.accept(t);
+                    onCheckPass.accept(element, t, world, x, y, z);
                 }
                 return check;
             }
@@ -1199,6 +1199,16 @@ public class StructureUtility {
             public PlaceResult survivalPlaceBlock(T t, Level world, int x, int y, int z, ItemStack trigger,
                     AutoPlaceEnvironment env) {
                 return element.survivalPlaceBlock(t, world, x, y, z, trigger, env);
+            }
+
+            @Override
+            public void onStructureFail(T t, Level world, int x, int y, int z) {
+                element.onStructureFail(t, world, x, y, z);
+            }
+
+            @Override
+            public void onStructureSuccess(T t, Level world, int x, int y, int z) {
+                element.onStructureSuccess(t, world, x, y, z);
             }
         };
     }
@@ -1209,7 +1219,7 @@ public class StructureUtility {
      * @param onFail  side effect
      * @param element downstream
      */
-    public static <B extends IStructureElement<T>, T> IStructureElement<T> onElementFail(Consumer<T> onFail,
+    public static <B extends IStructureElement<T>, T> IStructureElement<T> onElementFail(IStructureCallback onFail,
             B element) {
         return new IStructureElement<T>() {
 
@@ -1217,7 +1227,7 @@ public class StructureUtility {
             public boolean check(T t, Level world, int x, int y, int z) {
                 boolean check = element.check(t, world, x, y, z);
                 if (!check) {
-                    onFail.accept(t);
+                    onFail.accept(element, t, world, x, y, z);
                 }
                 return check;
             }
@@ -1251,6 +1261,16 @@ public class StructureUtility {
                     AutoPlaceEnvironment env) {
                 return element.survivalPlaceBlock(t, world, x, y, z, trigger, env);
             }
+
+            @Override
+            public void onStructureFail(T t, Level world, int x, int y, int z) {
+                element.onStructureFail(t, world, x, y, z);
+            }
+
+            @Override
+            public void onStructureSuccess(T t, Level world, int x, int y, int z) {
+                element.onStructureSuccess(t, world, x, y, z);
+            }
         };
     }
     /**
@@ -1260,7 +1280,7 @@ public class StructureUtility {
      * @param onPass side ffect if check passes
      * @param element downstream
      */
-    public static <B extends IStructureElement<T>, T> IStructureElement<T> onElementFailAndPass(Consumer<T> onFail, Consumer<T> onPass,
+    public static <B extends IStructureElement<T>, T> IStructureElement<T> onElementFailAndPass(IStructureCallback onFail, IStructureCallback onPass,
                                                                                          B element) {
         return new IStructureElement<T>() {
 
@@ -1268,9 +1288,9 @@ public class StructureUtility {
             public boolean check(T t, Level world, int x, int y, int z) {
                 boolean check = element.check(t, world, x, y, z);
                 if (!check) {
-                    onFail.accept(t);
+                    onFail.accept(element, t, world, x, y, z);
                 } else {
-                    onPass.accept(t);
+                    onPass.accept(element, t, world, x, y, z);
                 }
                 return check;
             }
@@ -1303,6 +1323,16 @@ public class StructureUtility {
             public PlaceResult survivalPlaceBlock(T t, Level world, int x, int y, int z, ItemStack trigger,
                                                   AutoPlaceEnvironment env) {
                 return element.survivalPlaceBlock(t, world, x, y, z, trigger, env);
+            }
+
+            @Override
+            public void onStructureFail(T t, Level world, int x, int y, int z) {
+                element.onStructureFail(t, world, x, y, z);
+            }
+
+            @Override
+            public void onStructureSuccess(T t, Level world, int x, int y, int z) {
+                element.onStructureSuccess(t, world, x, y, z);
             }
         };
     }
@@ -1366,6 +1396,17 @@ public class StructureUtility {
                     AutoPlaceEnvironment env) {
                 if (predicate.test(t)) return downstream.survivalPlaceBlock(t, world, x, y, z, trigger, env);
                 return placeResultWhenDisabled;
+            }
+
+            @Override
+            public void onStructureFail(T t, Level world, int x, int y, int z) {
+                downstream.onStructureFail(t, world, x, y, z);
+            }
+
+            @Override
+            public void onStructureSuccess(T t, Level world, int x, int y, int z) {
+                if (!predicate.test(t)) return;
+                downstream.onStructureSuccess(t, world, x, y, z);
             }
         };
     }
@@ -1459,6 +1500,16 @@ public class StructureUtility {
                     AutoPlaceEnvironment env) {
                 return elem.survivalPlaceBlock(t.getCurrentContext(), world, x, y, z, trigger, env);
             }
+
+            @Override
+            public void onStructureFail(T t, Level world, int x, int y, int z) {
+                elem.onStructureFail(t.getCurrentContext(), world, x, y, z);
+            }
+
+            @Override
+            public void onStructureSuccess(T t, Level world, int x, int y, int z) {
+                elem.onStructureSuccess(t.getCurrentContext(), world, x, y, z);
+            }
         };
     }
     // endregion
@@ -1546,6 +1597,16 @@ public class StructureUtility {
                     AutoPlaceEnvironment env) {
                 return to.get().survivalPlaceBlock(t, world, x, y, z, trigger, env);
             }
+
+            @Override
+            public void onStructureFail(T t, Level world, int x, int y, int z) {
+                to.get().onStructureFail(t, world, x, y, z);
+            }
+
+            @Override
+            public void onStructureSuccess(T t, Level world, int x, int y, int z) {
+                to.get().onStructureSuccess(t, world, x, y, z);
+            }
         };
     }
 
@@ -1597,6 +1658,16 @@ public class StructureUtility {
             public PlaceResult survivalPlaceBlock(T t, Level world, int x, int y, int z, ItemStack trigger,
                     AutoPlaceEnvironment env) {
                 return to.apply(t).survivalPlaceBlock(t, world, x, y, z, trigger, env);
+            }
+
+            @Override
+            public void onStructureFail(T t, Level world, int x, int y, int z) {
+                to.apply(t).onStructureFail(t, world, x, y, z);
+            }
+
+            @Override
+            public void onStructureSuccess(T t, Level world, int x, int y, int z) {
+                to.apply(t).onStructureSuccess(t, world, x, y, z);
             }
         };
     }
@@ -1779,7 +1850,7 @@ public class StructureUtility {
 
             @Override
             public boolean check(T t, Level world, int x, int y, int z) {
-                return to.apply(t, null).check(t, world, x, y, z);
+                return to.apply(t, ItemStack.EMPTY).check(t, world, x, y, z);
             }
 
             @Override
@@ -1809,6 +1880,16 @@ public class StructureUtility {
             public PlaceResult survivalPlaceBlock(T t, Level world, int x, int y, int z, ItemStack trigger,
                     AutoPlaceEnvironment env) {
                 return to.apply(t, trigger).survivalPlaceBlock(t, world, x, y, z, trigger, env);
+            }
+
+            @Override
+            public void onStructureFail(T t, Level world, int x, int y, int z) {
+                to.apply(t, ItemStack.EMPTY).onStructureFail(t, world, x, y, z);
+            }
+
+            @Override
+            public void onStructureSuccess(T t, Level world, int x, int y, int z) {
+                to.apply(t, ItemStack.EMPTY).onStructureSuccess(t, world, x, y, z);
             }
         };
     }
@@ -1994,6 +2075,16 @@ public class StructureUtility {
             public PlaceResult survivalPlaceBlock(T t, Level world, int x, int y, int z, ItemStack trigger,
                     AutoPlaceEnvironment env) {
                 return to.apply(t, trigger).survivalPlaceBlock(t, world, x, y, z, trigger, env);
+            }
+
+            @Override
+            public void onStructureFail(T t, Level world, int x, int y, int z) {
+                toCheck.apply(t).onStructureFail(t, world, x, y, z);
+            }
+
+            @Override
+            public void onStructureSuccess(T t, Level world, int x, int y, int z) {
+                toCheck.apply(t).onStructureSuccess(t, world, x, y, z);
             }
         };
     }
@@ -2270,6 +2361,16 @@ public class StructureUtility {
                     // instead of some false positive error messages like item not find
                     warnNoExplicitSubChannel(env.getActor());
                 return backing.survivalPlaceBlock(t, world, x, y, z, newTrigger, env);
+            }
+
+            @Override
+            public void onStructureFail(T t, Level world, int x, int y, int z) {
+                backing.onStructureFail(t, world, x, y, z);
+            }
+
+            @Override
+            public void onStructureSuccess(T t, Level world, int x, int y, int z) {
+                backing.onStructureSuccess(t, world, x, y, z);
             }
         };
     }

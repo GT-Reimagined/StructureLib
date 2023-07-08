@@ -61,4 +61,14 @@ class LazyStructureElement<T> implements IStructureElementDeferred<T> {
             AutoPlaceEnvironment env) {
         return get(t).survivalPlaceBlock(t, world, x, y, z, trigger, env);
     }
+
+    @Override
+    public void onStructureSuccess(T t, Level world, int x, int y, int z) {
+        get(t).onStructureSuccess(t, world, x, y, z);
+    }
+
+    @Override
+    public void onStructureFail(T t, Level world, int x, int y, int z) {
+        get(t).onStructureFail(t, world, x, y, z);
+    }
 }
