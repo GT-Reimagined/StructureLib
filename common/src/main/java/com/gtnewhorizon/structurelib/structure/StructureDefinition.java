@@ -154,15 +154,6 @@ public class StructureDefinition<T> implements IStructureDefinition<T> {
             return this;
         }
 
-        /**
-         * @deprecated use the unboxed version
-         */
-        @Deprecated
-        public Builder<T> addElement(Character name, IStructureElement<T> structurePiece) {
-            elements.putIfAbsent(name, structurePiece);
-            return this;
-        }
-
         public Builder<T> addElement(char name, IStructureElement<T> structurePiece) {
             elements.putIfAbsent(name, structurePiece);
             return this;

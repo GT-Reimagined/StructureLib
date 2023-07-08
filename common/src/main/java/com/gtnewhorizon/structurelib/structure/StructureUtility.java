@@ -1676,22 +1676,6 @@ public class StructureUtility {
      * This is the switch block for structure code.
      * <p>
      * This allows you to extract or compute a key from context object, and lookup a map for actual structure element to
-     * use.
-     *
-     * @param keyExtractor extract a key from the context object
-     * @param map          all possible structure element
-     * @deprecated renamed to partitionBy
-     */
-    @Deprecated
-    public static <T, K> IStructureElementDeferred<T> defer(Function<T, K> keyExtractor,
-            Map<K, IStructureElement<T>> map) {
-        return partitionBy(keyExtractor, map);
-    }
-
-    /**
-     * This is the switch block for structure code.
-     * <p>
-     * This allows you to extract or compute a key from context object, and lookup a map for actual structure element to
      * use. This will usually, but not guaranteed, to throw an exception at runtime if keyExtractor returns a key not
      * found in map.
      * <p>
@@ -1707,27 +1691,6 @@ public class StructureUtility {
             throw new IllegalArgumentException();
         }
         return defer(keyExtractor.andThen(map::get));
-    }
-
-    /**
-     * This is the switch block for structure code, with default case support.
-     * <p>
-     * This allows you to extract or compute a key from context object, and lookup a map for actual structure element to
-     * use. The fallback will only be used when keyExtractor returns a value not found in given map. This will play
-     * nicely in combination with {@link #error()}
-     * <p>
-     * Do pay attention to what properties your map has though. You need to pay attention to how they consider equality
-     * and how they consider null key/values. Guava ImmutableMap is usually a good enough choice.
-     *
-     * @param keyExtractor extract a key from the context object
-     * @param map          all possible structure element
-     * @param defaultElem  element to use when keyExtractor returns a value not found in given map
-     * @deprecated renamed to partitionBy
-     */
-    @Deprecated
-    public static <T, K> IStructureElementDeferred<T> defer(Function<T, K> keyExtractor,
-            Map<K, IStructureElement<T>> map, IStructureElement<T> defaultElem) {
-        return partitionBy(keyExtractor, map, defaultElem);
     }
 
     /**
@@ -1763,26 +1726,6 @@ public class StructureUtility {
      *
      * @param keyExtractor extract an index from the context object
      * @param array        all possible structure element
-     * @deprecated renamed to partitionBy
-     */
-    @SafeVarargs
-    @Deprecated
-    public static <T> IStructureElementDeferred<T> defer(Function<T, Integer> keyExtractor,
-            IStructureElement<T>... array) {
-        return partitionBy(keyExtractor, array);
-    }
-
-    /**
-     * This is the switch block for structure code.
-     * <p>
-     * This allows you to extract or compute an index from context object, and lookup an array for actual structure
-     * element to use. This will usually, but not guaranteed, to throw an exception at runtime if keyExtractor returns
-     * an index not within the array bound
-     * <p>
-     * Do pay place null values in the array.
-     *
-     * @param keyExtractor extract an index from the context object
-     * @param array        all possible structure element
      */
     @SafeVarargs
     public static <T> IStructureElementDeferred<T> partitionBy(Function<T, Integer> keyExtractor,
@@ -1791,25 +1734,6 @@ public class StructureUtility {
             throw new IllegalArgumentException();
         }
         return defer(keyExtractor.andThen(i -> array[i]));
-    }
-
-    /**
-     * This is the switch block for structure code.
-     * <p>
-     * This allows you to extract or compute an index from context object, and lookup an array for actual structure
-     * element to use. This will usually, but not guaranteed, to throw an exception at runtime if keyExtractor returns
-     * an index not within the array bound
-     * <p>
-     * Do pay place null values in the array.
-     *
-     * @param keyExtractor extract an index from the context object
-     * @param array        all possible structure element
-     * @deprecated renamed to partitionBy
-     */
-    @Deprecated
-    public static <T> IStructureElementDeferred<T> defer(Function<T, Integer> keyExtractor,
-            List<IStructureElement<T>> array) {
-        return partitionBy(keyExtractor, array);
     }
 
     /**
@@ -1908,28 +1832,6 @@ public class StructureUtility {
      *
      * @param keyExtractor extract a key from the context object and trigger item
      * @param map          all possible structure element
-     * @deprecated renamed to partitionBy
-     */
-    @Deprecated
-    public static <T, K> IStructureElementDeferred<T> defer(BiFunction<T, ItemStack, K> keyExtractor,
-            Map<K, IStructureElement<T>> map) {
-        return partitionBy(keyExtractor, map);
-    }
-
-    /**
-     * This is the switch block for structure code.
-     * <p>
-     * This allows you to extract or compute a key from context object, and lookup a map for actual structure element to
-     * use. This will usually, but not guaranteed, to throw an exception at runtime if keyExtractor returns a key not
-     * found in map.
-     * <p>
-     * Do pay attention to what properties your map has though. You need to pay attention to how they consider equality
-     * and how they consider null key/values. Guava ImmutableMap is usually a good enough choice.
-     * <p>
-     * This variant also passes the trigger item to the function, allowing it to get more info.
-     *
-     * @param keyExtractor extract a key from the context object and trigger item
-     * @param map          all possible structure element
      */
     public static <T, K> IStructureElementDeferred<T> partitionBy(BiFunction<T, ItemStack, K> keyExtractor,
             Map<K, IStructureElement<T>> map) {
@@ -1937,29 +1839,6 @@ public class StructureUtility {
             throw new IllegalArgumentException();
         }
         return defer(keyExtractor.andThen(map::get));
-    }
-
-    /**
-     * This is the switch block for structure code, with default case support.
-     * <p>
-     * This allows you to extract or compute a key from context object, and lookup a map for actual structure element to
-     * use. The fallback will only be used when keyExtractor returns a value not found in given map. This will play
-     * nicely in combination with {@link #error()}
-     * <p>
-     * Do pay attention to what properties your map has though. You need to pay attention to how they consider equality
-     * and how they consider null key/values. Guava ImmutableMap is usually a good enough choice.
-     * <p>
-     * This variant also passes the trigger item to the function, allowing it to get more info.
-     *
-     * @param keyExtractor extract a key from the context object and trigger item
-     * @param map          all possible structure element
-     * @param defaultElem  element to use when keyExtractor returns a value not found in given map
-     * @deprecated renamed to partitionBy
-     */
-    @Deprecated
-    public static <T, K> IStructureElementDeferred<T> defer(BiFunction<T, ItemStack, K> keyExtractor,
-            Map<K, IStructureElement<T>> map, IStructureElement<T> defaultElem) {
-        return partitionBy(keyExtractor, map, defaultElem);
     }
 
     /**
@@ -2107,32 +1986,6 @@ public class StructureUtility {
      * @param keyExtractorCheck key extractor of the structure element that will be used for check.
      * @param keyExtractor      extract a key from the context object and trigger item
      * @param map               all possible structure element
-     * @deprecated renamed to partitionBy
-     */
-    @Deprecated
-    public static <T, K> IStructureElementDeferred<T> defer(Function<T, K> keyExtractorCheck,
-            BiFunction<T, ItemStack, K> keyExtractor, Map<K, IStructureElement<T>> map) {
-        return partitionBy(keyExtractorCheck, keyExtractor, map);
-    }
-
-    /**
-     * This is the switch block for structure code.
-     * <p>
-     * This allows you to extract or compute a key from context object, and lookup a map for actual structure element to
-     * use. This will usually, but not guaranteed, to throw an exception at runtime if keyExtractor returns a key not
-     * found in map.
-     * <p>
-     * Do pay attention to what properties your map has though. You need to pay attention to how they consider equality
-     * and how they consider null key/values. Guava ImmutableMap is usually a good enough choice.
-     * <p>
-     * This variant also passes the trigger item to the function, allowing it to get more info.
-     * <p>
-     * This variant will override the check function of the structure element from second function with the one returned
-     * from the structure element from first function.
-     *
-     * @param keyExtractorCheck key extractor of the structure element that will be used for check.
-     * @param keyExtractor      extract a key from the context object and trigger item
-     * @param map               all possible structure element
      */
     public static <T, K> IStructureElementDeferred<T> partitionBy(Function<T, K> keyExtractorCheck,
             BiFunction<T, ItemStack, K> keyExtractor, Map<K, IStructureElement<T>> map) {
@@ -2140,32 +1993,6 @@ public class StructureUtility {
             throw new IllegalArgumentException();
         }
         return defer(keyExtractorCheck.andThen(map::get), keyExtractor.<IStructureElement<T>>andThen(map::get));
-    }
-
-    /**
-     * This is the switch block for structure code, with default case.
-     * <p>
-     * This allows you to extract or compute a key from context object, and lookup a map for actual structure element to
-     * use. defaultElem will be used if either extractor returned a key not found in map.
-     * <p>
-     * Do pay attention to what properties your map has though. You need to pay attention to how they consider equality
-     * and how they consider null key/values. Guava ImmutableMap is usually a good enough choice.
-     * <p>
-     * This variant also passes the trigger item to the function, allowing it to get more info.
-     * <p>
-     * This variant will override the check function of the structure element from second function with the one returned
-     * from the structure element from first function.
-     *
-     * @param keyExtractorCheck key extractor of the structure element that will be used for check.
-     * @param keyExtractor      extract a key from the context object and trigger item
-     * @param map               all possible structure element
-     * @deprecated renamed to partitionBy
-     */
-    @Deprecated
-    public static <T, K> IStructureElementDeferred<T> defer(Function<T, K> keyExtractorCheck,
-            BiFunction<T, ItemStack, K> keyExtractor, Map<K, IStructureElement<T>> map,
-            IStructureElement<T> defaultElem) {
-        return partitionBy(keyExtractorCheck, keyExtractor, map, defaultElem);
     }
 
     /**
@@ -2214,32 +2041,6 @@ public class StructureUtility {
      * @param keyExtractorCheck key extractor of the structure element that will be used for check.
      * @param keyExtractor      extract a key from the context object and trigger item
      * @param array             all possible structure element
-     * @deprecated renamed to partitionBy
-     */
-    @SafeVarargs
-    @Deprecated
-    public static <T> IStructureElementDeferred<T> defer(Function<T, Integer> keyExtractorCheck,
-            BiFunction<T, ItemStack, Integer> keyExtractor, IStructureElement<T>... array) {
-        return partitionBy(keyExtractorCheck, keyExtractor, array);
-    }
-
-    /**
-     * This is the switch block for structure code, with default case.
-     * <p>
-     * This allows you to extract or compute an index from context object, and lookup an array for actual structure
-     * element to use. This will usually, but not guaranteed, to throw an exception at runtime if keyExtractor returns
-     * an index not within the array bound
-     * <p>
-     * Do pay place null values in the array.
-     * <p>
-     * This variant also passes the trigger item to the function, allowing it to get more info.
-     * <p>
-     * This variant will override the check function of the structure element from second function with the one returned
-     * from the structure element from first function.
-     *
-     * @param keyExtractorCheck key extractor of the structure element that will be used for check.
-     * @param keyExtractor      extract a key from the context object and trigger item
-     * @param array             all possible structure element
      */
     @SafeVarargs
     public static <T> IStructureElementDeferred<T> partitionBy(Function<T, Integer> keyExtractorCheck,
@@ -2248,29 +2049,6 @@ public class StructureUtility {
             throw new IllegalArgumentException();
         }
         return defer(keyExtractorCheck.andThen(i -> array[i]), keyExtractor.andThen(i -> array[i]));
-    }
-
-    /**
-     * This is the switch block for structure code, with default case.
-     * <p>
-     * This allows you to extract or compute an index from context object, and lookup an array for actual structure
-     * element to use. This will usually, but not guaranteed, to throw an exception at runtime if keyExtractor returns
-     * an index not within the array bound
-     * <p>
-     * This variant also passes the trigger item to the function, allowing it to get more info.
-     * <p>
-     * This variant will override the check function of the structure element from second function with the one returned
-     * from the structure element from first function.
-     *
-     * @param keyExtractorCheck key extractor of the structure element that will be used for check.
-     * @param keyExtractor      extract a key from the context object and trigger item
-     * @param array             all possible structure element
-     * @deprecated renamed to partitionBy
-     */
-    @Deprecated
-    public static <T> IStructureElementDeferred<T> defer(Function<T, Integer> keyExtractorCheck,
-            BiFunction<T, ItemStack, Integer> keyExtractor, List<IStructureElement<T>> array) {
-        return partitionBy(keyExtractorCheck, keyExtractor, array);
     }
 
     /**
