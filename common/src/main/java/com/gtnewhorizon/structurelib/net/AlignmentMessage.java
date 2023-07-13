@@ -23,7 +23,9 @@ public abstract class AlignmentMessage<T extends AlignmentMessage<T>> implements
     int mAlign;
 
     public AlignmentMessage(BlockPos pos, String dimension, int align) {
-
+        this.pos = pos;
+        this.dimensionID = dimension;
+        this.mAlign = align;
     }
 
     private AlignmentMessage(IAlignmentProvider provider) {
