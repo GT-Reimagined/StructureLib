@@ -2450,7 +2450,7 @@ public class StructureUtility {
                         Arrays.toString(xyz),
                         Arrays.toString(abc));
 
-                if (!world.getBlockState(new BlockPos(xyz[0], xyz[1], xyz[2])).isAir()) {
+                if (world.isLoaded(new BlockPos(xyz[0], xyz[1], xyz[2]))) {
                     if (StructureLibAPI.isInstrumentEnabled()) {
                         StructureElementVisitedEvent.fireEvent(
                                 world,
