@@ -23,14 +23,14 @@ public class CommandConfigureChannels {
     public static void registerCommands(CommandDispatcher<CommandSourceStack> dispatcher, Commands.CommandSelection selection) {
         dispatcher.register(Commands.literal("sl_channel")
             .then(Commands.literal("get")
-                .then(Commands.argument("channel_name", StringArgumentType.greedyString()))
+                .then(Commands.argument("channel_name", StringArgumentType.word()))
                 .executes(context -> processCommand(context, SubCommand.GET)))
             .then(Commands.literal("set")
-                .then(Commands.argument("channel_name", StringArgumentType.greedyString())
+                .then(Commands.argument("channel_name", StringArgumentType.word())
                     .then(Commands.argument("value", IntegerArgumentType.integer(1))
                         .executes(context -> processCommand(context, SubCommand.SET)))))
             .then(Commands.literal("unset")
-                .then(Commands.argument("channel_name", StringArgumentType.greedyString())
+                .then(Commands.argument("channel_name", StringArgumentType.word())
                     .executes(context -> processCommand(context, SubCommand.UNSET))))
             .then(Commands.literal("wipe").executes(context -> processCommand(context, SubCommand.WIPE)))
             .then(Commands.literal("getall").executes(context -> processCommand(context, SubCommand.GETALL))));
