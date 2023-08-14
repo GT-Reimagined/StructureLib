@@ -1,15 +1,12 @@
-package com.gtnewhorizons.structurelib.fabric;
+package com.gtnewhorizon.structurelib.fabric;
 
-import com.gtnewhorizon.structurelib.ClientProxy;
 import com.gtnewhorizon.structurelib.Registry;
 import com.gtnewhorizon.structurelib.StructureLib;
 import com.gtnewhorizon.structurelib.StructureLibAPI;
 import com.gtnewhorizon.structurelib.command.CommandConfigureChannels;
-import io.github.fabricators_of_create.porting_lib.event.client.ClientWorldEvents;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.minecraft.commands.Commands;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;

@@ -1,4 +1,4 @@
-package com.gtnewhorizons.structurelib.util.fabric;
+package com.gtnewhorizon.structurelib.util.fabric;
 
 import com.gtnewhorizon.structurelib.StructureLib;
 import io.github.fabricators_of_create.porting_lib.util.NetworkUtil;

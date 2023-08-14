@@ -1,4 +1,4 @@
-package com.gtnewhorizons.structurelib.fabric;
+package com.gtnewhorizon.structurelib.fabric;
 
 import com.gtnewhorizon.structurelib.ClientProxy;
 import io.github.fabricators_of_create.porting_lib.event.client.ClientWorldEvents;
