@@ -25,7 +25,7 @@ public class StructureLibForge extends StructureLib {
         creativeTab = new CreativeModeTab("structurelib:tab") {
             @Override
             public ItemStack makeIcon() {
-                return new ItemStack(Registry.HINT_0);
+                return new ItemStack(Registry.CONSTRUCTABLE_TRIGGER.asItem());
             }
         };
         FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(Block.class, this::onRegisterBlock);

@@ -135,7 +135,7 @@ public class StructureUtility {
 
         @Override
         public boolean spawnHint(Object o, Level world, int x, int y, int z, ItemStack trigger) {
-            StructureLibAPI.hintParticle(world, x, y, z, Registry.HINT_AIR);
+            StructureLibAPI.hintParticle(world, x, y, z, Blocks.AIR/*Registry.HINT_AIR*/);
             return true;
         }
 
@@ -166,13 +166,13 @@ public class StructureUtility {
 
         @Override
         public boolean spawnHint(Object o, Level world, int x, int y, int z, ItemStack trigger) {
-            StructureLibAPI.hintParticle(world, x, y, z, Registry.HINT_NOAIR);
+            StructureLibAPI.hintParticle(world, x, y, z, Blocks.AIR/*Registry.HINT_NOAIR*/);
             return true;
         }
 
         @Override
         public boolean placeBlock(Object o, Level world, int x, int y, int z, ItemStack trigger) {
-            world.setBlock(new BlockPos(x, y, z), Registry.HINT_NOAIR.defaultBlockState(), 2);
+            world.setBlock(new BlockPos(x, y, z), Blocks.AIR/*Registry.HINT_NOAIR*/.defaultBlockState(), 2);
             return true;
         }
 
@@ -205,7 +205,7 @@ public class StructureUtility {
 
         @Override
         public boolean spawnHint(Object o, Level world, int x, int y, int z, ItemStack trigger) {
-            StructureLibAPI.hintParticle(world, x, y, z, Registry.HINT_ERROR);
+            StructureLibAPI.hintParticle(world, x, y, z, Blocks.AIR/*Registry.HINT_ERROR*/);
             return true;
         }
 
