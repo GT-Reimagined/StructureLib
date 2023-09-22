@@ -1,16 +1,15 @@
 package com.gtnewhorizon.structurelib.structure;
 
-import java.util.Map;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
-
-import javax.annotation.Nonnull;
-
 import com.gtnewhorizon.structurelib.alignment.enumerable.ExtendedFacing;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Map;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 /**
  * Represent the environment in which autoplace of a single element took place.
@@ -180,7 +179,7 @@ public class AutoPlaceEnvironment {
         }
 
         @Override
-        @Nonnull
+        @NotNull
         public Map<ItemStack, Integer> take(Predicate<ItemStack> predicate, boolean simulate, int count) {
             return delegate.take(predicate, simulate, count);
         }

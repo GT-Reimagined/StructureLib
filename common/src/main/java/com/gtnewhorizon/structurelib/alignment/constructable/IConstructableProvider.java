@@ -1,6 +1,6 @@
 package com.gtnewhorizon.structurelib.alignment.constructable;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Implement this interface if this tile entity MIGHT be constructable

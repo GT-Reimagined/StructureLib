@@ -4,11 +4,11 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import javax.annotation.Nullable;
 
 
 class LazyStructureElement<T> implements IStructureElementDeferred<T> {

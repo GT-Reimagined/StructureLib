@@ -1,9 +1,10 @@
 package com.gtnewhorizon.structurelib.alignment;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+
 
 public interface IAlignmentProvider {
 
-    @Nullable
+    @NotNull
     IAlignment getAlignment();
 }

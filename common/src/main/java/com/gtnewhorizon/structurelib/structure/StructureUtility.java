@@ -1,12 +1,15 @@
 package com.gtnewhorizon.structurelib.structure;
 
-import java.util.*;
-import java.util.function.*;
-
-import javax.annotation.Nullable;
-
-
 import com.gtnewhorizon.structurelib.Registry;
+import com.gtnewhorizon.structurelib.StructureEvent.StructureElementVisitedEvent;
+import com.gtnewhorizon.structurelib.StructureLib;
+import com.gtnewhorizon.structurelib.StructureLibAPI;
+import com.gtnewhorizon.structurelib.alignment.constructable.ChannelDataAccessor;
+import com.gtnewhorizon.structurelib.alignment.enumerable.ExtendedFacing;
+import com.gtnewhorizon.structurelib.structure.IStructureElement.PlaceResult;
+import com.gtnewhorizon.structurelib.structure.adders.IBlockAdder;
+import com.gtnewhorizon.structurelib.structure.adders.ITileAdder;
+import com.gtnewhorizon.structurelib.util.ItemStackPredicate.NBTMode;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -30,16 +33,10 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.Nullable;
 
-import com.gtnewhorizon.structurelib.StructureEvent.StructureElementVisitedEvent;
-import com.gtnewhorizon.structurelib.StructureLib;
-import com.gtnewhorizon.structurelib.StructureLibAPI;
-import com.gtnewhorizon.structurelib.alignment.constructable.ChannelDataAccessor;
-import com.gtnewhorizon.structurelib.alignment.enumerable.ExtendedFacing;
-import com.gtnewhorizon.structurelib.structure.IStructureElement.PlaceResult;
-import com.gtnewhorizon.structurelib.structure.adders.IBlockAdder;
-import com.gtnewhorizon.structurelib.structure.adders.ITileAdder;
-import com.gtnewhorizon.structurelib.util.ItemStackPredicate.NBTMode;
+import java.util.*;
+import java.util.function.*;
 
 /**
  * A brief index of everything contained

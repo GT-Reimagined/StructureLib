@@ -1,14 +1,15 @@
 package com.gtnewhorizon.structurelib.alignment.enumerable;
 
-import static java.lang.Math.abs;
-import static java.util.Arrays.stream;
-import static java.util.stream.Collectors.toMap;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 
-import javax.annotation.Nonnull;
+import static java.lang.Math.abs;
+import static java.util.Arrays.stream;
+import static java.util.stream.Collectors.toMap;
+
 
 public enum Flip {
 
@@ -48,7 +49,7 @@ public enum Flip {
         return VALUES[abs(index % VALUES.length)];
     }
 
-    public static Flip random(@Nonnull Random rand) {
+    public static Flip random(@NotNull Random rand) {
         return VALUES[rand.nextInt(VALUES.length)];
     }
 

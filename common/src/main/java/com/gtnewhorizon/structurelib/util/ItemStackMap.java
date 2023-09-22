@@ -1,13 +1,12 @@
 package com.gtnewhorizon.structurelib.util;
 
-import com.google.common.base.Objects;
 import com.google.common.collect.Iterators;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -419,7 +418,7 @@ public final class ItemStackMap<T> extends AbstractMap<ItemStack, T> {
             return ItemStackMap.this.remove(entry.getKey(), entry.getValue());
         }
 
-        @Nonnull
+        @NotNull
         @Override
         public Iterator<Map.Entry<ItemStack, T>> iterator() {
             return Iterators.concat(Iterators.transform(itemMap.entrySet().iterator(), DetailIter::new));

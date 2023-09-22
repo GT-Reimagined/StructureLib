@@ -14,15 +14,6 @@
  */
 package com.gtnewhorizon.structurelib.util;
 
-import java.util.*;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.function.Function;
-import java.util.function.Predicate;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-
 import com.gtnewhorizon.structurelib.util.InventoryUtility.ItemStackExtractor.APIType;
 import com.gtnewhorizon.structurelib.util.ItemStackPredicate.NBTMode;
 import net.minecraft.server.level.ServerPlayer;
@@ -30,6 +21,16 @@ import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.PlayerEnderChestContainer;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 /**
  * This class is part of API, but is not stable. Use at your own risk.
@@ -222,9 +223,9 @@ public class InventoryUtility {
         return store.getStore();
     }
 
-    private static int takeFromInventory(@Nonnull Iterable<ItemStack> inv, @Nonnull Predicate<ItemStack> predicate,
-            boolean simulate, int count, @Nonnull ItemStackCounter store, @Nullable ItemStack filter,
-            @Nullable ServerPlayer player, boolean recursive) {
+    private static int takeFromInventory(@NotNull Iterable<ItemStack> inv, @NotNull Predicate<ItemStack> predicate,
+                                         boolean simulate, int count, @NotNull ItemStackCounter store, @Nullable ItemStack filter,
+                                         @Nullable ServerPlayer player, boolean recursive) {
         int found = 0;
         ItemStack copiedFilter = null;
         if (filter != null) {
@@ -332,7 +333,7 @@ public class InventoryUtility {
             return -1;
         }
 
-        static ItemStackExtractor createOnlyOptimized(@Nonnull OptimizedExtractor optimizedExtractor) {
+        static ItemStackExtractor createOnlyOptimized(@NotNull OptimizedExtractor optimizedExtractor) {
             return new ItemStackExtractor() {
 
                 @Override

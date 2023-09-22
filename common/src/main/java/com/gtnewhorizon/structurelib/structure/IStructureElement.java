@@ -1,21 +1,9 @@
 package com.gtnewhorizon.structurelib.structure;
 
-import static com.gtnewhorizon.structurelib.StructureLib.LOGGER;
-import static com.gtnewhorizon.structurelib.StructureLib.PANIC_MODE;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import net.minecraft.nbt.CompoundTag;
-
 import com.gtnewhorizon.structurelib.StructureLibAPI;
 import com.gtnewhorizon.structurelib.util.ItemStackPredicate;
 import com.gtnewhorizon.structurelib.util.ItemStackPredicate.NBTMode;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -23,6 +11,16 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+
+import static com.gtnewhorizon.structurelib.StructureLib.LOGGER;
+import static com.gtnewhorizon.structurelib.StructureLib.PANIC_MODE;
 
 /**
  * Use StructureUtility to instantiate. These are the building blocks for your {@link IStructureDefinition}. It
@@ -313,7 +311,7 @@ public interface IStructureElement<T> {
          *
          * @return a predicate. never null.
          */
-        @Nonnull
+        @NotNull
         public Predicate<ItemStack> getPredicate() {
             return predicate;
         }

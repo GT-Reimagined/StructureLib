@@ -1,10 +1,5 @@
 package com.gtnewhorizon.structurelib.structure;
 
-import java.util.Map;
-import java.util.function.Predicate;
-
-import javax.annotation.Nonnull;
-
 import com.gtnewhorizon.structurelib.util.InventoryIterable;
 import com.gtnewhorizon.structurelib.util.InventoryUtility;
 import com.gtnewhorizon.structurelib.util.ItemStackPredicate;
@@ -12,6 +7,10 @@ import com.gtnewhorizon.structurelib.util.ItemStackPredicate.NBTMode;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Map;
+import java.util.function.Predicate;
 
 /**
  * Represent an item source. Take only, cannot be placed back.
@@ -29,7 +28,7 @@ public interface IItemSource {
      * @param count     how many items to extract.
      * @return A nonnull map reflecting the result of extraction. Note this map is NBT and metadata aware.
      */
-    @Nonnull
+    @NotNull
     Map<ItemStack, Integer> take(Predicate<ItemStack> predicate, boolean simulate, int count);
 
     /**
@@ -114,7 +113,7 @@ public interface IItemSource {
     static IItemSource fromPlayer(ServerPlayer player) {
         return new IItemSource() {
 
-            @Nonnull
+            @NotNull
             @Override
             public Map<ItemStack, Integer> take(Predicate<ItemStack> p, boolean s, int c) {
                 return InventoryUtility.takeFromInventory(player, p, s, c);
