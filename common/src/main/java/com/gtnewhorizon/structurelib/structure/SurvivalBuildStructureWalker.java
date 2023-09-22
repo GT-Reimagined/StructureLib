@@ -29,7 +29,7 @@ class SurvivalBuildStructureWalker<T> implements IStructureWalker<T> {
 
         env = new AutoPlaceEnvironment(
                 params.getActor(),
-                c -> params.getActor().sendMessage(c, params.getActor().getUUID()),
+                c -> params.getActor().displayClientMessage(c, false),
                 definition,
                 piece,
                 facing,

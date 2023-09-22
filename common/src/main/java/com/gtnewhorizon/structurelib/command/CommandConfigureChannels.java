@@ -11,14 +11,15 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 
+import java.awt.*;
+
 public class CommandConfigureChannels {
 
-    private static DynamicCommandExceptionType INVALID_ITEM = new DynamicCommandExceptionType(s -> new TextComponent("must hold a hologram"));
+    private static DynamicCommandExceptionType INVALID_ITEM = new DynamicCommandExceptionType(s -> Component.literal("must hold a hologram"));
 
     public static void registerCommands(CommandDispatcher<CommandSourceStack> dispatcher, Commands.CommandSelection selection) {
         dispatcher.register(Commands.literal("sl_channel")
@@ -46,10 +47,10 @@ public class CommandConfigureChannels {
             case GET -> {
                 String channel = context.getArgument("channel_name", String.class);
                 if (ChannelDataAccessor.hasSubChannel(heldStack, channel)){
-                    player.sendMessage(new TextComponent(channel + " value: " + ChannelDataAccessor.getChannelData(heldStack, channel)), player.getUUID());
+                    player.displayClientMessage(Component.literal(channel + " value: " + ChannelDataAccessor.getChannelData(heldStack, channel)), false);
                     yield 1;
                 }
-                player.sendMessage(new TextComponent(channel + " value: N/A"), player.getUUID());
+                player.displayClientMessage(Component.literal(channel + " value: N/A"), false);
                 yield 0;
             }
             case SET -> {
@@ -57,17 +58,17 @@ public class CommandConfigureChannels {
                 int value = context.getArgument("value", Integer.class);
                 ChannelDataAccessor.setChannelData(heldStack, channel, value);
                 player.containerMenu.broadcastChanges();
-                player.sendMessage(new TextComponent(channel + " value: " + value), player.getUUID());
+                player.displayClientMessage(Component.literal(channel + " value: " + value), false);
                 yield 1;
             }
             case UNSET -> {
                 String channel = context.getArgument("channel_name", String.class);
                 if (ChannelDataAccessor.hasSubChannel(heldStack, channel)){
                     ChannelDataAccessor.unsetChannelData(heldStack, channel);
-                    player.sendMessage(new TextComponent(channel + " cleared"), player.getUUID());
+                    player.displayClientMessage(Component.literal(channel + " cleared"), false);
                     yield 1;
                 }
-                player.sendMessage(new TextComponent(channel + " no value"), player.getUUID());
+                player.displayClientMessage(Component.literal(channel + " no value"), false);
                 yield 0;
             }
             case WIPE -> {
@@ -76,13 +77,13 @@ public class CommandConfigureChannels {
             }
             case GETALL -> {
                 if (!ChannelDataAccessor.hasSubChannel(heldStack)) {
-                    player.sendMessage(new TextComponent("No subchannel"), player.getUUID());
+                    player.displayClientMessage(Component.literal("No subchannel"), false);
                 } else {
-                    player.sendMessage(new TranslatableComponent(
+                    player.displayClientMessage(Component.translatable(
                         "item.structurelib.constructableTrigger.desc.lshift.0",
-                        ChannelDataAccessor.countChannelData(heldStack)), player.getUUID());
+                        ChannelDataAccessor.countChannelData(heldStack)), false);
                     ChannelDataAccessor.iterateChannelData(heldStack).map(e -> e.getKey() + ": " + e.getValue())
-                        .map(TextComponent::new).forEach(c -> player.sendMessage(c, player.getUUID()));
+                        .map(Component::literal).forEach(c -> player.displayClientMessage(c, false));
                 }
                 yield 1;
             }

@@ -1,5 +1,6 @@
 package com.gtnewhorizon.structurelib.gui;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -17,8 +18,6 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
@@ -58,7 +57,7 @@ public class GuiScreenConfigureChannels extends AbstractContainerScreen<Containe
         super.init();
         guiLeft = (this.width - this.getXSize()) / 2;
         guiTop = (this.height - this.getYSize()) / 2;
-        key = new EditBox(this.font, guiLeft + 45, guiTop + 119, 151 + 12 - 45, 12, new TextComponent("")){
+        key = new EditBox(this.font, guiLeft + 45, guiTop + 119, 151 + 12 - 45, 12, Component.literal("")){
             @Override
             public void insertText(String textToWrite) {
                 super.insertText(textToWrite.toLowerCase(Locale.ROOT));
@@ -83,7 +82,7 @@ public class GuiScreenConfigureChannels extends AbstractContainerScreen<Containe
                 return super.mouseClicked(mouseX, mouseY, button);
             }
         };
-        value = new EditBox(this.font, guiLeft + 45, guiTop + 139, 151 + 12 - 45, 12, new TextComponent("")){
+        value = new EditBox(this.font, guiLeft + 45, guiTop + 139, 151 + 12 - 45, 12, Component.literal("")){
             @Override
             public void insertText(String text) {
                 if (text != null && text.codePoints().allMatch(Character::isDigit)) {
@@ -133,7 +132,7 @@ public class GuiScreenConfigureChannels extends AbstractContainerScreen<Containe
             guiTop + 157,
             47,
             20,
-            new TranslatableComponent("item.structurelib.constructableTrigger.gui.add"),
+            Component.translatable("item.structurelib.constructableTrigger.gui.add"),
             b -> {
                 int value = getValue();
                 if (value <= 0) return;
@@ -145,7 +144,7 @@ public class GuiScreenConfigureChannels extends AbstractContainerScreen<Containe
             guiTop + 157,
             47,
             20,
-            new TranslatableComponent("item.structurelib.constructableTrigger.gui.unset"),
+            Component.translatable("item.structurelib.constructableTrigger.gui.unset"),
             b -> {
                 ChannelDataAccessor.unsetChannelData(trigger, key.getValue());
             }
@@ -155,7 +154,7 @@ public class GuiScreenConfigureChannels extends AbstractContainerScreen<Containe
             guiTop + 157,
             47,
             20,
-            new TranslatableComponent("item.structurelib.constructableTrigger.gui.wipe"),
+            Component.translatable("item.structurelib.constructableTrigger.gui.wipe"),
             b -> {
                 ChannelDataAccessor.wipeChannelData(trigger);
             }
@@ -262,7 +261,7 @@ public class GuiScreenConfigureChannels extends AbstractContainerScreen<Containe
         String keyText = key.getValue();
         boolean existing = !StringUtils.isEmpty(keyText) && ChannelDataAccessor.hasSubChannel(trigger, keyText);
         String translation = existing ? "item.structurelib.constructableTrigger.gui.set" : "item.structurelib.constructableTrigger.gui.add";
-        getButtonList().get(0).setMessage(new TranslatableComponent(translation));
+        getButtonList().get(0).setMessage(Component.translatable(translation));
         getButtonList().get(0).active = !StringUtils.isBlank(value.getValue());
         getButtonList().get(1).active = existing && !StringUtils.isBlank(value.getValue());
     }
@@ -298,8 +297,8 @@ public class GuiScreenConfigureChannels extends AbstractContainerScreen<Containe
     @Override
     protected void renderLabels(PoseStack poseStack, int mouseX, int mouseY) {
         super.renderLabels(poseStack, mouseX, mouseY);
-        this.font.draw(poseStack, new TranslatableComponent("item.structurelib.constructableTrigger.gui.key"), 12, 122, 4210752);
-        this.font.draw(poseStack, new TranslatableComponent("item.structurelib.constructableTrigger.gui.value"), 12, 142, 4210752);
+        this.font.draw(poseStack, Component.translatable("item.structurelib.constructableTrigger.gui.key"), 12, 122, 4210752);
+        this.font.draw(poseStack, Component.translatable("item.structurelib.constructableTrigger.gui.value"), 12, 142, 4210752);
     }
 
     public void drawTexture(PoseStack stack, ResourceLocation loc, int left, int top, int x, int y, int sizeX, int sizeY) {

@@ -94,7 +94,7 @@ public class CommonProxy {
             old = submap.get(throttleKey);
         }
         if (old == null || now - old >= intervalRequired) {
-            player.sendMessage(text, player.getUUID());
+            player.displayClientMessage(text, false);
             if (!forceUpdateLastSend) submap.put(throttleKey, now);
         }
     }

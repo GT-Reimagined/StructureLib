@@ -1,20 +1,20 @@
 package com.gtnewhorizon.structurelib.alignment.enumerable;
 
-import static com.gtnewhorizon.structurelib.alignment.IAlignment.FLIPS_COUNT;
-import static com.gtnewhorizon.structurelib.alignment.IAlignment.ROTATIONS_COUNT;
-import static java.lang.Math.abs;
-import static java.util.Arrays.stream;
-import static java.util.stream.Collectors.*;
-
-import java.util.*;
-
 import com.google.common.collect.ImmutableSet;
 import com.gtnewhorizon.structurelib.alignment.IAlignment;
 import com.gtnewhorizon.structurelib.alignment.IntegerAxisSwap;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.phys.Vec3;
+
+import java.util.*;
+
+import static com.gtnewhorizon.structurelib.alignment.IAlignment.FLIPS_COUNT;
+import static com.gtnewhorizon.structurelib.alignment.IAlignment.ROTATIONS_COUNT;
+import static java.lang.Math.abs;
+import static java.util.Arrays.stream;
+import static java.util.stream.Collectors.*;
 
 public enum ExtendedFacing {
 
@@ -307,7 +307,7 @@ public enum ExtendedFacing {
     }
 
     public String getLocalizedName() {
-        return new TranslatableComponent("structurelib.facing." + getIndex()).getString();
+        return Component.translatable("structurelib.facing." + getIndex()).getString();
     }
 
     public static ExtendedFacing byName(String name) {

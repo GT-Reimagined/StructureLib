@@ -16,7 +16,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.TagKey;
@@ -295,7 +294,7 @@ public class StructureUtility {
         Item BlockItem = block.asItem();
         if (!s.takeOne(new ItemStack(BlockItem, 1), false)) {
             if (chatter != null) chatter.accept(
-                    new TranslatableComponent(
+                    Component.translatable(
                             "structurelib.autoplace.error.no_simple_block",
                             new ItemStack(BlockItem, 1).getDisplayName()));
             return PlaceResult.REJECT;
@@ -399,7 +398,7 @@ public class StructureUtility {
         if (!StructureLibAPI.isBlockTriviallyReplaceable(world, x, y, z, actor)) return PlaceResult.REJECT;
         if (!assumeStackPresent && !s.takeOne(stack, true)) {
             if (chatter != null) chatter.accept(
-                    new TranslatableComponent("structurelib.autoplace.error.no_item_stack", stack.getDisplayName()));
+                    Component.translatable("structurelib.autoplace.error.no_item_stack", stack.getDisplayName()));
             return PlaceResult.REJECT;
         }
         BlockPos pos = new BlockPos(x, y, z);
@@ -2099,7 +2098,7 @@ public class StructureUtility {
                 StructureLibAPI.addThrottledChat(
                         new ChatThrottleKey.NoExplicitChannel(channel),
                         currentPlayer,
-                        new TranslatableComponent("structurelib.autoplace.warning.no_explicit_channel", channel),
+                        Component.translatable("structurelib.autoplace.warning.no_explicit_channel", channel),
                         (short) 100);
             }
 

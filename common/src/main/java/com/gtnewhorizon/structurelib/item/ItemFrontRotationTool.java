@@ -9,7 +9,6 @@ import com.gtnewhorizon.structurelib.alignment.AlignmentUtility;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -35,10 +34,10 @@ public class ItemFrontRotationTool extends Item {
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
         super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
-        tooltipComponents.add(new TranslatableComponent("item.structurelib.frontRotationTool.desc.0")); // Triggers Front Rotation Interface
+        tooltipComponents.add(Component.translatable("item.structurelib.frontRotationTool.desc.0")); // Triggers Front Rotation Interface
         // Rotates only the front panel,
-        tooltipComponents.add(new TranslatableComponent("item.structurelib.frontRotationTool.desc.1").withStyle(ChatFormatting.BLUE));
+        tooltipComponents.add(Component.translatable("item.structurelib.frontRotationTool.desc.1").withStyle(ChatFormatting.BLUE));
         // which allows structure rotation.
-        tooltipComponents.add(new TranslatableComponent("item.structurelib.frontRotationTool.desc.2").withStyle(ChatFormatting.BLUE));
+        tooltipComponents.add(Component.translatable("item.structurelib.frontRotationTool.desc.2").withStyle(ChatFormatting.BLUE));
     }
 }

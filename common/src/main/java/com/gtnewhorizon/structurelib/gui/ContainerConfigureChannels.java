@@ -6,6 +6,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 public class ContainerConfigureChannels extends AbstractContainerMenu {
@@ -14,6 +15,11 @@ public class ContainerConfigureChannels extends AbstractContainerMenu {
     public ContainerConfigureChannels(InteractionHand hand, @Nullable MenuType<?> arg, int i) {
         super(arg, i);
         this.hand = hand;
+    }
+
+    @Override
+    public ItemStack quickMoveStack(Player player, int index) {
+        return ItemStack.EMPTY;
     }
 
     @Override

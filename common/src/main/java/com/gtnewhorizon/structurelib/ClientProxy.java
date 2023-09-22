@@ -8,7 +8,6 @@ import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -18,7 +17,9 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.Vec3;
 
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 
 public class ClientProxy extends CommonProxy {
@@ -172,7 +173,7 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void addClientSideChatMessages(String... messages) {
         for (String s : messages) {
-            getCurrentPlayer().sendMessage(new TextComponent(s), getCurrentPlayer().getUUID());
+            getCurrentPlayer().displayClientMessage(Component.literal(s), false);
         }
     }
 

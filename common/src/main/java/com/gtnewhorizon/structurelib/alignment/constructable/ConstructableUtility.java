@@ -7,7 +7,7 @@ import com.gtnewhorizon.structurelib.StructureLibConfig;
 import com.gtnewhorizon.structurelib.util.PlatformUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -48,10 +48,10 @@ public class ConstructableUtility {
 
             long timePast = System.currentTimeMillis() - getLastUseMilis(aPlayer);
             if (timePast < StructureLibConfig.COMMON.AUTO_PLACE_INTERVAL) {
-                aPlayer.sendMessage(
-                        new TranslatableComponent(
+                aPlayer.displayClientMessage(
+                        Component.translatable(
                                 "item.structurelib.constructableTrigger.too_fast",
-                                StructureLibConfig.COMMON.AUTO_PLACE_INTERVAL - timePast), aPlayer.getUUID());
+                                StructureLibConfig.COMMON.AUTO_PLACE_INTERVAL - timePast), false);
                 return true;
             }
         } else if (!StructureLib.isCurrentPlayer(aPlayer)) {
@@ -84,13 +84,13 @@ public class ConstructableUtility {
                     StructureLibConfig.COMMON.AUTO_PLACE_BUDGET,
                         ISurvivalBuildEnvironment.create(IItemSource.fromPlayer(playerMP), playerMP));
                 if (built > 0) {
-                    playerMP.sendMessage(new TranslatableComponent("structurelib.autoplace.built_stat", built), playerMP.getUUID());
+                    playerMP.displayClientMessage(Component.translatable("structurelib.autoplace.built_stat", built), false);
                 } else if (built == -1) {
-                    playerMP.sendMessage(new TranslatableComponent("structurelib.autoplace.complete"), playerMP.getUUID());
+                    playerMP.displayClientMessage(Component.translatable("structurelib.autoplace.complete"), false);
                 }
                 setLastUseMilis(aPlayer);
             } else {
-                playerMP.sendMessage(new TranslatableComponent("structurelib.autoplace.error.not_enabled"), playerMP.getUUID());
+                playerMP.displayClientMessage(Component.translatable("structurelib.autoplace.error.not_enabled"), false);
             }
             return true;
         }
