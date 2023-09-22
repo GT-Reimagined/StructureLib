@@ -10,7 +10,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 
 public class Registry {
-    public static final Block HINT_0 = add("hint_0", new BlockHint());
+    /*public static final Block HINT_0 = add("hint_0", new BlockHint());
     public static final Block HINT_1 = add("hint_1", new BlockHint());
     public static final Block HINT_2 = add("hint_2", new BlockHint());
     public static final Block HINT_3 = add("hint_3", new BlockHint());
@@ -25,7 +25,7 @@ public class Registry {
     public static final Block HINT_AIR = add("hint_air", new BlockHint());
     public static final Block HINT_DEFAULT = add("hint_default", new BlockHint());
     public static final Block HINT_ERROR = add("hint_error", new BlockHint());
-    public static final Block HINT_NOAIR = add("hint_noair", new BlockHint());
+    public static final Block HINT_NOAIR = add("hint_noair", new BlockHint());*/
 
     public static final Item FRONT_ROTATION_TOOL = add("front_rotation_tool", new ItemFrontRotationTool());
     public static final Item CONSTRUCTABLE_TRIGGER = add("constructable_trigger", new ItemConstructableTrigger());
@@ -44,7 +44,7 @@ public class Registry {
 
     public static Block getHint(int dots){
         return switch (dots){
-            case 1 -> HINT_0;
+            /*case 1 -> HINT_0;
             case 2 -> HINT_1;
             case 3 -> HINT_2;
             case 4 -> HINT_3;
@@ -55,7 +55,7 @@ public class Registry {
             case 9 -> HINT_8;
             case 10 -> HINT_9;
             case 11 -> HINT_10;
-            case 12 -> HINT_11;
+            case 12 -> HINT_11;*/
             default -> Blocks.AIR;
         };
     }
