@@ -32,7 +32,7 @@ dependencies{
     compileOnly("com.electronwill.night-config:core:${rootProject.nightconfig_version}")
     modImplementation("net.minecraftforge:forgeconfigapiport-fabric:3.2.4")
     testImplementation('junit:junit:4.11')
-    modImplementation "com.teamresourceful.resourcefullib:resourcefullib-common-1.18.2:${project.resourcefullib_version}"
+    modImplementation "com.teamresourceful.resourcefullib:resourcefullib-common-${project.minecraft_version}:${project.resourcefullib_version}"
     testImplementation(sourceSets.main.output)
 }
 
