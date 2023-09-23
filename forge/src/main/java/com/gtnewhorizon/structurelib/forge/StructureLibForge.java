@@ -12,12 +12,12 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegisterEvent;
 
 @Mod(StructureLibAPI.MOD_ID)
 public class StructureLibForge extends StructureLib {
@@ -28,7 +28,7 @@ public class StructureLibForge extends StructureLib {
                 return new ItemStack(Registry.CONSTRUCTABLE_TRIGGER.asItem());
             }
         };
-        FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(Block.class, this::onRegisterBlock);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onRegisterBlock);
         MinecraftForge.EVENT_BUS.addListener(this::onCommandRegistration);
         preInit();
         if (FMLEnvironment.dist.isClient()){
@@ -36,16 +36,18 @@ public class StructureLibForge extends StructureLib {
         }
     }
 
-    private void onRegisterBlock(RegistryEvent.Register<Block> event){
-        Registry.init();
+    private void onRegisterBlock(RegisterEvent event){
+        if (event.getRegistryKey() == ForgeRegistries.Keys.BLOCKS) {
+            Registry.init();
+        }
     }
 
     private void onCommandRegistration(RegisterCommandsEvent event){
-        CommandConfigureChannels.registerCommands(event.getDispatcher(), event.getEnvironment());
+        CommandConfigureChannels.registerCommands(event.getDispatcher(), event.getCommandSelection());
     }
 
     @OnlyIn(Dist.CLIENT)
-    private void onWorldLoad(WorldEvent.Load event){
-        ClientProxy.onLevelLoad(event.getWorld());
+    private void onWorldLoad(LevelEvent.Load event){
+        ClientProxy.onLevelLoad(event.getLevel());
     }
 }

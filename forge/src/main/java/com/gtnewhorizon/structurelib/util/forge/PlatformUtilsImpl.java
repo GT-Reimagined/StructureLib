@@ -37,20 +37,17 @@ public class PlatformUtilsImpl {
     }
 
     public static void registerBlock(ResourceLocation id, Block block){
-        block.setRegistryName(id);
         BlockItem blockItem = new BlockItem(block, new Item.Properties().tab(StructureLib.getCreativeTab()));
-        blockItem.setRegistryName(id);
-        ForgeRegistries.BLOCKS.register(block);
-        ForgeRegistries.ITEMS.register(blockItem);
+        ForgeRegistries.BLOCKS.register(id, block);
+        ForgeRegistries.ITEMS.register(id, blockItem);
     }
 
     public static void registerItem(ResourceLocation id, Item item){
-        item.setRegistryName(id);
-        ForgeRegistries.ITEMS.register(item);
+        ForgeRegistries.ITEMS.register(id, item);
     }
 
     public static void openGui(ServerPlayer player, MenuProvider containerSupplier, Consumer<FriendlyByteBuf> extraDataWriter){
-        NetworkHooks.openGui(player, containerSupplier, extraDataWriter);
+        NetworkHooks.openScreen(player, containerSupplier, extraDataWriter);
     }
 
     public static <T extends AbstractContainerMenu> MenuType<T> create(TriFunction<Integer, Inventory, FriendlyByteBuf, T> factory) {
