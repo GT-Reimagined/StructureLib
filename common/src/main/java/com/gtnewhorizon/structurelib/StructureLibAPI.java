@@ -278,7 +278,7 @@ public class StructureLibAPI {
     public static boolean isBlockTriviallyReplaceable(Level w, int x, int y, int z, Player actor) {
         // TODO extend this function a bit
         BlockState block = w.getBlockState(new BlockPos(x, y, z));
-        return block.isAir() || block.getMaterial().isReplaceable();
+        return block.isAir() || block.canBeReplaced();
     }
 
     /**

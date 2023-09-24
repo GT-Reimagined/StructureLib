@@ -47,7 +47,7 @@ public class ErrorHintParticleMessage implements Packet<ErrorHintParticleMessage
             return (player, level) -> {
                 boolean updateResult = StructureLibAPI.markHintParticleError(
                     StructureLib.getCurrentPlayer(),
-                    StructureLib.getCurrentPlayer().level,
+                    StructureLib.getCurrentPlayer().level(),
                     msg.pos.getX(),
                     msg.pos.getY(),
                     msg.pos.getZ());

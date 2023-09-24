@@ -37,7 +37,7 @@ public class PlatformUtilsImpl {
     }
 
     public static void registerBlock(ResourceLocation id, Block block){
-        BlockItem blockItem = new BlockItem(block, new Item.Properties().tab(StructureLib.getCreativeTab()));
+        BlockItem blockItem = new BlockItem(block, new Item.Properties());
         ForgeRegistries.BLOCKS.register(id, block);
         ForgeRegistries.ITEMS.register(id, blockItem);
     }

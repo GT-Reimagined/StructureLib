@@ -5,13 +5,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map.Entry;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
@@ -72,9 +73,9 @@ public class GuiScreenConfigureChannels extends AbstractContainerScreen<Containe
 
             @Override
             public boolean mouseClicked(double mouseX, double mouseY, int button) {
-                boolean flag = mouseX >= this.x && mouseX < this.x + this.width
-                    && mouseY >= this.y
-                    && mouseY < this.y + this.height;
+                boolean flag = mouseX >= this.getX() && mouseX < this.getX() + this.width
+                    && mouseY >= this.getY()
+                    && mouseY < this.getY() + this.height;
                 if (flag && button == 1) {
                     key.setValue("");
                     value.setValue("");
@@ -107,9 +108,9 @@ public class GuiScreenConfigureChannels extends AbstractContainerScreen<Containe
 
             @Override
             public boolean mouseClicked(double mouseX, double mouseY, int button) {
-                boolean flag = mouseX >= this.x && mouseX < this.x + this.width
-                    && mouseY >= this.y
-                    && mouseY < this.y + this.height;
+                boolean flag = mouseX >= this.getX() && mouseX < this.getX() + this.width
+                    && mouseY >= this.getY()
+                    && mouseY < this.getY() + this.height;
                 if (flag && button == 1) {
                     setValue("");
                 }
@@ -127,7 +128,7 @@ public class GuiScreenConfigureChannels extends AbstractContainerScreen<Containe
         this.addRenderableOnly(key);
         this.addRenderableOnly(value);
         //list.onGuiInit(this);
-        addButton(new Button(
+        addButton(new StructureLibButton(
             guiLeft + 12,
             guiTop + 157,
             47,
@@ -139,7 +140,7 @@ public class GuiScreenConfigureChannels extends AbstractContainerScreen<Containe
                 ChannelDataAccessor.setChannelData(trigger, key.getValue(), value);
             }
         ));
-        addButton(new Button(
+        addButton(new StructureLibButton(
             guiLeft + 65,
             guiTop + 157,
             47,
@@ -149,7 +150,7 @@ public class GuiScreenConfigureChannels extends AbstractContainerScreen<Containe
                 ChannelDataAccessor.unsetChannelData(trigger, key.getValue());
             }
         ));
-        addButton(new Button(
+        addButton(new StructureLibButton(
             guiLeft + 118,
             guiTop + 157,
             47,
@@ -289,24 +290,24 @@ public class GuiScreenConfigureChannels extends AbstractContainerScreen<Containe
 
 
     @Override
-    protected void renderBg(PoseStack poseStack, float partialTick, int mouseX, int mouseY) {
+    protected void renderBg(GuiGraphics poseStack, float partialTick, int mouseX, int mouseY) {
         drawTexture(poseStack, new ResourceLocation("structurelib", "textures/gui/channels.png"), guiLeft, guiTop, 0, 0, 176, 188);
         //list.drawScreen(poseStack, mouseX, mouseY, partialTick);
     }
 
     @Override
-    protected void renderLabels(PoseStack poseStack, int mouseX, int mouseY) {
+    protected void renderLabels(GuiGraphics poseStack, int mouseX, int mouseY) {
         super.renderLabels(poseStack, mouseX, mouseY);
-        this.font.draw(poseStack, Component.translatable("item.structurelib.constructableTrigger.gui.key"), 12, 122, 4210752);
-        this.font.draw(poseStack, Component.translatable("item.structurelib.constructableTrigger.gui.value"), 12, 142, 4210752);
+        poseStack.drawString(font, Component.translatable("item.structurelib.constructableTrigger.gui.key"), 12, 122, 4210752);
+        poseStack.drawString(font, Component.translatable("item.structurelib.constructableTrigger.gui.value"), 12, 142, 4210752);
     }
 
-    public void drawTexture(PoseStack stack, ResourceLocation loc, int left, int top, int x, int y, int sizeX, int sizeY) {
+    public void drawTexture(GuiGraphics stack, ResourceLocation loc, int left, int top, int x, int y, int sizeX, int sizeY) {
         RenderSystem.setShaderColor(1, 1, 1, 1);
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, loc);
         //AbstractGui.blit(stack, left, top, x, y, sizeX, sizeY);
-        GuiComponent.blit(stack, left, top, x, y, sizeX, sizeY, this.getXSize(), this.getYSize());
+        //stack.blit(left, top, x, y, sizeX, sizeY, this.getXSize(), this.getYSize());
     }
 
     @Override

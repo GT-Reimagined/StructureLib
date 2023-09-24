@@ -14,6 +14,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -705,7 +706,7 @@ public class StructureUtility {
             private Block block;
 
             private Block getBlock() {
-                if (block == null) block = net.minecraft.core.Registry.BLOCK.get(new ResourceLocation(modid, registryName));
+                if (block == null) block = BuiltInRegistries.BLOCK.get(new ResourceLocation(modid, registryName));
                 return block;
             }
 
@@ -773,7 +774,7 @@ public class StructureUtility {
 
             private boolean init() {
                 if (!initialized) {
-                    block = net.minecraft.core.Registry.BLOCK.get(new ResourceLocation(modid, registryName));
+                    block = BuiltInRegistries.BLOCK.get(new ResourceLocation(modid, registryName));
                     initialized = true;
                 }
                 return block != null;
@@ -2303,8 +2304,8 @@ public class StructureUtility {
                 if (i > NICE_CHARS.length()) {
                     return "Too complicated for nice chars";
                 }
-                map.put(net.minecraft.core.Registry.BLOCK.getKey(block).toString(), c);
-                builder.append(c).append(" -> ofBlock...(").append(net.minecraft.core.Registry.BLOCK.getKey(block)).append(", ...);\n");
+                map.put(BuiltInRegistries.BLOCK.getKey(block).toString(), c);
+                builder.append(c).append(" -> ofBlock...(").append(BuiltInRegistries.BLOCK.getKey(block)).append(", ...);\n");
             }
             builder.append("\nTiles:\n");
             for (Class<? extends BlockEntity> tile : tiles) {
@@ -2350,7 +2351,7 @@ public class StructureUtility {
                             if (block != null && block != Blocks.AIR) {
                                 builder.append(
                                         map.get(
-                                            net.minecraft.core.Registry.BLOCK.getKey(block).toString()));
+                                            BuiltInRegistries.BLOCK.getKey(block).toString()));
                             } else {
                                 builder.append(' ');
                             }
@@ -2391,7 +2392,7 @@ public class StructureUtility {
                             if (block != null && block != Blocks.AIR) {
                                 builder.append(
                                         map.get(
-                                            net.minecraft.core.Registry.BLOCK.getKey(block).toString()));
+                                            BuiltInRegistries.BLOCK.getKey(block).toString()));
                             } else {
                                 builder.append(' ');
                             }

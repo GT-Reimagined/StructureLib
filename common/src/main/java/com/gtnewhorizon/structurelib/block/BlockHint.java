@@ -2,14 +2,13 @@ package com.gtnewhorizon.structurelib.block;
 
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.material.Material;
 
 public class BlockHint extends Block {
 
     //private static final IIcon[] hint = new IIcon[16];
 
     public BlockHint() {
-        super(BlockBehaviour.Properties.of(Material.METAL));
+        super(BlockBehaviour.Properties.of());
     }
 
     /*@Override

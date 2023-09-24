@@ -1,12 +1,13 @@
 package com.gtnewhorizon.structurelib.util.fabric;
 
 import com.gtnewhorizon.structurelib.StructureLib;
-import io.github.fabricators_of_create.porting_lib.util.NetworkUtil;
+import io.github.fabricators_of_create.porting_lib.util.NetworkHooks;
 import io.github.fabricators_of_create.porting_lib.util.ServerLifecycleHooks;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -38,17 +39,17 @@ public class PlatformUtilsImpl {
     }
 
     public static void registerBlock(ResourceLocation id, Block block){
-        BlockItem blockItem = new BlockItem(block, new Item.Properties().tab(StructureLib.getCreativeTab()));
-        Registry.register(Registry.BLOCK, id, block);
-        Registry.register(Registry.ITEM, id, blockItem);
+        BlockItem blockItem = new BlockItem(block, new Item.Properties());
+        Registry.register(BuiltInRegistries.BLOCK, id, block);
+        Registry.register(BuiltInRegistries.ITEM, id, blockItem);
     }
 
     public static void registerItem(ResourceLocation id, Item item){
-        Registry.register(Registry.ITEM, id, item);
+        Registry.register(BuiltInRegistries.ITEM, id, item);
     }
 
     public static void openGui(ServerPlayer player, MenuProvider containerSupplier, Consumer<FriendlyByteBuf> extraDataWriter){
-        NetworkUtil.openGui(player, containerSupplier, extraDataWriter);
+        NetworkHooks.openScreen(player, containerSupplier, extraDataWriter);
     }
 
     public static <T extends AbstractContainerMenu> MenuType<T> create(TriFunction<Integer, Inventory, FriendlyByteBuf, T> factory) {

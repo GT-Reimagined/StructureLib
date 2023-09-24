@@ -62,7 +62,7 @@ public class UpdateHintParticleMessage implements Packet<UpdateHintParticleMessa
             return ((player, level) -> {
                 boolean updateResult = StructureLibAPI.updateHintParticleTint(
                     StructureLib.getCurrentPlayer(),
-                    StructureLib.getCurrentPlayer().level,
+                    StructureLib.getCurrentPlayer().level(),
                     msg.pos.getX(),
                     msg.pos.getY(),
                     msg.pos.getZ(),

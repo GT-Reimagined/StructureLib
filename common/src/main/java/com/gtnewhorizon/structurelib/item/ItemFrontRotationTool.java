@@ -20,7 +20,7 @@ import org.jetbrains.annotations.Nullable;
 public class ItemFrontRotationTool extends Item {
 
     public ItemFrontRotationTool() {
-        super(new Properties().tab(StructureLib.getCreativeTab()).stacksTo(1));
+        super(new Properties().stacksTo(1));
     }
 
     @Override
