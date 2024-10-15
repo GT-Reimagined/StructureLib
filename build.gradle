@@ -37,8 +37,10 @@ subprojects{
     publishing {
         publications {
             mavenJava(org.gradle.api.publish.maven.MavenPublication) {
-                artifactId = "structurelib-" + project.name
-                from components.java
+                if (project.name != "forge"){
+                    artifactId = "structurelib-" + project.name
+                    from components.java
+                }
             }
         }
 
