@@ -68,7 +68,7 @@ public class ClientProxy extends CommonProxy {
         HintParticleInfo info = new HintParticleInfo(w, x, y, z, icons, RGBa);
 
         // check and remove colliding holograms
-        if (StructureLibConfig.CLIENT.REMOVE_COLLIDING) {
+        if (StructureLibConfig.REMOVE_COLLIDING.get()) {
             HintGroup dupe = allHints.get(info);
             if (dupe != null && dupe != currentHints) {
                 allGroups.remove(dupe);
@@ -200,7 +200,7 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void endHinting(Level w) {
         if (!w.isClientSide || currentHints == null) return;
-        while (!allGroups.isEmpty() && allGroups.size() >= StructureLibConfig.CLIENT.MAX_COEXISTING) {
+        while (!allGroups.isEmpty() && allGroups.size() >= StructureLibConfig.MAX_COEXISTING.get()) {
             allGroups.remove(0);
         }
         if (!currentHints.getHints().isEmpty()) allGroups.add(currentHints);

@@ -35,7 +35,8 @@ dependencies {
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive = false }
     testImplementation('junit:junit:4.11')
-
+    modImplementation "maven.modrinth:carbon-config:${project.carbon_config_forge_version}"
+    minecraftRuntimeLibraries(group: 'com.github.Speiger', name: 'Primitive-Collections', version: '[0.8,0.9)')
     modImplementation(include("com.teamresourceful.resourcefullib:resourcefullib-forge-${project.minecraft_version}:${project.resourcefullib_version}"))
 }
 

@@ -1,5 +1,8 @@
 package com.gtnewhorizon.structurelib.util;
 
+import carbonconfiglib.config.Config;
+import carbonconfiglib.config.ConfigHandler;
+import carbonconfiglib.config.ConfigSettings;
 import com.gtnewhorizon.structurelib.StructureLib;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.network.FriendlyByteBuf;
@@ -39,4 +42,8 @@ public interface PlatformUtils {
     void openGui(ServerPlayer player, MenuProvider containerSupplier, Consumer<FriendlyByteBuf> extraDataWriter);
 
     <T extends AbstractContainerMenu> MenuType<T> create(TriFunction<Integer, Inventory, FriendlyByteBuf, T> factory);
+
+    ConfigHandler createConfig(String modid, Config config);
+
+    ConfigHandler createConfig(String modId, Config client, ConfigSettings configSettings);
 }

@@ -1,5 +1,9 @@
 package com.gtnewhorizon.structurelib.util.fabric;
 
+import carbonconfiglib.CarbonConfig;
+import carbonconfiglib.config.Config;
+import carbonconfiglib.config.ConfigHandler;
+import carbonconfiglib.config.ConfigSettings;
 import com.gtnewhorizon.structurelib.StructureLib;
 import com.gtnewhorizon.structurelib.util.PlatformUtils;
 import io.github.fabricators_of_create.porting_lib.util.NetworkUtil;
@@ -54,5 +58,15 @@ public class PlatformUtilsImpl implements PlatformUtils {
 
     public <T extends AbstractContainerMenu> MenuType<T> create(TriFunction<Integer, Inventory, FriendlyByteBuf, T> factory) {
         return new ExtendedScreenHandlerType<>(factory::apply);
+    }
+
+    @Override
+    public ConfigHandler createConfig(String modid, Config config) {
+        return CarbonConfig.createConfig(modid, config);
+    }
+
+    @Override
+    public ConfigHandler createConfig(String modId, Config client, ConfigSettings configSettings) {
+        return CarbonConfig.createConfig(modId, client, configSettings);
     }
 }

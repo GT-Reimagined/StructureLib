@@ -1,5 +1,9 @@
 package com.gtnewhorizon.structurelib.util.forge;
 
+import carbonconfiglib.CarbonConfig;
+import carbonconfiglib.config.Config;
+import carbonconfiglib.config.ConfigHandler;
+import carbonconfiglib.config.ConfigSettings;
 import com.gtnewhorizon.structurelib.StructureLib;
 import com.gtnewhorizon.structurelib.util.PlatformUtils;
 import net.minecraft.network.FriendlyByteBuf;
@@ -56,5 +60,15 @@ public class PlatformUtilsImpl implements PlatformUtils {
 
     public <T extends AbstractContainerMenu> MenuType<T> create(TriFunction<Integer, Inventory, FriendlyByteBuf, T> factory) {
         return IForgeMenuType.create(factory::apply);
+    }
+
+    @Override
+    public ConfigHandler createConfig(String modid, Config config) {
+        return CarbonConfig.CONFIGS.createConfig(config);
+    }
+
+    @Override
+    public ConfigHandler createConfig(String modId, Config config, ConfigSettings configSettings) {
+        return CarbonConfig.CONFIGS.createConfig(config, configSettings);
     }
 }

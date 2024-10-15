@@ -5,8 +5,6 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 import com.gtnewhorizon.structurelib.util.PlatformUtils;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -23,12 +21,10 @@ import net.minecraft.world.level.block.Block;
 
 public class CommonProxy {
 
-    @Environment(EnvType.CLIENT)
     public void hintParticleTinted(Level w, int x, int y, int z, TextureAtlasSprite[] icons, short[] RGBa) {}
 
     public void hintParticleTinted(Level w, int x, int y, int z, Block block, short[] RGBa) {}
 
-    @Environment(EnvType.CLIENT)
     public void hintParticle(Level w, int x, int y, int z, TextureAtlasSprite[] icons) {}
 
     public void hintParticle(Level w, int x, int y, int z, Block block) {}

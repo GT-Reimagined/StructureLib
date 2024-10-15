@@ -47,11 +47,11 @@ public class ConstructableUtility {
             if (!aPlayer.isShiftKeyDown()) return true;
 
             long timePast = System.currentTimeMillis() - getLastUseMilis(aPlayer);
-            if (timePast < StructureLibConfig.COMMON.AUTO_PLACE_INTERVAL) {
+            if (timePast < StructureLibConfig.AUTO_PLACE_INTERVAL.get()) {
                 aPlayer.sendMessage(
                         new TranslatableComponent(
                                 "item.structurelib.constructableTrigger.too_fast",
-                                StructureLibConfig.COMMON.AUTO_PLACE_INTERVAL - timePast), aPlayer.getUUID());
+                                StructureLibConfig.AUTO_PLACE_INTERVAL.get() - timePast), aPlayer.getUUID());
                 return true;
             }
         } else if (!StructureLib.isCurrentPlayer(aPlayer)) {
@@ -81,7 +81,7 @@ public class ConstructableUtility {
             } else if (constructable instanceof ISurvivalConstructable) {
                 int built = ((ISurvivalConstructable) constructable).survivalConstruct(
                         aStack,
-                    StructureLibConfig.COMMON.AUTO_PLACE_BUDGET,
+                    StructureLibConfig.AUTO_PLACE_BUDGET.get(),
                         ISurvivalBuildEnvironment.create(IItemSource.fromPlayer(playerMP), playerMP));
                 if (built > 0) {
                     playerMP.sendMessage(new TranslatableComponent("structurelib.autoplace.built_stat", built), playerMP.getUUID());

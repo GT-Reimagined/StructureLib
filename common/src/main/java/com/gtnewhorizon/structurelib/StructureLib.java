@@ -63,6 +63,7 @@ public class StructureLib {
     public void preInit() {
         proxy = PlatformUtils.INSTANCE.isServer() ? new CommonProxy() : new ClientProxy();
         proxy.preInit();
+        StructureLibConfig.init();
         init();
         /*if (Loader.isModLoaded(STRUCTURECOMPAT_MODID)) {
             COMPAT = Loader.instance().getIndexedModList().get(STRUCTURECOMPAT_MODID).getMod();
