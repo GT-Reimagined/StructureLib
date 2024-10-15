@@ -33,12 +33,12 @@ public class Registry {
     public static void init(){}
 
     private static <B extends Block> B add(String name, B block) {
-        PlatformUtils.registerBlock(new ResourceLocation(StructureLibAPI.MOD_ID, name), block);
+        PlatformUtils.INSTANCE.registerBlock(new ResourceLocation(StructureLibAPI.MOD_ID, name), block);
         return block;
     }
 
     private static <B extends Item> B add(String name, B item) {
-        PlatformUtils.registerItem(new ResourceLocation(StructureLibAPI.MOD_ID, name), item);
+        PlatformUtils.INSTANCE.registerItem(new ResourceLocation(StructureLibAPI.MOD_ID, name), item);
         return item;
     }
 

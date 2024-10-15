@@ -16,45 +16,27 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import org.apache.commons.lang3.function.TriFunction;
 
+import java.util.ServiceLoader;
 import java.util.function.Consumer;
 
-public class PlatformUtils {
-    @ExpectPlatform
-    public static boolean isFakePlayer(Player player){
-        throw new AssertionError();
-    }
+public interface PlatformUtils {
+    PlatformUtils INSTANCE =  ServiceLoader.load(PlatformUtils.class).findFirst().orElseThrow(() -> new IllegalStateException("No implementation of PlatformUtils found"));
 
-    @ExpectPlatform
-    public static boolean isServer(){
-        throw new AssertionError();
-    }
+    boolean isFakePlayer(Player player);
 
-    public static boolean isClient(){
+    boolean isServer();
+
+    default boolean isClient(){
         return !isServer();
     }
 
-    @ExpectPlatform
-    public static MinecraftServer getCurrentServer(){
-        throw new AssertionError();
-    }
+    MinecraftServer getCurrentServer();
 
-    @ExpectPlatform
-    public static void registerBlock(ResourceLocation id, Block block){
-        throw new AssertionError();
-    }
+    void registerBlock(ResourceLocation id, Block block);
 
-    @ExpectPlatform
-    public static void registerItem(ResourceLocation id, Item item){
-        throw new AssertionError();
-    }
+    void registerItem(ResourceLocation id, Item item);
 
-    @ExpectPlatform
-    public static void openGui(ServerPlayer player, MenuProvider containerSupplier, Consumer<FriendlyByteBuf> extraDataWriter){
-        throw new AssertionError();
-    }
+    void openGui(ServerPlayer player, MenuProvider containerSupplier, Consumer<FriendlyByteBuf> extraDataWriter);
 
-    @ExpectPlatform
-    public static <T extends AbstractContainerMenu> MenuType<T> create(TriFunction<Integer, Inventory, FriendlyByteBuf, T> factory) {
-        throw new AssertionError();
-    }
+    <T extends AbstractContainerMenu> MenuType<T> create(TriFunction<Integer, Inventory, FriendlyByteBuf, T> factory);
 }

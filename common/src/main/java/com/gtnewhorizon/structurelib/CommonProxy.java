@@ -60,7 +60,7 @@ public class CommonProxy {
     public void preInit() {}
 
     public long getOverworldTime() {
-        return PlatformUtils.getCurrentServer().overworld().getGameTime();
+        return PlatformUtils.INSTANCE.getCurrentServer().overworld().getGameTime();
     }
 
     public void uploadChannels(ItemStack trigger, InteractionHand hand) {}

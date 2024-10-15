@@ -1,6 +1,7 @@
 package com.gtnewhorizon.structurelib.util.forge;
 
 import com.gtnewhorizon.structurelib.StructureLib;
+import com.gtnewhorizon.structurelib.util.PlatformUtils;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -23,20 +24,20 @@ import org.apache.commons.lang3.function.TriFunction;
 
 import java.util.function.Consumer;
 
-public class PlatformUtilsImpl {
-    public static boolean isFakePlayer(Player player){
+public class PlatformUtilsImpl implements PlatformUtils {
+    public boolean isFakePlayer(Player player){
         return player instanceof FakePlayer;
     }
 
-    public static boolean isServer(){
+    public boolean isServer(){
         return FMLEnvironment.dist.isDedicatedServer();
     }
 
-    public static MinecraftServer getCurrentServer(){
+    public MinecraftServer getCurrentServer(){
         return ServerLifecycleHooks.getCurrentServer();
     }
 
-    public static void registerBlock(ResourceLocation id, Block block){
+    public void registerBlock(ResourceLocation id, Block block){
         block.setRegistryName(id);
         BlockItem blockItem = new BlockItem(block, new Item.Properties().tab(StructureLib.getCreativeTab()));
         blockItem.setRegistryName(id);
@@ -44,16 +45,16 @@ public class PlatformUtilsImpl {
         ForgeRegistries.ITEMS.register(blockItem);
     }
 
-    public static void registerItem(ResourceLocation id, Item item){
+    public void registerItem(ResourceLocation id, Item item){
         item.setRegistryName(id);
         ForgeRegistries.ITEMS.register(item);
     }
 
-    public static void openGui(ServerPlayer player, MenuProvider containerSupplier, Consumer<FriendlyByteBuf> extraDataWriter){
+    public void openGui(ServerPlayer player, MenuProvider containerSupplier, Consumer<FriendlyByteBuf> extraDataWriter){
         NetworkHooks.openGui(player, containerSupplier, extraDataWriter);
     }
 
-    public static <T extends AbstractContainerMenu> MenuType<T> create(TriFunction<Integer, Inventory, FriendlyByteBuf, T> factory) {
+    public <T extends AbstractContainerMenu> MenuType<T> create(TriFunction<Integer, Inventory, FriendlyByteBuf, T> factory) {
         return IForgeMenuType.create(factory::apply);
     }
 }

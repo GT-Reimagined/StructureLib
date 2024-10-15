@@ -203,7 +203,7 @@ public class StructureLibAPI {
      * @throws IllegalArgumentException if is not tile entity or provided a null alignment
      */
     public static void sendAlignment(IAlignmentProvider provider) {
-        StructureLib.CHANNEL.sendToAllPlayers(new AlignmentMessage.AlignmentData(provider), PlatformUtils.getCurrentServer());
+        StructureLib.CHANNEL.sendToAllPlayers(new AlignmentMessage.AlignmentData(provider), PlatformUtils.INSTANCE.getCurrentServer());
     }
 
     /**

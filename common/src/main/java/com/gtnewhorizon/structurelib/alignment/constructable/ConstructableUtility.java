@@ -39,7 +39,7 @@ public class ConstructableUtility {
     private static boolean handle0(ItemStack aStack, Player aPlayer, Level aLevel, int aX, int aY, int aZ,
             int aSide) {
         BlockEntity tBlockEntity = aLevel.getBlockEntity(new BlockPos(aX, aY, aZ));
-        if (tBlockEntity == null || PlatformUtils.isFakePlayer(aPlayer)) {
+        if (tBlockEntity == null || PlatformUtils.INSTANCE.isFakePlayer(aPlayer)) {
             return aPlayer instanceof ServerPlayer;
         }
         if (aPlayer instanceof ServerPlayer) {

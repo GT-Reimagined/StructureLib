@@ -23,7 +23,7 @@ public class ContainerConfigureChannels extends AbstractContainerMenu {
 
     public static MenuType<ContainerConfigureChannels> getMenuType() {
         if (menuType == null){
-            menuType = PlatformUtils.create((i, c, f) -> {
+            menuType = PlatformUtils.INSTANCE.create((i, c, f) -> {
                 InteractionHand hand = f.readEnum(InteractionHand.class);
                 return new ContainerConfigureChannels(hand, menuType, i);
             });

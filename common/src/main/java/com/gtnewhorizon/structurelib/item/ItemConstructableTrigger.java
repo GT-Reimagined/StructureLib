@@ -34,7 +34,7 @@ public class ItemConstructableTrigger extends Item implements MenuProvider {
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
         if (!level.isClientSide){
-            PlatformUtils.openGui((ServerPlayer) player, this, f -> f.writeEnum(usedHand));
+            PlatformUtils.INSTANCE.openGui((ServerPlayer) player, this, f -> f.writeEnum(usedHand));
             return InteractionResultHolder.success(player.getItemInHand(usedHand));
         }
         return super.use(level, player, usedHand);
