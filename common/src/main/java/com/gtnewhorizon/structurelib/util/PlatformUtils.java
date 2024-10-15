@@ -4,7 +4,6 @@ import carbonconfiglib.config.Config;
 import carbonconfiglib.config.ConfigHandler;
 import carbonconfiglib.config.ConfigSettings;
 import com.gtnewhorizon.structurelib.StructureLib;
-import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
