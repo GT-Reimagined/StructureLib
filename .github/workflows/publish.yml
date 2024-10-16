@@ -24,6 +24,13 @@ jobs:
       - name: Make Gradle wrapper executable
         if: ${{ runner.os != 'Windows' }}
         run: chmod +x ./gradlew
+      - name: Setup Gradle Dependencies Cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-caches-${{ hashFiles('gradle.properties') }}
       - name: Build & Publish
         run: ./gradlew build :forge:publish :fabric:publish :common:publish --stacktrace
         env:
