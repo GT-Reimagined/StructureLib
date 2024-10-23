@@ -75,7 +75,7 @@ tasks.withType(JavaCompile) {
 processResources {
     from project(":common").sourceSets.main.resources
     inputs.property "version", project.mod_version
-
+    exclude("structurelib.accesswidener")
     filesMatching("META-INF/mods.toml") {
         expand "version": project.mod_version
     }
