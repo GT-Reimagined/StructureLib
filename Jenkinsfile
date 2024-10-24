@@ -11,16 +11,10 @@ pipeline {
                 sh './gradlew clean'
             }
         }
-        stage('Build') {
+        stage('Build & Publish') {
             steps {
-                echo 'Building'
-                sh './gradlew build'
-            }
-        }
-        stage('Publish') {
-            steps {
-                echo 'Deploying to Maven'
-                sh './gradlew publish'
+                echo 'Building & Publishing'
+                sh './gradlew build publish'
             }
         }
     }
