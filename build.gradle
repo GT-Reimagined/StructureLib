@@ -7,7 +7,7 @@ plugins {
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 
 def isCI = System.getenv("GITHUB_ACTION")
-def isRELEASE = System.getenv("GITHUB_RELEASE")
+def isJENKINS = System.getenv("CI")
 def gitHash() {
     String hash = System.getenv("GITHUB_SHA")
     if (hash != null) return hash.substring(0,8)
@@ -28,10 +28,7 @@ subprojects{
         withSourcesJar()
     }
     if (isCI) {
-        if (!isRELEASE){
-            version = version + "-" + gitHash()
-            println("Not in CI Release mode")
-        }
+        version = version + "-" + gitHash()
         println("In CI mode")
     }
     publishing {
@@ -45,13 +42,9 @@ subprojects{
         }
 
         repositories {
-            if (isCI && isRELEASE) {
+            if (isJENKINS) {
                 maven {
-                    url = "https://repo.repsy.io/mvn/trinsdar/gregtech-intergalactical/"
-                    credentials {
-                        username = System.getenv("MAVEN_USERNAME")
-                        password = System.getenv("MAVEN_PASSWORD")
-                    }
+                    url System.getenv("local_maven_url")
                 }
             } else {
                 maven { url "file:///${project.projectDir}/mcmodsrepo"}
