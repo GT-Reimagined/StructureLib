@@ -24,8 +24,8 @@ public class ItemFrontRotationTool extends Item {
         super(new Properties().tab(StructureLib.getCreativeTab()).stacksTo(1));
     }
 
-    @Override
-    public InteractionResult useOn(UseOnContext context) {
+    //@Override
+    public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
         if (AlignmentUtility.handle(context.getPlayer(), context.getLevel(), context.getClickedPos().getX(), context.getClickedPos().getY(), context.getClickedPos().getZ())){
             return InteractionResult.SUCCESS;
         }
