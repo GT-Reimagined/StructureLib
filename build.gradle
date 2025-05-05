@@ -22,7 +22,7 @@ subprojects{
     version = "${project.mod_version}-${rootProject.minecraft_version}"
 
     java.toolchain.languageVersion = JavaLanguageVersion.of(17)
-    apply from: 'https://raw.githubusercontent.com/GregTech-Intergalactical/GradleSripts/main/repositories.gradle'
+    apply from: 'https://raw.githubusercontent.com/GT-Reimagined/GradleScripts/main/repositories.gradle'
 
     java {
         withSourcesJar()
@@ -34,10 +34,8 @@ subprojects{
     publishing {
         publications {
             mavenJava(org.gradle.api.publish.maven.MavenPublication) {
-                if (project.name != "forge"){
-                    artifactId = "structurelib-" + project.name
-                    from components.java
-                }
+                artifactId = "structurelib-" + project.name
+                from components.java
             }
         }
 
@@ -47,7 +45,7 @@ subprojects{
                     url System.getenv("local_maven_url")
                 }
             } else {
-                maven { url "file:///${project.projectDir}/mcmodsrepo"}
+                mavenLocal()
             }
         }
     }

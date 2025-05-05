@@ -1,74 +1,41 @@
 plugins {
-    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
-    id 'org.parchmentmc.librarian.forgegradle' version '1.+'
+    id "net.neoforged.moddev.legacyforge" version "2.0.72"
 }
 
 archivesBaseName = "${rootProject.archive_base_name}-forge"
 
-minecraft {
-    // Change to your preferred mappings
-    mappings channel: "parchment", version: "${rootProject.mappings_version}-${rootProject.minecraft_version}"
-    // Add your AccessTransformer
-    //accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
-
+legacyForge {
+    version = "${project.minecraft_version}-${project.forge_version}"
+    parchment {
+        minecraftVersion = rootProject.minecraft_version
+        mappingsVersion = rootProject.mappings_version
+    }
     runs {
-        // applies to all the run configs below
-        configureEach {
-            workingDirectory project.file('run')
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
-            property 'mixin.env.remapRefMap', 'true'
-            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
-
-            // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
-            property 'forge.enabledGameTestNamespaces', mod_id
-
-            mods {
-                "${mod_id}" {
-                    source sourceSets.main
-                }
-            }
-        }
-
         client {
-            property 'forge.enabledGameTestNamespaces', mod_id
+            client()
         }
-
-        server {
-            workingDirectory project.file('run/server')
-            property 'forge.enabledGameTestNamespaces', mod_id
-            args '--nogui'
-        }
-
-        // This run config launches GameTestServer and runs all registered gametests, then exits.
-        // By default, the server will crash when no gametests are provided.
-        // The gametest system is also enabled by default for other run configs under the /test command.
-        gameTestServer {
-            property 'forge.enabledGameTestNamespaces', mod_id
-        }
-
         data {
-            // example of overriding the workingDirectory set in configureEach above
-            workingDirectory project.file('run-data')
-
-            // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
-            args '--mod', mod_id, '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+            data()
+        }
+        server {
+            server()
+        }
+    }
+    mods {
+        "${mod_id}" {
+            sourceSet sourceSets.main
         }
     }
 }
-
-jarJar.enable()
 
 dependencies {
-    minecraft "net.minecraftforge:forge:${rootProject.minecraft_version}-${rootProject.forge_version}"
-    implementation fg.deobf("maven.modrinth:carbon-config:${project.carbon_config_forge_version}")
-    implementation(fg.deobf("com.teamresourceful.resourcefullib:resourcefullib-forge-${project.minecraft_version}:${project.resourcefullib_version}"))
-    jarJar("com.teamresourceful.resourcefullib:resourcefullib-forge-${project.minecraft_version}:${project.resourcefullib_version}"){
-        jarJar.ranged(it, "[0.0.5,)")
-    }
+    compileOnly(project(":common"))
+    modImplementation("maven.modrinth:carbon-config:${project.carbon_config_forge_version}")
+    modImplementation("com.teamresourceful.resourcefullib:resourcefullib-forge-${project.minecraft_version}:${project.resourcefullib_version}")
+    jarJar("com.teamresourceful.resourcefullib:resourcefullib-forge-${project.minecraft_version}:${project.resourcefullib_version}")
 }
 
-tasks.withType(JavaCompile) {
+tasks.named('compileJava', JavaCompile) {
     source(project(":common").sourceSets.main.allSource)
 }
 
@@ -85,10 +52,6 @@ sourcesJar {
     from(project(':common').sourceSets.main.allSource)
 }
 
-tasks.named('jarJar', Jar).configure {
-    archiveClassifier.set("")
-}
-
 tasks.named('jar', Jar).configure {
     manifest {
         attributes([
@@ -100,35 +63,5 @@ tasks.named('jar', Jar).configure {
             'Implementation-Vendor'   : "Trinsdar",
             'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
-    }
-
-    // This is the preferred method to reobfuscate your jar file
-    finalizedBy 'reobfJar'
-    archiveClassifier.set "thin"
-}
-
-publishing {
-    publications {
-        mavenJava(org.gradle.api.publish.maven.MavenPublication) {
-            artifactId = "structurelib-" + project.name
-            from components.java
-            jarJar.component(it)
-        }
-    }
-
-    repositories {
-        def isCI = System.getenv("GITHUB_ACTION")
-        def isRELEASE = System.getenv("GITHUB_RELEASE")
-        if (isCI && isRELEASE) {
-            maven {
-                url = "https://repo.repsy.io/mvn/trinsdar/gregtech-intergalactical/"
-                credentials {
-                    username = System.getenv("MAVEN_USERNAME")
-                    password = System.getenv("MAVEN_PASSWORD")
-                }
-            }
-        } else {
-            maven { url "file:///${project.projectDir}/mcmodsrepo"}
-        }
     }
 }
