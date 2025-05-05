@@ -33,6 +33,7 @@ dependencies {
     modImplementation("maven.modrinth:carbon-config:${project.carbon_config_forge_version}")
     modImplementation("com.teamresourceful.resourcefullib:resourcefullib-forge-${project.minecraft_version}:${project.resourcefullib_version}")
     jarJar("com.teamresourceful.resourcefullib:resourcefullib-forge-${project.minecraft_version}:${project.resourcefullib_version}")
+    implementation("org.jetbrains:annotations:26.0.1")
 }
 
 tasks.named('compileJava', JavaCompile) {
