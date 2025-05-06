@@ -61,8 +61,9 @@ public class StructureLib {
     protected static CreativeModeTab creativeTab;
 
     public void preInit() {
-        proxy = PlatformUtils.isServer() ? new CommonProxy() : new ClientProxy();
+        proxy = PlatformUtils.INSTANCE.isServer() ? new CommonProxy() : new ClientProxy();
         proxy.preInit();
+        StructureLibConfig.init();
         init();
         /*if (Loader.isModLoaded(STRUCTURECOMPAT_MODID)) {
             COMPAT = Loader.instance().getIndexedModList().get(STRUCTURECOMPAT_MODID).getMod();

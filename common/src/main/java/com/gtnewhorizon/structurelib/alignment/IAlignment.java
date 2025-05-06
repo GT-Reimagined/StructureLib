@@ -6,6 +6,7 @@ import com.gtnewhorizon.structurelib.alignment.enumerable.ExtendedFacing;
 import com.gtnewhorizon.structurelib.alignment.enumerable.Flip;
 import com.gtnewhorizon.structurelib.alignment.enumerable.Rotation;
 import net.minecraft.core.Direction;
+import org.jetbrains.annotations.NotNull;
 
 public interface IAlignment extends IAlignmentLimits, IAlignmentProvider {
 
@@ -25,7 +26,7 @@ public interface IAlignment extends IAlignmentLimits, IAlignmentProvider {
     IAlignmentLimits getAlignmentLimits();
 
     @Override
-    default IAlignment getAlignment() {
+    default @NotNull IAlignment getAlignment() {
         return this;
     }
 

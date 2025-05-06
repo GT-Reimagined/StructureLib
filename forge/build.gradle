@@ -1,54 +1,68 @@
+plugins {
+    id "net.neoforged.moddev.legacyforge" version "2.0.72"
+}
+
 archivesBaseName = "${rootProject.archive_base_name}-forge"
-version = "${project.mod_version}-${rootProject.minecraft_version}"
 
-architectury {
-    platformSetupLoomIde()
-    forge()
-}
-
-sourceSets {
-    test {
-        compileClasspath += main.compileClasspath
-        runtimeClasspath += main.runtimeClasspath
+legacyForge {
+    version = "${project.minecraft_version}-${project.forge_version}"
+    parchment {
+        minecraftVersion = rootProject.minecraft_version
+        mappingsVersion = rootProject.mappings_version
     }
-}
-
-loom {
     runs {
-        testClient {
+        client {
             client()
-            ideConfigGenerated project.rootProject == project
-            name = "Testmod Client"
-            source sourceSets.test
         }
-        testServer {
+        data {
+            data()
+        }
+        server {
             server()
-            ideConfigGenerated project.rootProject == project
-            name = "Testmod Server"
-            source sourceSets.test
+        }
+    }
+    mods {
+        "${mod_id}" {
+            sourceSet sourceSets.main
         }
     }
 }
 
 dependencies {
-    forge "net.minecraftforge:forge:${rootProject.minecraft_version}-${rootProject.forge_version}"
-    common(project(path: ":common", configuration: "namedElements")) { transitive false }
-    shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive = false }
-    testImplementation('junit:junit:4.11')
+    compileOnly(project(":common"))
+    modImplementation("maven.modrinth:carbon-config:${project.carbon_config_forge_version}")
+    modImplementation("com.teamresourceful.resourcefullib:resourcefullib-forge-${project.minecraft_version}:${project.resourcefullib_version}")
+    jarJar("com.teamresourceful.resourcefullib:resourcefullib-forge-${project.minecraft_version}:${project.resourcefullib_version}")
+    implementation("org.jetbrains:annotations:26.0.1")
+}
 
-    modImplementation(include("com.teamresourceful.resourcefullib:resourcefullib-forge-${project.minecraft_version}:${project.resourcefullib_version}"))
+tasks.named('compileJava', JavaCompile) {
+    source(project(":common").sourceSets.main.allSource)
 }
 
 processResources {
+    from project(":common").sourceSets.main.resources
     inputs.property "version", project.mod_version
-
+    exclude("structurelib.accesswidener")
     filesMatching("META-INF/mods.toml") {
         expand "version": project.mod_version
     }
 }
 
 sourcesJar {
-    def commonSources = project(":common").sourcesJar
-    dependsOn commonSources
-    from commonSources.archiveFile.map { zipTree(it) }
+    from(project(':common').sourceSets.main.allSource)
+}
+
+tasks.named('jar', Jar).configure {
+    manifest {
+        attributes([
+            'Specification-Title'     : mod_id,
+            'Specification-Vendor'    : "Trinsdar",
+            'Specification-Version'   : '1', // We are version 1 of ourselves
+            'Implementation-Title'    : project.name,
+            'Implementation-Version'  : project.jar.archiveVersion,
+            'Implementation-Vendor'   : "Trinsdar",
+            'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+        ])
+    }
 }
