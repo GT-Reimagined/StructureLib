@@ -4,12 +4,10 @@ name: StructureLib Nightly
 on:
   push:
     branches:
-      - 1.18.2
-      - 1.19.2
+      - 1.*
   pull_request:
     branches:
-      - 1.18.2
-      - 1.19.2
+      - 1.*
 jobs:
   build:
 
