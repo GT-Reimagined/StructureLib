@@ -3,8 +3,6 @@ package com.gtnewhorizon.structurelib.alignment.constructable;
 
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.world.item.ItemStack;
 
 /**
@@ -21,6 +19,5 @@ public interface IConstructable {
         return null;
     }
 
-    @Environment(EnvType.CLIENT)
     String[] getStructureDescription(ItemStack stackSize);
 }

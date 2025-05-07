@@ -141,7 +141,7 @@ public abstract class AlignmentMessage<T extends AlignmentMessage<T>> implements
         @Override
         public PacketContext handle(AlignmentQuery msg) {
             return (player, level) -> {
-                Level world = PlatformUtils.getCurrentServer().getLevel(ResourceKey.create(Registries.DIMENSION, new ResourceLocation(msg.dimensionID)));
+                Level world = PlatformUtils.INSTANCE.getCurrentServer().getLevel(ResourceKey.create(Registries.DIMENSION, new ResourceLocation(msg.dimensionID)));
                 if (world != null) {
                     BlockEntity te = world.getBlockEntity(msg.pos);
                     if (te instanceof IAlignmentProvider provider) {

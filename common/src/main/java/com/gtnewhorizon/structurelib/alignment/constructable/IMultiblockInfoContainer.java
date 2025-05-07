@@ -8,8 +8,6 @@ import com.gtnewhorizon.structurelib.structure.AutoPlaceEnvironment;
 import com.gtnewhorizon.structurelib.structure.IItemSource;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -50,7 +48,6 @@ public interface IMultiblockInfoContainer<T> {
     int survivalConstruct(ItemStack stackSize, int elementBudge, ISurvivalBuildEnvironment env, T tileEntity,
             ExtendedFacing aSide);
 
-    @Environment(EnvType.CLIENT)
     String[] getDescription(ItemStack stackSize);
 
     default ISurvivalConstructable toConstructable(T tileEntity, ExtendedFacing aSide) {

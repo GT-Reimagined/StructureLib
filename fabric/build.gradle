@@ -1,11 +1,12 @@
-architectury {
-    platformSetupLoomIde()
-    fabric()
+import org.gradle.api.tasks.compile.JavaCompile
+
+plugins {
+    id "fabric-loom" version "1.6.+"
 }
 
 archivesBaseName = "${rootProject.archive_base_name}-fabric"
-version = "${project.mod_version}-${rootProject.minecraft_version}"
 
+def accessWidenerFile = project(":common").file("src/main/resources/structurelib.accesswidener")
 sourceSets {
     test {
         compileClasspath += main.compileClasspath
@@ -14,7 +15,7 @@ sourceSets {
 }
 
 loom {
-    silentMojangMappingsLicense()
+    accessWidenerPath = accessWidenerFile
     runs {
         testClient {
             client()
@@ -39,25 +40,27 @@ repositories {
 }
 
 dependencies {
+    minecraft "com.mojang:minecraft:${rootProject.minecraft_version}"
+    mappings loom.layered() {
+        officialMojangMappings()
+        parchment("org.parchmentmc.data:parchment-${rootProject.minecraft_version}:${rootProject.mappings_version}@zip")
+    }
     modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
     modApi "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}+${rootProject.minecraft_version}"
 
-    common(project(path: ":common", configuration: "namedElements")) { transitive false }
-    shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
-    include("io.github.fabricators_of_create.Porting-Lib:base:${rootProject.port_lib_version}+1.20"){ transitive(false) }
-    modImplementation("io.github.fabricators_of_create.Porting-Lib:base:${rootProject.port_lib_version}+1.20"){
+    compileOnly(project(":common"))
+    include("io.github.fabricators_of_create.Porting-Lib:base:${rootProject.port_lib_version}+1.20.1"){ transitive(false) }
+    modImplementation("io.github.fabricators_of_create.Porting-Lib:base:${rootProject.port_lib_version}+1.20.1"){
         exclude(group: "net.fabricmc.fabric-api")
         exclude(group: "com.github.LlamaLad7")
+        exclude(group: "com.jamieswhiteshirt")
     }
-    implementation("com.github.LlamaLad7:MixinExtras:0.1.1")
-    annotationProcessor("com.github.LlamaLad7:MixinExtras:0.1.1")
-    implementation("com.electronwill.night-config:toml:${rootProject.nightconfig_version}")
-    implementation("com.electronwill.night-config:core:${rootProject.nightconfig_version}")
-    modImplementation(include("fuzs.forgeconfigapiport:forgeconfigapiport-fabric:8.0.0"))
+    modImplementation "maven.modrinth:carbon-config:${project.carbon_config_fabric_version}"
     modImplementation(include("com.teamresourceful.resourcefullib:resourcefullib-fabric-${project.minecraft_version}:${project.resourcefullib_version}"))
 }
 
 processResources {
+    from project(":common").sourceSets.main.resources
     inputs.property "version", project.mod_version
 
     filesMatching("fabric.mod.json") {
@@ -65,8 +68,10 @@ processResources {
     }
 }
 
+tasks.named('compileJava', JavaCompile) {
+    source(project(":common").sourceSets.main.allSource)
+}
+
 sourcesJar {
-    def commonSources = project(":common").sourcesJar
-    dependsOn commonSources
-    from commonSources.archiveFile.map { zipTree(it) }
+    from(project(':common').sourceSets.main.allSource)
 }

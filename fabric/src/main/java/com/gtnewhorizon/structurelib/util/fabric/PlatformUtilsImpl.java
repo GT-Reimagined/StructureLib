@@ -1,6 +1,11 @@
 package com.gtnewhorizon.structurelib.util.fabric;
 
+import carbonconfiglib.CarbonConfig;
+import carbonconfiglib.config.Config;
+import carbonconfiglib.config.ConfigHandler;
+import carbonconfiglib.config.ConfigSettings;
 import com.gtnewhorizon.structurelib.StructureLib;
+import com.gtnewhorizon.structurelib.util.PlatformUtils;
 import io.github.fabricators_of_create.porting_lib.util.NetworkHooks;
 import io.github.fabricators_of_create.porting_lib.util.ServerLifecycleHooks;
 import net.fabricmc.api.EnvType;
@@ -8,6 +13,7 @@ import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -24,35 +30,45 @@ import org.apache.commons.lang3.function.TriFunction;
 
 import java.util.function.Consumer;
 
-public class PlatformUtilsImpl {
-    public static boolean isFakePlayer(Player player){
+public class PlatformUtilsImpl implements PlatformUtils {
+    public boolean isFakePlayer(Player player){
         if (!(player instanceof ServerPlayer serverPlayer)) return false;
         return serverPlayer.getClass() != ServerPlayer.class;
     }
 
-    public static MinecraftServer getCurrentServer(){
+    public MinecraftServer getCurrentServer(){
         return ServerLifecycleHooks.getCurrentServer();
     }
 
-    public static boolean isServer(){
+    public boolean isServer(){
         return FabricLoader.getInstance().getEnvironmentType() == EnvType.SERVER;
     }
 
-    public static void registerBlock(ResourceLocation id, Block block){
+    public void registerBlock(ResourceLocation id, Block block){
         BlockItem blockItem = new BlockItem(block, new Item.Properties());
         Registry.register(BuiltInRegistries.BLOCK, id, block);
         Registry.register(BuiltInRegistries.ITEM, id, blockItem);
     }
 
-    public static void registerItem(ResourceLocation id, Item item){
+    public void registerItem(ResourceLocation id, Item item){
         Registry.register(BuiltInRegistries.ITEM, id, item);
     }
 
-    public static void openGui(ServerPlayer player, MenuProvider containerSupplier, Consumer<FriendlyByteBuf> extraDataWriter){
+    public void openGui(ServerPlayer player, MenuProvider containerSupplier, Consumer<FriendlyByteBuf> extraDataWriter){
         NetworkHooks.openScreen(player, containerSupplier, extraDataWriter);
     }
 
-    public static <T extends AbstractContainerMenu> MenuType<T> create(TriFunction<Integer, Inventory, FriendlyByteBuf, T> factory) {
+    public <T extends AbstractContainerMenu> MenuType<T> create(TriFunction<Integer, Inventory, FriendlyByteBuf, T> factory) {
         return new ExtendedScreenHandlerType<>(factory::apply);
+    }
+
+    @Override
+    public ConfigHandler createConfig(String modid, Config config) {
+        return CarbonConfig.createConfig(modid, config);
+    }
+
+    @Override
+    public ConfigHandler createConfig(String modId, Config client, ConfigSettings configSettings) {
+        return CarbonConfig.createConfig(modId, client, configSettings);
     }
 }

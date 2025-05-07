@@ -39,7 +39,7 @@ public class ConstructableUtility {
     private static boolean handle0(ItemStack aStack, Player aPlayer, Level aLevel, int aX, int aY, int aZ,
             int aSide) {
         BlockEntity tBlockEntity = aLevel.getBlockEntity(new BlockPos(aX, aY, aZ));
-        if (tBlockEntity == null || PlatformUtils.isFakePlayer(aPlayer)) {
+        if (tBlockEntity == null || PlatformUtils.INSTANCE.isFakePlayer(aPlayer)) {
             return aPlayer instanceof ServerPlayer;
         }
         if (aPlayer instanceof ServerPlayer) {
@@ -47,11 +47,11 @@ public class ConstructableUtility {
             if (!aPlayer.isShiftKeyDown()) return true;
 
             long timePast = System.currentTimeMillis() - getLastUseMilis(aPlayer);
-            if (timePast < StructureLibConfig.COMMON.AUTO_PLACE_INTERVAL) {
+            if (timePast < StructureLibConfig.AUTO_PLACE_INTERVAL.get()) {
                 aPlayer.displayClientMessage(
                         Component.translatable(
                                 "item.structurelib.constructableTrigger.too_fast",
-                                StructureLibConfig.COMMON.AUTO_PLACE_INTERVAL - timePast), false);
+                                StructureLibConfig.AUTO_PLACE_INTERVAL.get() - timePast), false);
                 return true;
             }
         } else if (!StructureLib.isCurrentPlayer(aPlayer)) {
@@ -81,7 +81,7 @@ public class ConstructableUtility {
             } else if (constructable instanceof ISurvivalConstructable) {
                 int built = ((ISurvivalConstructable) constructable).survivalConstruct(
                         aStack,
-                    StructureLibConfig.COMMON.AUTO_PLACE_BUDGET,
+                    StructureLibConfig.AUTO_PLACE_BUDGET.get(),
                         ISurvivalBuildEnvironment.create(IItemSource.fromPlayer(playerMP), playerMP));
                 if (built > 0) {
                     playerMP.displayClientMessage(Component.translatable("structurelib.autoplace.built_stat", built), false);

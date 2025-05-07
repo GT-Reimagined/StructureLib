@@ -23,8 +23,8 @@ public class ItemFrontRotationTool extends Item {
         super(new Properties().stacksTo(1));
     }
 
-    @Override
-    public InteractionResult useOn(UseOnContext context) {
+    //@Override
+    public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
         if (AlignmentUtility.handle(context.getPlayer(), context.getLevel(), context.getClickedPos().getX(), context.getClickedPos().getY(), context.getClickedPos().getZ())){
             return InteractionResult.SUCCESS;
         }
@@ -34,10 +34,10 @@ public class ItemFrontRotationTool extends Item {
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
         super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
-        tooltipComponents.add(Component.translatable("item.structurelib.frontRotationTool.desc.0")); // Triggers Front Rotation Interface
+        tooltipComponents.add(Component.translatable("item.structurelib.front_rotation_tool.desc.0")); // Triggers Front Rotation Interface
         // Rotates only the front panel,
-        tooltipComponents.add(Component.translatable("item.structurelib.frontRotationTool.desc.1").withStyle(ChatFormatting.BLUE));
+        tooltipComponents.add(Component.translatable("item.structurelib.front_rotation_tool.desc.1").withStyle(ChatFormatting.BLUE));
         // which allows structure rotation.
-        tooltipComponents.add(Component.translatable("item.structurelib.frontRotationTool.desc.2").withStyle(ChatFormatting.BLUE));
+        tooltipComponents.add(Component.translatable("item.structurelib.front_rotation_tool.desc.2").withStyle(ChatFormatting.BLUE));
     }
 }
