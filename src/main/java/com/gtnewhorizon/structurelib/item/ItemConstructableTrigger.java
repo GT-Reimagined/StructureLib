@@ -1,14 +1,7 @@
 package com.gtnewhorizon.structurelib.item;
 
-import static com.gtnewhorizon.structurelib.StructureLibAPI.MOD_ID;
-
-import java.util.List;
-
-import com.gtnewhorizon.structurelib.StructureLib;
-import com.gtnewhorizon.structurelib.alignment.constructable.ChannelDataAccessor;
 import com.gtnewhorizon.structurelib.alignment.constructable.ConstructableUtility;
 import com.gtnewhorizon.structurelib.gui.ContainerConfigureChannels;
-import com.gtnewhorizon.structurelib.util.PlatformUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -22,6 +15,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
 
 public class ItemConstructableTrigger extends Item implements MenuProvider {
@@ -33,7 +27,7 @@ public class ItemConstructableTrigger extends Item implements MenuProvider {
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
         if (!level.isClientSide){
-            PlatformUtils.INSTANCE.openGui((ServerPlayer) player, this, f -> f.writeEnum(usedHand));
+            NetworkHooks.openScreen((ServerPlayer) player, this, f -> f.writeEnum(usedHand));
             return InteractionResultHolder.success(player.getItemInHand(usedHand));
         }
         return super.use(level, player, usedHand);

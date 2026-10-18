@@ -4,7 +4,6 @@ import java.util.WeakHashMap;
 
 
 import com.gtnewhorizon.structurelib.StructureLibConfig;
-import com.gtnewhorizon.structurelib.util.PlatformUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -20,6 +19,7 @@ import com.gtnewhorizon.structurelib.alignment.IAlignment;
 import com.gtnewhorizon.structurelib.alignment.enumerable.ExtendedFacing;
 import com.gtnewhorizon.structurelib.structure.IItemSource;
 import com.gtnewhorizon.structurelib.structure.ISurvivalBuildEnvironment;
+import net.minecraftforge.common.util.FakePlayer;
 
 public class ConstructableUtility {
 
@@ -39,7 +39,7 @@ public class ConstructableUtility {
     private static boolean handle0(ItemStack aStack, Player aPlayer, Level aLevel, int aX, int aY, int aZ,
             int aSide) {
         BlockEntity tBlockEntity = aLevel.getBlockEntity(new BlockPos(aX, aY, aZ));
-        if (tBlockEntity == null || PlatformUtils.INSTANCE.isFakePlayer(aPlayer)) {
+        if (tBlockEntity == null || aPlayer instanceof FakePlayer) {
             return aPlayer instanceof ServerPlayer;
         }
         if (aPlayer instanceof ServerPlayer) {

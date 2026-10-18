@@ -4,11 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import com.gtnewhorizon.structurelib.util.PlatformUtils;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.MinecraftServer;
 
 import com.gtnewhorizon.structurelib.net.ErrorHintParticleMessage;
 import com.gtnewhorizon.structurelib.net.UpdateHintParticleMessage;
@@ -18,6 +16,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraftforge.server.ServerLifecycleHooks;
 
 public class CommonProxy {
 
@@ -56,7 +55,7 @@ public class CommonProxy {
     public void preInit() {}
 
     public long getOverworldTime() {
-        return PlatformUtils.INSTANCE.getCurrentServer().overworld().getGameTime();
+        return ServerLifecycleHooks.getCurrentServer().overworld().getGameTime();
     }
 
     public void uploadChannels(ItemStack trigger, InteractionHand hand) {}

@@ -1,5 +1,6 @@
 package com.gtnewhorizon.structurelib;
 
+import carbonconfiglib.CarbonConfig;
 import carbonconfiglib.api.ConfigType;
 import carbonconfiglib.config.Config;
 import carbonconfiglib.config.ConfigEntry;
@@ -7,7 +8,7 @@ import carbonconfiglib.config.ConfigHandler;
 import carbonconfiglib.config.ConfigSection;
 import carbonconfiglib.config.ConfigSettings;
 import carbonconfiglib.utils.AutomationType;
-import com.gtnewhorizon.structurelib.util.PlatformUtils;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 
 public class StructureLibConfig {
 
@@ -34,9 +35,9 @@ public class StructureLibConfig {
                 "As expected, server side settings will overrides client settings.",
                 "Note this relates to the wall clock, not in game ticks.",
                 "Value smaller than default is likely to be perceived as no minimal interval whatsoever.").setRange(0, 20000);
-        CONFIG_COMMON = PlatformUtils.INSTANCE.createConfig(StructureLibAPI.MOD_ID, config);
+        CONFIG_COMMON = CarbonConfig.CONFIGS.createConfig(config);
         CONFIG_COMMON.register();
-        if (PlatformUtils.INSTANCE.isClient()){
+        if (FMLEnvironment.dist.isClient()){
             Config client = new Config("structurelib-client");
             ConfigSection clientSection = client.add("general");
             HINT_LIFESPAN = clientSection.addInt("hint_lifespan", 400,
@@ -47,7 +48,7 @@ public class StructureLibConfig {
                 "An attempt will be made to prune old holograms when a new hologram is about to be projected").setRange(1, 100);
             REMOVE_COLLIDING = clientSection.addBool("remove_colliding", true,
                 "An attempt will be made to remove an existing hologram if it collides with a new hologram");
-            CONFIG_CLIENT = PlatformUtils.INSTANCE.createConfig(StructureLibAPI.MOD_ID, client, ConfigSettings.withConfigType(ConfigType.CLIENT).withAutomations(AutomationType.AUTO_LOAD));
+            CONFIG_CLIENT = CarbonConfig.CONFIGS.createConfig(client, ConfigSettings.withConfigType(ConfigType.CLIENT).withAutomations(AutomationType.AUTO_LOAD));
             CONFIG_CLIENT.register();
         }
     }

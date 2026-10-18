@@ -6,7 +6,6 @@ import com.gtnewhorizon.structurelib.alignment.enumerable.ExtendedFacing;
 import com.gtnewhorizon.structurelib.net.AlignmentMessage;
 import com.gtnewhorizon.structurelib.structure.AutoPlaceEnvironment;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
-import com.gtnewhorizon.structurelib.util.PlatformUtils;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -18,7 +17,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
+import net.minecraftforge.server.ServerLifecycleHooks;
 
 import static com.gtnewhorizon.structurelib.StructureLib.proxy;
 
@@ -203,7 +202,7 @@ public class StructureLibAPI {
      * @throws IllegalArgumentException if is not tile entity or provided a null alignment
      */
     public static void sendAlignment(IAlignmentProvider provider) {
-        StructureLib.CHANNEL.sendToAllPlayers(new AlignmentMessage.AlignmentData(provider), PlatformUtils.INSTANCE.getCurrentServer());
+        StructureLib.CHANNEL.sendToAllPlayers(new AlignmentMessage.AlignmentData(provider), ServerLifecycleHooks.getCurrentServer());
     }
 
     /**

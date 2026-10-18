@@ -1,12 +1,12 @@
 package com.gtnewhorizon.structurelib.gui;
 
 import com.gtnewhorizon.structurelib.Registry;
-import com.gtnewhorizon.structurelib.util.PlatformUtils;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.common.extensions.IForgeMenuType;
 import org.jetbrains.annotations.Nullable;
 
 public class ContainerConfigureChannels extends AbstractContainerMenu {
@@ -29,7 +29,7 @@ public class ContainerConfigureChannels extends AbstractContainerMenu {
 
     public static MenuType<ContainerConfigureChannels> getMenuType() {
         if (menuType == null){
-            menuType = PlatformUtils.INSTANCE.create((i, c, f) -> {
+            menuType = IForgeMenuType.create((i, c, f) -> {
                 InteractionHand hand = f.readEnum(InteractionHand.class);
                 return new ContainerConfigureChannels(hand, menuType, i);
             });

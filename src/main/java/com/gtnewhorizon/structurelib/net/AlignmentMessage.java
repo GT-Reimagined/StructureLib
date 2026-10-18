@@ -4,18 +4,17 @@ import com.gtnewhorizon.structurelib.StructureLib;
 import com.gtnewhorizon.structurelib.alignment.IAlignment;
 import com.gtnewhorizon.structurelib.alignment.IAlignmentProvider;
 import com.gtnewhorizon.structurelib.alignment.enumerable.ExtendedFacing;
-import com.gtnewhorizon.structurelib.util.PlatformUtils;
 import com.teamresourceful.resourcefullib.common.networking.base.Packet;
 import com.teamresourceful.resourcefullib.common.networking.base.PacketContext;
 import com.teamresourceful.resourcefullib.common.networking.base.PacketHandler;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.server.ServerLifecycleHooks;
 
 public abstract class AlignmentMessage<T extends AlignmentMessage<T>> implements Packet<T> {
 
@@ -141,7 +140,7 @@ public abstract class AlignmentMessage<T extends AlignmentMessage<T>> implements
         @Override
         public PacketContext handle(AlignmentQuery msg) {
             return (player, level) -> {
-                Level world = PlatformUtils.INSTANCE.getCurrentServer().getLevel(ResourceKey.create(Registries.DIMENSION, new ResourceLocation(msg.dimensionID)));
+                Level world = ServerLifecycleHooks.getCurrentServer().getLevel(ResourceKey.create(Registries.DIMENSION, new ResourceLocation(msg.dimensionID)));
                 if (world != null) {
                     BlockEntity te = world.getBlockEntity(msg.pos);
                     if (te instanceof IAlignmentProvider provider) {

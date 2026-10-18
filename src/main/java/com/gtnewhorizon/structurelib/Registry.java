@@ -1,13 +1,13 @@
 package com.gtnewhorizon.structurelib;
 
-import com.gtnewhorizon.structurelib.block.BlockHint;
 import com.gtnewhorizon.structurelib.item.ItemConstructableTrigger;
 import com.gtnewhorizon.structurelib.item.ItemFrontRotationTool;
-import com.gtnewhorizon.structurelib.util.PlatformUtils;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public class Registry {
     /*public static final Block HINT_0 = add("hint_0", new BlockHint());
@@ -33,12 +33,15 @@ public class Registry {
     public static void init(){}
 
     private static <B extends Block> B add(String name, B block) {
-        PlatformUtils.INSTANCE.registerBlock(new ResourceLocation(StructureLibAPI.MOD_ID, name), block);
+        ResourceLocation id = new ResourceLocation(StructureLibAPI.MOD_ID, name);
+        BlockItem blockItem = new BlockItem(block, new Item.Properties());
+        ForgeRegistries.BLOCKS.register(id, block);
+        ForgeRegistries.ITEMS.register(id, blockItem);
         return block;
     }
 
     private static <B extends Item> B add(String name, B item) {
-        PlatformUtils.INSTANCE.registerItem(new ResourceLocation(StructureLibAPI.MOD_ID, name), item);
+        ForgeRegistries.ITEMS.register(new ResourceLocation(StructureLibAPI.MOD_ID, name), item);
         return item;
     }
 
