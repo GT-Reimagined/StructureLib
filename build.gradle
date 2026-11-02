@@ -1,7 +1,7 @@
 plugins {
     id "maven-publish"
     id "idea"
-    id "net.neoforged.moddev.legacyforge" version "2.0.82"
+    id "net.neoforged.moddev" version "2.0.148"
 }
 apply plugin: "maven-publish"
 apply plugin: "java"
@@ -14,7 +14,7 @@ group = project.maven_group
 version = "${project.mod_version}-${project.minecraft_version}"
 archivesBaseName = "${project.archive_base_name}"
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 apply from: 'https://raw.githubusercontent.com/GT-Reimagined/GradleScripts/main/repositories.gradle'
 
 def isCI = System.getenv("GITHUB_ACTION")
@@ -25,8 +25,8 @@ def gitHash() {
     return ""
 }
 
-legacyForge {
-    version = "${project.minecraft_version}-${project.forge_version}"
+neoForge {
+    version = "${project.neoforge_version}"
     parchment {
         minecraftVersion = project.minecraft_version
         mappingsVersion = project.mappings_version
@@ -50,16 +50,16 @@ legacyForge {
 }
 
 dependencies {
-    modImplementation("maven.modrinth:carbon-config:${project.carbon_config_forge_version}")
-    modImplementation("com.teamresourceful.resourcefullib:resourcefullib-forge-${project.minecraft_version}:${project.resourcefullib_version}")
-    jarJar("com.teamresourceful.resourcefullib:resourcefullib-forge-${project.minecraft_version}:${project.resourcefullib_version}")
+    implementation("maven.modrinth:carbon-config:${project.carbon_config_neoforge_version}")
+    implementation("com.teamresourceful.resourcefullib:resourcefullib-neoforge-1.21:${project.resourcefullib_version}")
+    jarJar("com.teamresourceful.resourcefullib:resourcefullib-neoforge-1.21:${project.resourcefullib_version}")
     implementation("org.jetbrains:annotations:26.0.1")
 }
 
 processResources {
     inputs.property "version", project.mod_version
 
-    filesMatching("META-INF/mods.toml") {
+    filesMatching("META-INF/neoforge.mods.toml") {
         expand "version": project.mod_version
     }
 }
