@@ -46,12 +46,6 @@ public class StructureLib {
 
     public static final Networking CHANNEL = NetworkImpl.getNetwork(ResourceLocation.fromNamespaceAndPath(StructureLibAPI.MOD_ID, "main"), 0,false);
 
-    public static final ResourceLocation ALIGNMENT_QUERY = ResourceLocation.fromNamespaceAndPath(StructureLibAPI.MOD_ID, "alignment_query");
-    public static final ResourceLocation ALIGNMENT_DATA = ResourceLocation.fromNamespaceAndPath(StructureLibAPI.MOD_ID, "alignment_data");
-    public static final ResourceLocation UPDATE_HINT_PARTICLE = ResourceLocation.fromNamespaceAndPath(StructureLibAPI.MOD_ID, "update_hint_particle");
-    public static final ResourceLocation ERROR_HINT_PARTICLE = ResourceLocation.fromNamespaceAndPath(StructureLibAPI.MOD_ID, "error_hint_particle");
-    public static final ResourceLocation SET_CHANNEL_DATA = ResourceLocation.fromNamespaceAndPath(StructureLibAPI.MOD_ID, "set_channel_data");
-
     static CommonProxy proxy;
 
     public static void init() {

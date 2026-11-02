@@ -6,10 +6,16 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 
-import com.teamresourceful.resourcefullib.common.networking.base.Packet;
-import com.teamresourceful.resourcefullib.common.networking.base.PacketContext;
-import com.teamresourceful.resourcefullib.common.networking.base.PacketHandler;
+import com.gtnewhorizon.structurelib.StructureLibAPI;
+import com.gtnewhorizon.structurelib.net.AlignmentMessage.AlignmentQuery;
+import com.teamresourceful.resourcefullib.common.network.Packet;
+import com.teamresourceful.resourcefullib.common.network.base.PacketType;
+import com.teamresourceful.resourcefullib.common.network.base.ServerboundPacketType;
+import com.teamresourceful.resourcefullib.common.network.defaults.CodecPacketType;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -21,8 +27,38 @@ import com.gtnewhorizon.structurelib.alignment.constructable.ChannelDataAccessor
 import com.gtnewhorizon.structurelib.item.ItemConstructableTrigger;
 
 public class SetChannelDataMessage implements Packet<SetChannelDataMessage> {
-
-    public static final Handler HANDLER = new Handler();
+    static final StreamCodec<RegistryFriendlyByteBuf, SetChannelDataMessage> CODEC = StreamCodec.of((b, msg) -> {
+        b.writeVarInt(msg.data.size());
+        for (Entry<String, Integer> e : msg.data) {
+            b.writeUtf(e.getKey());
+            b.writeVarInt(e.getValue());
+        }
+        b.writeEnum(msg.hand);
+    }, b -> {
+        int size = b.readVarInt();
+        List<Entry<String, Integer>> data = new ArrayList<>();
+        for (int i = 0; i < size; i++) {
+            data.add(Pair.of(b.readUtf(), b.readVarInt()));
+        }
+        return new SetChannelDataMessage(data, b.readEnum(InteractionHand.class));
+    });
+    public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(StructureLibAPI.MOD_ID, "set_channel_data");
+    public static ServerboundPacketType<SetChannelDataMessage> PACKET_TYPE = CodecPacketType.Server.create(ID, CODEC, msg -> (player) -> {
+        ItemStack heldItem = player.getItemInHand(msg.hand);
+        if (!heldItem.isEmpty() && heldItem.getItem() instanceof ItemConstructableTrigger) {
+            ChannelDataAccessor.wipeChannelData(heldItem);
+            for (Entry<String, Integer> e : msg.data) {
+                ChannelDataAccessor.setChannelData(heldItem, e.getKey(), e.getValue());
+            }
+            // since this is a set all channel request from the client, we would assume client already know
+            // what this would look like on the client, so no sync
+        } else {
+            StructureLib.LOGGER.warn(
+                "{} trying to set channel data on {}, which is not a hologram projector!",
+                player.getDisplayName(),
+                heldItem);
+        }
+    });
 
     private final List<Entry<String, Integer>> data;
     private final InteractionHand hand;
@@ -40,54 +76,7 @@ public class SetChannelDataMessage implements Packet<SetChannelDataMessage> {
     }
 
     @Override
-    public PacketHandler<SetChannelDataMessage> getHandler() {
-        return HANDLER;
-    }
-
-    @Override
-    public ResourceLocation getID() {
-        return StructureLib.SET_CHANNEL_DATA;
-    }
-
-    private static class Handler implements PacketHandler<SetChannelDataMessage> {
-        @Override
-        public void encode(SetChannelDataMessage msg, FriendlyByteBuf buf) {
-            buf.writeVarInt(msg.data.size());
-            for (Entry<String, Integer> e : msg.data) {
-                buf.writeUtf(e.getKey());
-                buf.writeVarInt(e.getValue());
-            }
-            buf.writeEnum(msg.hand);
-        }
-
-        @Override
-        public SetChannelDataMessage decode(FriendlyByteBuf buf) {
-            int size = buf.readVarInt();
-            List<Entry<String, Integer>> data = new ArrayList<>();
-            for (int i = 0; i < size; i++) {
-                data.add(Pair.of(buf.readUtf(), buf.readVarInt()));
-            }
-            return new SetChannelDataMessage(data, buf.readEnum(InteractionHand.class));
-        }
-
-        @Override
-        public PacketContext handle(SetChannelDataMessage msg) {
-            return ((sender, level) -> {
-                ItemStack heldItem = sender.getItemInHand(msg.hand);
-                if (!heldItem.isEmpty() && heldItem.getItem() instanceof ItemConstructableTrigger) {
-                    ChannelDataAccessor.wipeChannelData(heldItem);
-                    for (Entry<String, Integer> e : msg.data) {
-                        ChannelDataAccessor.setChannelData(heldItem, e.getKey(), e.getValue());
-                    }
-                    // since this is a set all channel request from the client, we would assume client already know
-                    // what this would look like on the client, so no sync
-                } else {
-                    StructureLib.LOGGER.warn(
-                        "{} trying to set channel data on {}, which is not a hologram projector!",
-                        sender.getDisplayName(),
-                        heldItem);
-                }
-            });
-        }
+    public PacketType<SetChannelDataMessage> type() {
+        return PACKET_TYPE;
     }
 }

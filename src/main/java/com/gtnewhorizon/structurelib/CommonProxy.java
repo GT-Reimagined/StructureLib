@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.WeakHashMap;
 
+import com.gtnewhorizon.structurelib.net.StructureLibNetworking;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -30,7 +31,7 @@ public class CommonProxy {
 
     public boolean updateHintParticleTint(Player player, Level w, int x, int y, int z, short[] rgBa) {
         if (player instanceof ServerPlayer serverPlayer) { // just in case
-            StructureLib.CHANNEL.sendToPlayer(new UpdateHintParticleMessage(new BlockPos(x, y, z), rgBa[0], rgBa[1], rgBa[2], rgBa[3]),
+            StructureLibNetworking.CHANNEL.sendToPlayer(new UpdateHintParticleMessage(new BlockPos(x, y, z), rgBa[0], rgBa[1], rgBa[2], rgBa[3]),
                     serverPlayer);
             return true;
         } else {
@@ -62,7 +63,7 @@ public class CommonProxy {
 
     public boolean markHintParticleError(Player player, Level w, int x, int y, int z) {
         if (player instanceof ServerPlayer serverPlayer) { // just in case
-            StructureLib.CHANNEL.sendToPlayer(new ErrorHintParticleMessage(new BlockPos(x, y, z)), serverPlayer);
+            StructureLibNetworking.CHANNEL.sendToPlayer(new ErrorHintParticleMessage(new BlockPos(x, y, z)), serverPlayer);
             return true;
         } else {
             return false;

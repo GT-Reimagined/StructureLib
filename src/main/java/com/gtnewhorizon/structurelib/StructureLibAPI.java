@@ -4,6 +4,7 @@ import com.gtnewhorizon.structurelib.alignment.IAlignment;
 import com.gtnewhorizon.structurelib.alignment.IAlignmentProvider;
 import com.gtnewhorizon.structurelib.alignment.enumerable.ExtendedFacing;
 import com.gtnewhorizon.structurelib.net.AlignmentMessage;
+import com.gtnewhorizon.structurelib.net.StructureLibNetworking;
 import com.gtnewhorizon.structurelib.structure.AutoPlaceEnvironment;
 import com.gtnewhorizon.structurelib.structure.IStructureDefinition;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -190,7 +191,7 @@ public class StructureLibAPI {
      * @throws IllegalArgumentException if is not tile entity or provided a null alignment
      */
     public static void queryAlignment(IAlignmentProvider provider) {
-        StructureLib.CHANNEL.sendToServer(new AlignmentMessage.AlignmentQuery(provider));
+        StructureLibNetworking.CHANNEL.sendToServer(new AlignmentMessage.AlignmentQuery(provider));
     }
 
     /**
@@ -202,7 +203,7 @@ public class StructureLibAPI {
      * @throws IllegalArgumentException if is not tile entity or provided a null alignment
      */
     public static void sendAlignment(IAlignmentProvider provider) {
-        StructureLib.CHANNEL.sendToAllPlayers(new AlignmentMessage.AlignmentData(provider), ServerLifecycleHooks.getCurrentServer());
+        StructureLibNetworking.CHANNEL.sendToAllPlayers(new AlignmentMessage.AlignmentData(provider), ServerLifecycleHooks.getCurrentServer());
     }
 
     /**
@@ -214,7 +215,7 @@ public class StructureLibAPI {
      * @throws IllegalArgumentException if is not tile entity or provided a null alignment
      */
     public static void sendAlignment(IAlignmentProvider provider, ServerPlayer player) {
-        StructureLib.CHANNEL.sendToPlayer(new AlignmentMessage.AlignmentData(provider), player);
+        StructureLibNetworking.CHANNEL.sendToPlayer(new AlignmentMessage.AlignmentData(provider), player);
     }
 
     /**
@@ -227,7 +228,7 @@ public class StructureLibAPI {
      * @throws IllegalArgumentException if is not tile entity or provided a null alignment
      */
     public static void sendAlignment(IAlignmentProvider provider, BlockPos target, double range, ServerLevel level) {
-        StructureLib.CHANNEL.sendToPlayersInRange(new AlignmentMessage.AlignmentData(provider), level, target, range);
+        StructureLibNetworking.CHANNEL.sendToPlayersInRange(new AlignmentMessage.AlignmentData(provider), level, target, range);
     }
 
     /**
@@ -239,7 +240,7 @@ public class StructureLibAPI {
      * @throws IllegalArgumentException if is not tile entity or provided a null alignment
      */
     public static void sendAlignment(IAlignmentProvider provider, Level dimension) {
-        StructureLib.CHANNEL.sendToPlayersInLevel(new AlignmentMessage.AlignmentData(provider), dimension);
+        StructureLibNetworking.CHANNEL.sendToPlayersInLevel(new AlignmentMessage.AlignmentData(provider), dimension);
     }
 
     /**

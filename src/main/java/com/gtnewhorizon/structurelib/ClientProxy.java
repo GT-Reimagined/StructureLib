@@ -3,6 +3,7 @@ package com.gtnewhorizon.structurelib;
 import com.gtnewhorizon.structurelib.gui.ContainerConfigureChannels;
 import com.gtnewhorizon.structurelib.gui.GuiScreenConfigureChannels;
 import com.gtnewhorizon.structurelib.net.SetChannelDataMessage;
+import com.gtnewhorizon.structurelib.net.StructureLibNetworking;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -217,7 +218,7 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     public void uploadChannels(ItemStack trigger, InteractionHand hand) {
-        StructureLib.CHANNEL.sendToServer(new SetChannelDataMessage(trigger, hand));
+        StructureLibNetworking.CHANNEL.sendToServer(new SetChannelDataMessage(trigger, hand));
     }
 
     @Override
