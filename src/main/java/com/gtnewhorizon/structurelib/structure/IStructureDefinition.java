@@ -35,12 +35,12 @@ import net.minecraft.world.level.Level;
  * <p>
  * Builder has two main methods:
  * <ul>
- * <li>{@link com.gtnewhorizon.structurelib.structure.StructureDefinition.Builder#addShape(String, String[][])
+ * <li>{@link StructureDefinition.Builder#addShape(String, String[][])
  * addShape()} is a 2d string array describing the layout of structure. You can optionally use
  * `StructureUtility#transpose()` to transpose the array to make the structure look nicer in source code.
- * <li>{@link com.gtnewhorizon.structurelib.structure.StructureDefinition.Builder#addElement(Character, IStructureElement)
+ * <li>{@link StructureDefinition.Builder#addElement(Character, IStructureElement)
  * addElement()}. It takes a char identifier (mapped to a char in any of
- * {@link com.gtnewhorizon.structurelib.structure.StructureDefinition.Builder#addShape(String, String[][]) addShape()}
+ * {@link StructureDefinition.Builder#addShape(String, String[][]) addShape()}
  * calls) and a {@link IStructureElement}.
  * </ul>
  * <h2>Position A, B and C</h2>

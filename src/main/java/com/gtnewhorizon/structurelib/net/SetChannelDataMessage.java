@@ -24,16 +24,16 @@ public class SetChannelDataMessage implements Packet<SetChannelDataMessage> {
 
     public static final Handler HANDLER = new Handler();
 
-    private final List<Map.Entry<String, Integer>> data;
+    private final List<Entry<String, Integer>> data;
     private final InteractionHand hand;
 
-    public SetChannelDataMessage(List<Map.Entry<String, Integer>> data, InteractionHand hand) {
+    public SetChannelDataMessage(List<Entry<String, Integer>> data, InteractionHand hand) {
         this.data = data;
         this.hand = hand;
     }
 
     public SetChannelDataMessage(ItemStack trigger, InteractionHand hand) {
-        List<Map.Entry<String, Integer>> data = new ArrayList<>();
+        List<Entry<String, Integer>> data = new ArrayList<>();
         ChannelDataAccessor.iterateChannelData(trigger).forEach(data::add);
         this.data = data;
         this.hand = hand;
@@ -63,7 +63,7 @@ public class SetChannelDataMessage implements Packet<SetChannelDataMessage> {
         @Override
         public SetChannelDataMessage decode(FriendlyByteBuf buf) {
             int size = buf.readVarInt();
-            List<Map.Entry<String, Integer>> data = new ArrayList<>();
+            List<Entry<String, Integer>> data = new ArrayList<>();
             for (int i = 0; i < size; i++) {
                 data.add(Pair.of(buf.readUtf(), buf.readVarInt()));
             }

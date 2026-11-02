@@ -6,7 +6,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.extensions.IForgeMenuType;
+import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
 import org.jetbrains.annotations.Nullable;
 
 public class ContainerConfigureChannels extends AbstractContainerMenu {
@@ -29,7 +29,7 @@ public class ContainerConfigureChannels extends AbstractContainerMenu {
 
     public static MenuType<ContainerConfigureChannels> getMenuType() {
         if (menuType == null){
-            menuType = IForgeMenuType.create((i, c, f) -> {
+            menuType = IMenuTypeExtension.create((i, c, f) -> {
                 InteractionHand hand = f.readEnum(InteractionHand.class);
                 return new ContainerConfigureChannels(hand, menuType, i);
             });

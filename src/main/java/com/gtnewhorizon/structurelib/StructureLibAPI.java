@@ -17,7 +17,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.server.ServerLifecycleHooks;
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
 import static com.gtnewhorizon.structurelib.StructureLib.proxy;
 
@@ -181,7 +181,7 @@ public class StructureLibAPI {
     /**
      * Query the ExtendedFacing of this tile entity from client side. Can be sent only on client side. The
      * ExtendedFacing will later be set onto given tile entity via
-     * {@link com.gtnewhorizon.structurelib.alignment.IAlignment#setExtendedFacing(ExtendedFacing)} upon arrival of
+     * {@link IAlignment#setExtendedFacing(ExtendedFacing)} upon arrival of
      * server reply.
      * <p>
      * The server side will query the {@link ExtendedFacing} of this provider using
@@ -197,7 +197,7 @@ public class StructureLibAPI {
      * Send the ExtendedFacing of this Tile Entity to all players. Can be called on server side only.
      * <p>
      * The receiving tile entity will receive the {@link ExtendedFacing} via its
-     * {@link com.gtnewhorizon.structurelib.alignment.IAlignment#setExtendedFacing(ExtendedFacing)} method.
+     * {@link IAlignment#setExtendedFacing(ExtendedFacing)} method.
      *
      * @throws IllegalArgumentException if is not tile entity or provided a null alignment
      */
@@ -209,7 +209,7 @@ public class StructureLibAPI {
      * Send the ExtendedFacing of this Tile Entity to given player. Can be called on server side only.
      * <p>
      * The receiving tile entity will receive the {@link ExtendedFacing} via its
-     * {@link com.gtnewhorizon.structurelib.alignment.IAlignment#setExtendedFacing(ExtendedFacing)} method.
+     * {@link IAlignment#setExtendedFacing(ExtendedFacing)} method.
      *
      * @throws IllegalArgumentException if is not tile entity or provided a null alignment
      */
@@ -222,7 +222,7 @@ public class StructureLibAPI {
      * only.
      * <p>
      * The receiving tile entity will receive the {@link ExtendedFacing} via its
-     * {@link com.gtnewhorizon.structurelib.alignment.IAlignment#setExtendedFacing(ExtendedFacing)} method.
+     * {@link IAlignment#setExtendedFacing(ExtendedFacing)} method.
      *
      * @throws IllegalArgumentException if is not tile entity or provided a null alignment
      */
@@ -234,7 +234,7 @@ public class StructureLibAPI {
      * Send the ExtendedFacing of this Tile Entity to all players in that dimension. Can be called on server side only.
      * <p>
      * The receiving tile entity will receive the {@link ExtendedFacing} via its
-     * {@link com.gtnewhorizon.structurelib.alignment.IAlignment#setExtendedFacing(ExtendedFacing)} method.
+     * {@link IAlignment#setExtendedFacing(ExtendedFacing)} method.
      *
      * @throws IllegalArgumentException if is not tile entity or provided a null alignment
      */

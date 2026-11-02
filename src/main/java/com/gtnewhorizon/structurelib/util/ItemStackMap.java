@@ -122,18 +122,18 @@ public final class ItemStackMap<T> extends AbstractMap<ItemStack, T> {
         return new SetView();
     }
 
-    private static class DetailIter<T> implements Iterator<Map.Entry<ItemStack, T>> {
+    private static class DetailIter<T> implements Iterator<Entry<ItemStack, T>> {
 
         private final Item owner;
         private final ItemStackMap<T>.DetailMap backing;
 
         @Nullable
-        private final Iterator<Map.Entry<CompoundTag, T>> tagIter;
+        private final Iterator<Entry<CompoundTag, T>> tagIter;
 
         private DetailIterState state = DetailIterState.NOT_STARTED;
         private boolean removed = false;
 
-        private DetailIter(Map.Entry<Item, ItemStackMap<T>.DetailMap> input) {
+        private DetailIter(Entry<Item, ItemStackMap<T>.DetailMap> input) {
             this.owner = input.getKey();
             this.backing = input.getValue();
             tagIter = backing.tagMap != null ? backing.tagMap.entrySet().iterator() : null;
@@ -166,7 +166,7 @@ public final class ItemStackMap<T> extends AbstractMap<ItemStack, T> {
         }
 
         @Override
-        public Map.Entry<ItemStack, T> next() {
+        public Entry<ItemStack, T> next() {
             DetailIterState nextState = nextState();
             if (nextState == DetailIterState.DONE) throw new NoSuchElementException();
             state = nextState;
@@ -179,7 +179,7 @@ public final class ItemStackMap<T> extends AbstractMap<ItemStack, T> {
             NOT_STARTED {
 
                 @Override
-                <T> Map.Entry<ItemStack, T> get(DetailIter<T> iter) {
+                <T> Entry<ItemStack, T> get(DetailIter<T> iter) {
                     throw new AssertionError("Should not call get on NOT_STARTED");
                 }
 
@@ -191,8 +191,8 @@ public final class ItemStackMap<T> extends AbstractMap<ItemStack, T> {
             WILDCARD {
 
                 @Override
-                <T> Map.Entry<ItemStack, T> get(DetailIter<T> iter) {
-                    return new Map.Entry<ItemStack, T>() {
+                <T> Entry<ItemStack, T> get(DetailIter<T> iter) {
+                    return new Entry<ItemStack, T>() {
 
                         private final ItemStack key = wildcard(iter.owner, iter.backing.NBTSensitive);
 
@@ -223,9 +223,9 @@ public final class ItemStackMap<T> extends AbstractMap<ItemStack, T> {
             TAG {
 
                 @Override
-                <T> Map.Entry<ItemStack, T> get(DetailIter<T> iter) {
+                <T> Entry<ItemStack, T> get(DetailIter<T> iter) {
                     assert iter.tagIter != null;
-                    Map.Entry<CompoundTag, T> entry = iter.tagIter.next();
+                    Entry<CompoundTag, T> entry = iter.tagIter.next();
                     return new ItemStackEntry<>(newItemStack(iter.owner, 1, entry.getKey()), entry);
                 }
 
@@ -238,7 +238,7 @@ public final class ItemStackMap<T> extends AbstractMap<ItemStack, T> {
             DONE {
 
                 @Override
-                <T> Map.Entry<ItemStack, T> get(DetailIter<T> iter) {
+                <T> Entry<ItemStack, T> get(DetailIter<T> iter) {
                     throw new AssertionError("Should not call get on DONE");
                 }
 
@@ -248,16 +248,16 @@ public final class ItemStackMap<T> extends AbstractMap<ItemStack, T> {
                 }
             };
 
-            abstract <T> Map.Entry<ItemStack, T> get(DetailIter<T> iter);
+            abstract <T> Entry<ItemStack, T> get(DetailIter<T> iter);
 
             abstract <T> void remove(DetailIter<T> iter);
 
-            private static class ItemStackEntry<T> implements Map.Entry<ItemStack, T> {
+            private static class ItemStackEntry<T> implements Entry<ItemStack, T> {
 
                 private final ItemStack key;
-                private final Map.Entry<?, T> entry;
+                private final Entry<?, T> entry;
 
-                public ItemStackEntry(ItemStack key, Map.Entry<?, T> entry) {
+                public ItemStackEntry(ItemStack key, Entry<?, T> entry) {
                     this.key = key;
                     this.entry = entry;
                 }
@@ -396,17 +396,17 @@ public final class ItemStackMap<T> extends AbstractMap<ItemStack, T> {
         }
     }
 
-    private class SetView extends AbstractSet<Map.Entry<ItemStack, T>> {
+    private class SetView extends AbstractSet<Entry<ItemStack, T>> {
 
         @Override
         public boolean contains(Object o) {
             if (!(o instanceof Map.Entry)) return false;
-            Map.Entry<?, ?> entry = (Map.Entry<?, ?>) o;
-            return java.util.Objects.equals(get(entry.getKey()), entry.getValue());
+            Entry<?, ?> entry = (Entry<?, ?>) o;
+            return Objects.equals(get(entry.getKey()), entry.getValue());
         }
 
         @Override
-        public boolean add(Map.Entry<ItemStack, T> itemStackTEntry) {
+        public boolean add(Entry<ItemStack, T> itemStackTEntry) {
             return itemStackTEntry.getKey() != null && itemStackTEntry.getValue() != null
                     && put(itemStackTEntry.getKey(), itemStackTEntry.getValue()) == null;
         }
@@ -414,13 +414,13 @@ public final class ItemStackMap<T> extends AbstractMap<ItemStack, T> {
         @Override
         public boolean remove(Object o) {
             if (!(o instanceof Map.Entry)) return false;
-            Map.Entry<?, ?> entry = (Map.Entry<?, ?>) o;
+            Entry<?, ?> entry = (Entry<?, ?>) o;
             return ItemStackMap.this.remove(entry.getKey(), entry.getValue());
         }
 
         @NotNull
         @Override
-        public Iterator<Map.Entry<ItemStack, T>> iterator() {
+        public Iterator<Entry<ItemStack, T>> iterator() {
             return Iterators.concat(Iterators.transform(itemMap.entrySet().iterator(), DetailIter::new));
         }
 

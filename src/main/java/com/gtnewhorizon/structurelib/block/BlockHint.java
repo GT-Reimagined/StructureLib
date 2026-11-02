@@ -8,7 +8,7 @@ public class BlockHint extends Block {
     //private static final IIcon[] hint = new IIcon[16];
 
     public BlockHint() {
-        super(BlockBehaviour.Properties.of());
+        super(Properties.of());
     }
 
     /*@Override
