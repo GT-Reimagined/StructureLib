@@ -1,6 +1,6 @@
 package com.gtnewhorizon.structurelib.structure;
 
-import com.gtnewhorizon.structurelib.Registry;
+import com.gtnewhorizon.structurelib.RegistryData;
 import com.gtnewhorizon.structurelib.StructureEvent.StructureElementVisitedEvent;
 import com.gtnewhorizon.structurelib.StructureLib;
 import com.gtnewhorizon.structurelib.StructureLibAPI;
@@ -456,7 +456,7 @@ public class StructureUtility {
 
             @Override
             public boolean spawnHint(T t, Level world, int x, int y, int z, ItemStack trigger) {
-                StructureLibAPI.hintParticle(world, x, y, z, Registry.getHint(dots));
+                StructureLibAPI.hintParticle(world, x, y, z, RegistryData.getHint(dots));
                 return false;
             }
         };
@@ -706,7 +706,7 @@ public class StructureUtility {
             private Block block;
 
             private Block getBlock() {
-                if (block == null) block = BuiltInRegistries.BLOCK.get(new ResourceLocation(modid, registryName));
+                if (block == null) block = BuiltInRegistries.BLOCK.get(ResourceLocation.fromNamespaceAndPath(modid, registryName));
                 return block;
             }
 
@@ -774,7 +774,7 @@ public class StructureUtility {
 
             private boolean init() {
                 if (!initialized) {
-                    block = BuiltInRegistries.BLOCK.get(new ResourceLocation(modid, registryName));
+                    block = BuiltInRegistries.BLOCK.get(ResourceLocation.fromNamespaceAndPath(modid, registryName));
                     initialized = true;
                 }
                 return block != null;
@@ -1089,7 +1089,7 @@ public class StructureUtility {
     }
 
     public static <T> IStructureElement<T> ofBlockAdder(IBlockAdder<T> iBlockAdder, int dots) {
-        return ofBlockAdder(iBlockAdder, Registry.getHint(dots));
+        return ofBlockAdder(iBlockAdder, RegistryData.getHint(dots));
     }
 
     /**

@@ -32,8 +32,8 @@ public class ItemFrontRotationTool extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
-        super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+        super.appendHoverText(stack, context, tooltipComponents, isAdvanced);
         tooltipComponents.add(Component.translatable("item.structurelib.front_rotation_tool.desc.0")); // Triggers Front Rotation Interface
         // Rotates only the front panel,
         tooltipComponents.add(Component.translatable("item.structurelib.front_rotation_tool.desc.1").withStyle(ChatFormatting.BLUE));

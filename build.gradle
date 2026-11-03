@@ -52,6 +52,7 @@ neoForge {
 dependencies {
     implementation("maven.modrinth:carbon-config:${project.carbon_config_neoforge_version}")
     implementation("com.teamresourceful.resourcefullib:resourcefullib-neoforge-1.21:${project.resourcefullib_version}")
+    implementation("com.teamresourceful:bytecodecs:1.1.2")
     jarJar("com.teamresourceful.resourcefullib:resourcefullib-neoforge-1.21:${project.resourcefullib_version}")
     implementation("org.jetbrains:annotations:26.0.1")
 }
@@ -98,5 +99,12 @@ publishing {
         } else {
             mavenLocal()
         }
+    }
+}
+// IDEA no longer automatically downloads sources/javadoc jars for dependencies, so we need to explicitly enable the behavior.
+idea {
+    module {
+        downloadSources = true
+        downloadJavadoc = true
     }
 }

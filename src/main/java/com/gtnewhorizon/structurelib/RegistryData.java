@@ -2,14 +2,16 @@ package com.gtnewhorizon.structurelib;
 
 import com.gtnewhorizon.structurelib.item.ItemConstructableTrigger;
 import com.gtnewhorizon.structurelib.item.ItemFrontRotationTool;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.neoforged.neoforge.registries.ForgeRegistries;
 
-public class Registry {
+public class RegistryData {
     /*public static final Block HINT_0 = add("hint_0", new BlockHint());
     public static final Block HINT_1 = add("hint_1", new BlockHint());
     public static final Block HINT_2 = add("hint_2", new BlockHint());
@@ -33,15 +35,15 @@ public class Registry {
     public static void init(){}
 
     private static <B extends Block> B add(String name, B block) {
-        ResourceLocation id = new ResourceLocation(StructureLibAPI.MOD_ID, name);
+        ResourceLocation id = ResourceLocation.fromNamespaceAndPath(StructureLibAPI.MOD_ID, name);
         BlockItem blockItem = new BlockItem(block, new Item.Properties());
-        ForgeRegistries.BLOCKS.register(id, block);
-        ForgeRegistries.ITEMS.register(id, blockItem);
+        Registry.register(BuiltInRegistries.BLOCK, id, block);
+        Registry.register(BuiltInRegistries.ITEM, id, blockItem);
         return block;
     }
 
     private static <B extends Item> B add(String name, B item) {
-        ForgeRegistries.ITEMS.register(new ResourceLocation(StructureLibAPI.MOD_ID, name), item);
+        Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(StructureLibAPI.MOD_ID, name), item);
         return item;
     }
 

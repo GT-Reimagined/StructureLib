@@ -1,6 +1,6 @@
 package com.gtnewhorizon.structurelib.gui;
 
-import com.gtnewhorizon.structurelib.Registry;
+import com.gtnewhorizon.structurelib.RegistryData;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -24,7 +24,7 @@ public class ContainerConfigureChannels extends AbstractContainerMenu {
 
     @Override
     public boolean stillValid(Player player) {
-        return player.getItemInHand(hand).getItem() == Registry.CONSTRUCTABLE_TRIGGER;
+        return player.getItemInHand(hand).getItem() == RegistryData.CONSTRUCTABLE_TRIGGER;
     }
 
     public static MenuType<ContainerConfigureChannels> getMenuType() {

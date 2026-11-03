@@ -15,7 +15,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
 
 public class ItemConstructableTrigger extends Item implements MenuProvider {
@@ -27,7 +26,7 @@ public class ItemConstructableTrigger extends Item implements MenuProvider {
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
         if (!level.isClientSide){
-            NetworkHooks.openScreen((ServerPlayer) player, this, f -> f.writeEnum(usedHand));
+            player.openMenu(this, f -> f.writeEnum(usedHand));
             return InteractionResultHolder.success(player.getItemInHand(usedHand));
         }
         return super.use(level, player, usedHand);

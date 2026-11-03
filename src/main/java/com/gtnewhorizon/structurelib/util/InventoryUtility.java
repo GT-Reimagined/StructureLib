@@ -16,6 +16,8 @@ package com.gtnewhorizon.structurelib.util;
 
 import com.gtnewhorizon.structurelib.util.InventoryUtility.ItemStackExtractor.APIType;
 import com.gtnewhorizon.structurelib.util.ItemStackPredicate.NBTMode;
+import net.minecraft.core.Holder;
+import net.minecraft.core.component.PatchedDataComponentMap;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
@@ -229,8 +231,9 @@ public class InventoryUtility {
         int found = 0;
         ItemStack copiedFilter = null;
         if (filter != null) {
-            copiedFilter = new ItemStack(filter.getItem(), filter.getCount());
-            copiedFilter.setTag(filter.getTag());
+            copiedFilter = filter.getComponents() instanceof PatchedDataComponentMap map ?
+                new ItemStack(Holder.direct(filter.getItem()), filter.getCount(), map.copy().asPatch()) :
+                new ItemStack(filter.getItem(), filter.getCount());
         }
         for (Iterator<ItemStack> iterator = inv.iterator(); iterator.hasNext();) {
             ItemStack stack = iterator.next();

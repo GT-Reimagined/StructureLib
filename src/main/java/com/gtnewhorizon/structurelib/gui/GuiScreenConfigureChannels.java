@@ -291,7 +291,7 @@ public class GuiScreenConfigureChannels extends AbstractContainerScreen<Containe
 
     @Override
     protected void renderBg(GuiGraphics poseStack, float partialTick, int mouseX, int mouseY) {
-        drawTexture(poseStack, new ResourceLocation("structurelib", "textures/gui/channels.png"), guiLeft, guiTop, 0, 0, 176, 188);
+        drawTexture(poseStack, ResourceLocation.fromNamespaceAndPath("structurelib", "textures/gui/channels.png"), guiLeft, guiTop, 0, 0, 176, 188);
         //list.drawScreen(poseStack, mouseX, mouseY, partialTick);
     }
 

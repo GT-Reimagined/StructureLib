@@ -3,10 +3,8 @@ package com.gtnewhorizon.structurelib;
 
 import com.gtnewhorizon.structurelib.command.CommandConfigureChannels;
 import com.gtnewhorizon.structurelib.net.StructureLibNetworking;
-import com.teamresourceful.resourcefullib.common.network.Network;
 import com.teamresourceful.resourcefullib.common.network.base.Networking;
 import com.teamresourceful.resourcefullib.common.network.neoforge.NetworkImpl;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -26,10 +24,6 @@ import net.neoforged.neoforge.registries.RegisterEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.gtnewhorizon.structurelib.net.AlignmentMessage;
-import com.gtnewhorizon.structurelib.net.ErrorHintParticleMessage;
-import com.gtnewhorizon.structurelib.net.SetChannelDataMessage;
-import com.gtnewhorizon.structurelib.net.UpdateHintParticleMessage;
 import com.gtnewhorizon.structurelib.util.XSTR;
 
 
@@ -88,15 +82,21 @@ public class StructureLib {
     private void buildContents(BuildCreativeModeTabContentsEvent event) {
         // Add to ingredients tab
         if (event.getTab() == creativeTab) {
-            event.accept(Registry.CONSTRUCTABLE_TRIGGER);
-            event.accept(Registry.FRONT_ROTATION_TOOL);
+            event.accept(RegistryData.CONSTRUCTABLE_TRIGGER);
+            event.accept(RegistryData.FRONT_ROTATION_TOOL);
         }
     }
 
     private void onRegisterBlock(RegisterEvent event){
         if (event.getRegistryKey() == Registries.BLOCK) {
-            Registry.init();
-            creativeTab = CreativeModeTab.builder().icon(() -> new ItemStack(Registry.CONSTRUCTABLE_TRIGGER)).title(Component.translatable("itemGroup." + StructureLibAPI.MOD_ID)).build();
+            RegistryData.init();
+        }
+        if (event.getRegistryKey() == Registries.CREATIVE_MODE_TAB){
+            creativeTab = CreativeModeTab.builder().icon(() -> new ItemStack(RegistryData.CONSTRUCTABLE_TRIGGER)).title(Component.translatable("itemGroup." + StructureLibAPI.MOD_ID))
+                .displayItems((parameters, output) -> {
+                    output.accept(RegistryData.CONSTRUCTABLE_TRIGGER);
+                    output.accept(RegistryData.FRONT_ROTATION_TOOL);
+                }).build();
             event.register(Registries.CREATIVE_MODE_TAB, ResourceLocation.fromNamespaceAndPath(StructureLibAPI.MOD_ID, "tab"), () -> creativeTab);
         }
     }
